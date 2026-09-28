@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    
+    <title>MWBC | Credits</title>
+	<meta property="og:title" content="Milky Way Bar Crawl">
+	<meta property="og:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta property="og:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	<meta property="og:url" content="https://guidelume.github.io/milky-way-bar-crawl/credits.html">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Milky Way Bar Crawl">
+	<meta name="twitter:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta name="twitter:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+    <link rel="shortcut icon" href="./custom/favicon.svg" />
+    
+	<link rel="stylesheet" href="../engine/css/fonts.css" />
+    <link rel="stylesheet" href="../engine/css/guide.css" />
+    <link rel="stylesheet" href="../engine/css/accessible-fonts.css" />
+</head>
+<body>
+
+    <!-- Background (single reliable layer) -->
+    <div class="bg-viewport" aria-hidden="true">
+        <div id="titleBackground" class="title-bg" style="background-image:url('./custom/img/background/bg-galaxy-14.jpg');"></div>
+    </div>
+    <div class="bg-vignette" aria-hidden="true"></div>
+
+    <div class="layout" id="layoutRoot">
+
+        <!-- LEFT -->
+		<aside class="left-panel" id="leftPanel" role="navigation" aria-label="Chapters">
+
+			<div class="nav-section open" data-section="main">
+				<button class="nav-section-header" type="button" aria-expanded="true">
+					<span>Milky Way Bar Crawl</span>
+					<span class="nav-section-caret">▾</span>
+				</button>
+				
+				<ul class="chap-list">
+					<li class="chap-item" data-href="intro.html">
+						<a class="chap-link" href="intro.html">1. Introduction</a>
+					</li>
+
+					<li class="chap-item" data-href="setup.html">
+						<a class="chap-link" href="setup.html">2. Setup</a>
+					</li>
+
+					<li class="chap-item" data-href="me1.html">
+						<a class="chap-link" href="me1.html">3.1. LE1</a>
+					</li>
+
+					<li class="chap-item" data-href="me2.html">
+						<a class="chap-link" href="me2.html">3.2. LE2</a>
+					</li>
+
+					<li class="chap-item" data-href="me3.html">
+						<a class="chap-link" href="me3.html">3.3. LE3</a>
+					</li>
+
+					<li class="chap-item" data-href="finish.html">
+						<a class="chap-link" href="finish.html">4. Finish</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="after-hours">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>After Hours</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="extras.html">
+						<a class="chap-link" href="extras.html">5. Extras</a>
+					</li>
+
+					<li class="chap-item" data-href="textures.html">
+						<a class="chap-link" href="textures.html">6. Textures</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="appendices">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>Appendices</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="questions.html">
+						<a class="chap-link" href="questions.html">7. Common Questions</a>
+					</li>
+
+					<li class="chap-item" data-href="changelog.html">
+						<a class="chap-link" href="changelog.html">8. Changelog</a>
+					</li>
+
+					<li class="chap-item" data-href="credits.html">
+						<a class="chap-link" href="credits.html">9. Credits</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-updated" role="contentinfo">
+				Last Updated:<br>
+				August 2026 · v2.1
+			</div>
+			
+		</aside>
+
+        <!-- CENTER -->
+        <main class="center-col" role="main">
+            <div class="content-shell" id="contentShell">
+
+                <div class="title-box">
+                    <div id="titleBackground" class="title-bg"></div>
+					<button id="home" class="btn text-standard" aria-label="Return to Start"><a href="../index-mwbc.html">Back to Start</a></button>
+                    <h1 id="projectTitle">Appendices - Credits</h1>
+                    <button id="fontToggle" class="btn text-standard" aria-label="Toggle accessible fonts" title="Font Toggle">Aa</button>
+                </div>
+				
+				<div class="content-progress" aria-hidden="true">
+						<div class="content-progress-bar"></div>
+				</div>
+				
+                <article class="content-box" id="contentBox" tabindex="0" aria-labelledby="stepTitle">
+                    
+                    <!-- Panel 0 -->
+                    <section id="preamble" class="panel" data-index="0">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>Acknowledgements</h3>
+                            <div class="caret">▾</div>
+                        </header>
+
+                        <div class="panel-body">
+                            <p class="text-standard">
+								A huge thanks to the Mass Effect community - old and new, modders and players alike. Your work, passion and refusal to let this series fade into obscurity are a big reason this guide exists.<br><br>
+								A special thanks to <b>SyntheticSyndicate</b>, whose mod list was one of the sparks that made me want to make my own.<br><br>
+								And of course, thank you to the teams at <b>BioWare</b> - past, present and future - for creating this universe in the first place.
+							</p>
+                        </div>
+                    </section>
+                    
+                    <!-- Panel 1 -->
+                    <section id="images" class="panel" data-index="1">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>Images</h3>
+                            <div class="caret">▾</div>
+                        </header>
+                        
+                        <div class="panel-body">
+                            <p class="text-standard">
+								All screenshots and in-game images were captured by me, unless otherwise noted.<br><br>
+
+								<b>External images used:</b>
+								<ul class="text-standard">
+									<li>Galaxy Image #1 - <u><a href="https://unsplash.com/photos/milky-way-adkrsIr_0iw" target="_blank">Dan Russo (Unsplash)</a></u></li>
+									<li>Galaxy Image #2 - <u><a href="https://unsplash.com/photos/milkway-photorgaphy-BIdxEi7cWLM" target="_blank">Andy Holmes (Unsplash)</a></u></li>
+									<li>Galaxy Image #3 - <u><a href="https://unsplash.com/photos/blue-and-purple-galaxy-digital-wallpaper-E0AHdsENmDg" target="_blank">Jeremy Thomas (Unsplash)</a></u></li>
+									<li>Galaxy Image #4 - <u><a href="https://unsplash.com/photos/milky-way-galaxy-at-night-cnlAybuakYs" target="_blank">Photoholgic (Unsplash)</a></u></li>
+									<li>Martini Glass Splash - <u><a href="https://unsplash.com/photos/red-wine-in-clear-martini-glass-Fp0nJJlbSWA" target="_blank">Hush Naidoo Jade Photography (Unsplash)</a></u></li>
+								</ul>
+								
+								<p class="text-standard">These images are free for me to use in my project under the <u><a href="https://unsplash.com/license" target="_blank">Unsplash License</a></u></p>
+							</p>
+                        </div>
+                    </section>
+                    
+                    <!-- Panel 2 -->
+                    <section id="content" class="panel" data-index="2">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>Content</h3>
+                            <div class="caret">▾</div>
+                        </header>
+                        
+                        <div class="panel-body">
+                            <p class="text-standard">
+                                The text and original materials on this site are licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC-BY-4.0.</a><br>
+								Mass Effect, BioWare, Electronic Arts, Nexus Mods, and all related trademarks are the property of their respective owners.<br>
+								Individual mods remain the property of their respective authors.<br><br>
+								
+								<b>Tools used</b>:<br><br>
+								- A local Python Server for testing<br>
+								- Notepad++<br>
+								- Affinity Photo 2<br><br>
+								
+								This site is hosted via Github Pages.<br><br>
+								
+                                This site uses <b><u><a href="https://github.com/biati-digital/glightbox" target="_blank" rel="noopener noreferrer">GLightbox</a></u></b> 
+                                by Biati-Digital, which is free to use under the 
+                                <b><u><a href="https://opensource.org/license/MIT" target="_blank" rel="noopener noreferrer">MIT License</a></u></b>.<br><br>
+
+                                <b>Fonts used:</b><br><br>
+                                – <b><u><a href="https://fonts.google.com/specimen/Quicksand" target="_blank" rel="noopener noreferrer">Quicksand</a></u></b> by Andrew Paglinawan<br>
+                                – <b><u><a href="https://fonts.google.com/specimen/Zen+Dots" target="_blank" rel="noopener noreferrer">Zen Dots</a></u></b> by Yoshimichi Ohira<br>
+                                – <b><u><a href="https://fonts.google.com/specimen/VT323" target="_blank" rel="noopener noreferrer">VT323</a></u></b> by Peter Hull<br><br>
+                            
+                                – <b><u><a href="https://www.lexend.com" target="_blank" rel="noopener noreferrer">Lexend</a></u></b> by Bonnie Shaver-Troup, Thomas Jockin, Santiago Orozco, Héctor Gómez and Superunion<br>
+                                – <b><u><a href="https://fonts.google.com/specimen/Libre+Baskerville" target="_blank" rel="noopener noreferrer">Libre Baskerville</a></u></b> by Impallari Type<br><br>
+                            
+                                All fonts are licensed under the 
+                                <b><u><a href="https://openfontlicense.org/open-font-license-official-text/" target="_blank" rel="noopener noreferrer">SIL Open Font License</a></u></b>.
+                            </p>
+                        </div>
+                    </section>
+                    
+					<!-- Panel 3 -->
+                    <section id="content" class="panel" data-index="3">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>Extra Nerd Stuff</h3>
+                            <div class="caret">▾</div>
+                        </header>
+                        
+                        <div class="panel-body">
+                            <ul class="text-standard">
+								<li> My icon is a fusion of two Nordic runes: <b>Algiz</b> (protection) and <b>Kaunaz</b> (creativity and fire).</li><br>
+								
+								<li> My username borrows from <i>Vargr</i>, Old Norse for “wolf”. I will let you take a wild guess why.</li><br>
+								
+								<li> Fun fact: none of the text on this site is pure white. It’s actually a very light gray with a subtle outline, for readability and accessibility. I hope these little accessibility touches help someone - even if I’m mostly fumbling around without feedback.</li><br>
+								
+								<li> Why the bar crawl theme? Because it made me laugh. I don’t even drink alcohol.</li>
+							</ul>
+                        </div>
+                    </section>
+					
+					<br>
+					<hr style="color:#fff;width:99%;margin-left:0">
+					<br>
+					
+					<p class="text-standard">
+                        I appreciate you sticking around until the absolute bitter end... but really, it's probably 8AM by now. Go home. Get some sleep.<br>
+						<b>I'll be here for your next bar crawl, Commander.</b>
+					</p>
+					
+                </article>
+                
+                <!-- Pager -->
+                <div class="pager-box pager" role="navigation" aria-label="Panel navigation">
+                    <div class="pager-left">
+                        <button class="btn text-standard" id="expandAllBtn" aria-label="Expand all panels">Expand All</button>
+                        <button class="btn text-standard" id="closeAllBtn" aria-label="Close all panels">Close All</button>
+                    </div>
+
+                    <div class="pager-right">
+                        <button class="btn text-standard" id="prevPageBtn" aria-label="Previous page">Prev Page</button>
+                        <button class="btn text-standard" id="nextPageBtn" aria-label="Next page">Next Page</button>
+                    </div>
+                </div>
+
+                <div class="bottom-strip" aria-hidden="true"></div>
+            </div>
+        </main>
+
+        <!-- RIGHT -->
+        <aside class="right-panel">
+            <div class="contents-panel" role="navigation" aria-label="Contents">
+                <h4>Chapters</h4>
+                <nav>
+                    <ul id="contentsList" class="contents-list"></ul>
+                </nav>
+            </div>
+
+            <div class="made-by" role="contentinfo">
+                Made with <span class="heart">♥</span> by <span class="name"><a href="https://varkorax.github.io" target="_blank">Varkorax</a></span>
+            </div>
+        </aside>
+
+    </div>
+
+    <script src="../engine/js/guide.js" defer></script>
+    <script src="../engine/js/font-accessibility.js" defer></script>
+    
+
+</body>
+</html>

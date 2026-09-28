@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		
+		<title>Milky Way Bar Crawl</title>
+		<link rel="shortcut icon" type="image/x-icon" href="./engine/favicon.svg" />
+		
+		<!-- Open Graph support -->
+		<meta property="og:title" content="Guidelume">
+		<meta property="og:description" content="Breaking through the gloom, a solitary beam of light.">
+		<meta property="og:image" content="https://guidelume.github.io/engine/preview.png">
+		<meta property="og:url" content="https://guidelume.github.io/index.html">
+		<meta property="og:type" content="website">
+		
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:title" content="Guidelume">
+		<meta name="twitter:description" content="Breaking through the gloom, a solitary beam of light.">
+		<meta name="twitter:image" content="https://guidelume.github.io/engine/preview.png">
+		
+		<!-- Stylesheets -->
+		<link rel="stylesheet" href="./engine/css/fonts.css" />
+		<link rel="stylesheet" href="./engine/css/title.css" />
+	</head>
+	
+	<body>
+		<div class="title-screen" id="titleBackground"></div>
+		
+		<header class="site-header">
+			<a class="site-logo" href="https://varkorax.github.io" aria-label="Milky Way Bar Crawl home" target="_blank">
+				<img src="./engine/favicon.svg" alt="Milky Way Bar Crawl">
+			</a>
+			
+			<nav class="guide-switcher" aria-label="Guides">
+				<span class="header-divider" aria-hidden="true">|</span>
+				<a class="active" href="index.html">Milky Way Bar Crawl</a>
+				<span class="header-divider" aria-hidden="true">/</span>
+				<a href="#">?????</a>
+			</nav>
+			
+			<div class="site-credit">
+				<a href="https://bsky.app/profile/varkorax.bsky.social"
+					target="_blank"
+					rel="noopener">
+					Bluesky
+				</a>
+				
+				<span class="header-divider" aria-hidden="true">/</span>
+				
+				<a href="https://next.nexusmods.com/profile/Varkorax"
+					target="_blank"
+					rel="noopener">
+					Nexus
+				</a>
+				
+				<span class="header-divider" aria-hidden="true">|</span>
+				
+				<span style="color: white">Made with <span class="header-heart">♥</span> by Varkorax</span>
+			</div>
+		</header>
+
+		<div class="center-stage" role="main" aria-labelledby="main-title">
+			<img
+				src="./engine/img/logo-full.png"
+				class="title-logo"
+				alt="Milky Way Bar Crawl"
+				style="height: 391px; width: 524px"
+			>
+			
+			<h2 id="main-title">
+				A curated night out across the Legendary Edition.<br>
+				Not for the faint of heart, but welcome to those true in spirit.
+			</h2>
+			
+			<div class="main-buttons">
+			<button
+				class="enter-button"
+				onclick="enterGuide()"
+				aria-label="Enter the Milky Way Bar Crawl"
+			>
+				Embark
+			</button>
+			
+			<button
+				class="video-button"
+				href="#"
+				target="_blank"
+				rel="noopener"
+				disabled
+				aria-label="Video coming soon"
+			>
+				Video Guide (Soon)
+			</button>
+		</div>
+			
+			<div class="jump-section">
+				<span class="jump-label">or jump directly to</span>
+
+				<div class="jump-buttons">
+					<a href="./milky-way-bar-crawl/me1.html" class="jump-button">
+						<span class="jump-number">LE1</span>
+					</a>
+
+					<a href="./milky-way-bar-crawl/me2.html" class="jump-button">
+						<span class="jump-number">LE2</span>
+					</a>
+
+					<a href="./milky-way-bar-crawl/me3.html" class="jump-button">
+						<span class="jump-number">LE3</span>
+					</a>
+				</div>
+			</div>
+			
+		</div>
+		
+		<div class="footer-wrapper" aria-hidden="false">
+			<div class="footer-box" role="contentinfo">
+				<button class="ea-note-trigger" type="button" aria-haspopup="dialog">
+					A Personal Note Regarding EA
+				</button>
+			</div>
+		</div>
+		
+		<div class="ea-modal" id="ea-note-modal" role="dialog" aria-modal="true" aria-labelledby="ea-note-title" hidden>
+			<div class="ea-modal-backdrop"></div>
+			
+			<div class="ea-modal-content">
+				<button class="ea-modal-close" type="button" aria-label="Close">
+					×
+				</button>
+				
+				<h2 id="ea-note-title" class="sr-only">A Personal Note Regarding EA</h2>
+				
+				<iframe
+					src="ea-note.html"
+					title="A Personal Note Regarding EA"
+					loading="lazy">
+				</iframe>
+			</div>
+		</div>
+		
+		<script>
+		const eaModal = document.getElementById('ea-note-modal');
+		const eaTrigger = document.querySelector('.ea-note-trigger');
+		const eaClose = document.querySelector('.ea-modal-close');
+		const eaBackdrop = document.querySelector('.ea-modal-backdrop');
+
+		function openEaNote() {
+			eaModal.hidden = false;
+			document.body.style.overflow = 'hidden';
+			eaClose.focus();
+		}
+
+		function closeEaNote() {
+			eaModal.hidden = true;
+			document.body.style.overflow = '';
+			eaTrigger.focus();
+		}
+
+		eaTrigger.addEventListener('click', openEaNote);
+		eaClose.addEventListener('click', closeEaNote);
+		eaBackdrop.addEventListener('click', closeEaNote);
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && !eaModal.hidden) {
+				closeEaNote();
+			}
+		});
+		</script>
+		
+		<script src="./engine/js/title.js"></script>
+	</body>
+</html>

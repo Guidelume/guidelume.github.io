@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "entries": [
+    {
+		"slug": "forest-entrance",
+		"title": "The Forest Entrance",
+		"date": "2026-07-18",
+		"featured": true,
+		"category": "Short Story",
+		"genre": "Fantasy",
+		"status": "Complete",
+		"series": "none",
+		"tags": ["Foundation"],
+		"blurb": "A tale as old as time",
+		"thumb": "./stories/forest-entrance/thumbnail.webp",
+		"chapters": [
+			"./stories/forest-entrance/story.md"
+		]
+	}
+  ]
+}

@@ -1,0 +1,12 @@
+/* Shared accessible-font rules for the desktop and MWBC pages. */
+:root[data-accessible-fonts="true"] body,
+:root[data-accessible-fonts="true"] body :not(svg):not(svg *),
+body.accessible-fonts,
+body.accessible-fonts :not(svg):not(svg *) {
+    font-family: "Lexend", sans-serif !important;
+}
+
+:root[data-accessible-fonts="true"] body :is(h1, h2, h3, h4, h5, h6, [role="heading"]),
+body.accessible-fonts :is(h1, h2, h3, h4, h5, h6, [role="heading"]) {
+    font-family: "Libre Baskerville", Georgia, serif !important;
+}

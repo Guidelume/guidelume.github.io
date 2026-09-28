@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    
+    <title>MWBC | Textures</title>
+	<meta property="og:title" content="Milky Way Bar Crawl">
+	<meta property="og:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta property="og:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	<meta property="og:url" content="https://guidelume.github.io/milky-way-bar-crawl/textures.html">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Milky Way Bar Crawl">
+	<meta name="twitter:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta name="twitter:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+    <link rel="shortcut icon" href="./custom/favicon.svg" />
+    
+	<link rel="stylesheet" href="../engine/css/fonts.css" />
+    <link rel="stylesheet" href="./custom/external/glightbox/dist/css/glightbox.css" />
+    <link rel="stylesheet" href="../engine/css/guide.css" />
+    <link rel="stylesheet" href="../engine/css/accessible-fonts.css" />
+	<link rel="stylesheet" href="./custom/css/textures.css" />
+</head>
+<body>
+
+    <!-- Background (single reliable layer) -->
+    <div class="bg-viewport" aria-hidden="true">
+        <div id="bgLayer" class="bg-layer" style="background-image:url('./custom/img/background/bg-extra-2-c4.webp');"></div>
+    </div>
+    <div class="bg-vignette" aria-hidden="true"></div>
+
+    <div class="layout" id="layoutRoot">
+
+        <!-- LEFT -->
+		<aside class="left-panel" id="leftPanel" role="navigation" aria-label="Chapters">
+
+			<div class="nav-section open" data-section="main">
+				<button class="nav-section-header" type="button" aria-expanded="true">
+					<span>Milky Way Bar Crawl</span>
+					<span class="nav-section-caret">▾</span>
+				</button>
+				
+				<ul class="chap-list">
+					<li class="chap-item" data-href="intro.html">
+						<a class="chap-link" href="intro.html">1. Introduction</a>
+					</li>
+
+					<li class="chap-item" data-href="setup.html">
+						<a class="chap-link" href="setup.html">2. Setup</a>
+					</li>
+
+					<li class="chap-item" data-href="me1.html">
+						<a class="chap-link" href="me1.html">3.1. LE1</a>
+					</li>
+
+					<li class="chap-item" data-href="me2.html">
+						<a class="chap-link" href="me2.html">3.2. LE2</a>
+					</li>
+
+					<li class="chap-item" data-href="me3.html">
+						<a class="chap-link" href="me3.html">3.3. LE3</a>
+					</li>
+
+					<li class="chap-item" data-href="finish.html">
+						<a class="chap-link" href="finish.html">4. Finish</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="after-hours">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>After Hours</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="extras.html">
+						<a class="chap-link" href="extras.html">5. Extras</a>
+					</li>
+
+					<li class="chap-item" data-href="textures.html">
+						<a class="chap-link" href="textures.html">6. Textures</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="appendices">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>Appendices</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="questions.html">
+						<a class="chap-link" href="questions.html">7. Common Questions</a>
+					</li>
+
+					<li class="chap-item" data-href="changelog.html">
+						<a class="chap-link" href="changelog.html">8. Changelog</a>
+					</li>
+
+					<li class="chap-item" data-href="credits.html">
+						<a class="chap-link" href="credits.html">9. Credits</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-updated" role="contentinfo">
+				Last Updated:<br>
+				August 2026 · v2.1
+			</div>
+			
+		</aside>
+
+        <!-- CENTER -->
+        <main class="center-col" role="main">
+            <div class="content-shell" id="contentShell">
+
+                <div class="title-box">
+                    <div id="titleBackground" class="title-bg"></div>
+					<button id="home" class="btn text-standard" aria-label="Return to Start"><a href="../index-mwbc.html">Back to Start</a></button>
+                    <h1 id="projectTitle">After Hours - Textures</h1>
+                    <button id="fontToggle" class="btn text-standard" aria-label="Toggle accessible fonts" title="Font Toggle">Aa</button>
+                </div>
+				
+				<div class="content-progress" aria-hidden="true">
+					<div class="content-progress-bar"></div>
+				</div>
+				
+                <article class="content-box" id="contentBox" tabindex="0" aria-labelledby="stepTitle">
+                    
+                    <!-- Panel 0 -->
+                    <section id="preamble" class="panel open" data-index="0">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>Time To Finish This</h3>
+                            <div class="caret">▾</div>
+                        </header>
+
+                        <div class="panel-body">
+                            <p class="text-standard">
+                                Welcome to the last stop on our night out together!<br>
+                                Let's finish strong and freshen up the visuals a bit.<br>
+                            </p>
+                            
+                            <div id="preamble-last" class="anchor" data-parent="preamble">
+                                <h4>One Final Warning</h4>
+								
+                                <div style="margin-top:8px">
+								<button id="toggleTextureImgBtn3" class="btn">Open/Close</button>
+								</div>
+								
+								<div id="textureImgWrap3" class="hidden-media" aria-hidden="true" style="margin-top:10px">
+									<div class="media-body">
+										<div class="warning">
+											<div class="icon">!</div>
+											<p class="text-standard">
+											Texture modding your game(s) should be the very last step for your mod list.<br>
+											If something goes wrong or you decide to ignore my warnings and try to install content mods after this your game <b>will</b> break.<br>
+											You might think these warnings excessive but believe you me if anyone comes to me complaining about this I will be very...!<br>
+											hmm... roiled!
+											</p>
+										</div>
+									</div>
+								</div>
+                            </div>
+                            
+                        </div>
+                    </section>
+                    
+                    <!-- Panel 1 -->
+                    <section id="me1" class="panel" data-index="1">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>LE1</h3>
+                            <div class="caret">▾</div>
+                        </header>
+						
+                        <div class="panel-body">
+                            <p class="text-standard">
+                                For texture modding we want the bare <code>.mem</code> files, so after you download these mods open and extract them to somwhere easy to access.
+                            </p>
+                            
+							<hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br>
+							
+                            <div id="le1-op" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/363" target="_blank">
+											A Lot Of Textures (LE1)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/CreeperLava" target="_blank">CreeperLava</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Enhanced, upscaled textures that fill in many of the blind spots left by the Legendary Edition.
+								</div>
+
+								<div class="mod-note">
+									<b>Note:</b> A recent update introduced a new feature called Texture Override (M3TO), allowing ALOT to install like a normal mod. Since it is still a texture mod, however, it will remain here for the time being.
+								</div>
+							</div>
+
+							<br>
+
+							<div id="le1-is" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/363" target="_blank">
+											Improved Static Lighting (LE1)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/CreeperLava" target="_blank">CreeperLava</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Smooths out baked lighting throughout the game with minimal performance impact.
+								</div>
+							</div>
+
+							<br>
+
+							<div id="le1-sta" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2470" target="_blank">
+											Sol Textures 2024
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/StriderMOD" target="_blank">StriderMOD</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Updates the textures for Earth, Jupiter, and Neptune using newer NASA imagery.
+								</div>
+							</div>
+							
+							<br>
+							<hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br>
+							
+							<p class="text-standard">
+								<b>A choice stands before you.</b> Two popular texture mods dominate the scene: <b>LEUITM</b> and <b>Primitives</b>.
+								<br>
+								Each pursues a different goal. <b>LEUITM</b> aims to bring characters more in line with their LE3 appearance, while <b>Primitives</b> tells a visual story by gradually aging both humans and asari as the trilogy gets darker.
+								<br><br>
+								<b>Personally, I prefer LEUITM</b> and recommend it if you want the simplest setup with the broadest coverage.
+								<br>
+								<b>If both appeal to you</b>, however, then look towards the "I Want Both" section below which will explain how to combine both mods.
+							</p>
+							<!-- <p class="text-standard">
+								<b>A choice stands before you.</b> I recommend two popular texture mods that both improve character visuals: <b>LEUITM</b> and <b>Primitives</b>.<br>
+								Each has its strengths: <b>LEUITM</b> aims to bring characters in line with their LE3 look. <b>Primitives</b> focuses on telling a story by making humans and asari visually age as each game becomes darker.<br><br>
+								If you'd rather keep things simple, stick with <b>LEUITM</b> since it provides broader coverage overall.<br>
+								Otherwise, check the setup below for how to combine both mods effectively.
+							</p> -->
+							
+							<br>
+							
+							<div id="le1-leu" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1825" target="_blank">
+											LEUITM (LE1)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/CATACHR1SM" target="_blank">CATACHR1SM</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Lore-friendly HD textures for characters, as well as some environmental fixes.
+								</div>
+								
+								<div class="mod-note">
+									<b>Note 1:</b> Select only one file per category. For example, choose <code>WrexVanillaStyleLEUITM.mem</code> <i>or</i> <code>WrexBattleHardenedLEUITM.mem</code>.<br>
+								</div>
+								<div class="mod-note">
+									<b>Note 2:</b> If you are using <b>LE1 Diversification Project</b>, select <code>AsariLE1DPCompatLEUITM.mem</code> from the three Asari options.
+								</div>
+								<div class="mod-note">
+									<b>Note 3:</b> Skip any files that overlap with another mod you are using. For example, if you are using Liara Consistency Mod, her textures are already being replaced, so you can skip all files beginning with <code>Liara</code>.<br><br>
+									Players who have been using my mod batch file can skip: <code>AllianceUniformsLEUITM.mem, AndersonLEUITM.mem, HumanEyesLEUITM.mem (Preference), LiaraLEUITM.mem, LiaraLOTSBLEUITM.mem</code>
+								</div>
+							</div>
+
+							<br>
+
+							<div id="le1-pri" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/22" target="_blank">
+											Primitives (LE1)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/CawCrowche" target="_blank">CawCrowche</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									High-quality textures for humans and asari.
+								</div>
+
+								<div class="mod-note">
+									<b>Note:</b> Make sure all listed requirements are met. If you've been following this guide, you should already have everything installed.
+								</div>
+							</div>
+                            
+							<div id="le1-both" class="anchor" data-parent="me1">
+								<h4>I Want Both</h4>
+
+								<div style="margin-top:8px">
+									<button id="toggleTextureImgBtn" class="btn">Open/Close</button>
+								</div>
+
+								<div id="textureImgWrap" class="hidden-media" aria-hidden="true" style="margin-top:10px">
+									<div class="mod-card">
+										<div class="media-body">
+
+											<p class="text-standard">
+												Extract all <code>.mem</code> files from <b>LEUITM</b> as normal, then remove the following files before installing the remaining ones.
+											</p>
+
+											<table class="texture-table">
+												<thead>
+													<tr>
+														<th>Delete</th>
+														<th>Keep</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr><td><code>AllianceUniformsLEUITM.mem</code>*</td><td><code>AvinaLEUITM.mem</code></td></tr>
+													<tr><td><code>AndersonLEUITM.mem</code></td><td><code>BatarianLEUITM.mem</code></td></tr>
+													<tr><td><code>AsariLE1DPCompatLEUITM.mem</code>**</td><td><code>ConsortDressLEUITM.mem</code></td></tr>
+													<tr><td><code>AsariScalyLEUITM.mem</code></td><td><code>- Garrus file of your choice -</code></td></tr>
+													<tr><td><code>AsariSmootherLEUITM.mem</code></td><td><code>KrogansLEUITM.mem</code></td></tr>
+													<tr><td><code>AshLEUITM.mem</code></td><td><code>NoveriaFrostedGlassLEUITM.mem</code></td></tr>
+													<tr><td><code>BroShepLEUITM.mem</code></td><td><code>SalariansLEUITM.mem</code></td></tr>
+													<tr><td><code>FemShepLEUITM.mem</code></td><td><code>- Tali file of your choice -</code></td></tr>
+													<tr><td><code>HumanEyesLEUITM.mem</code></td><td><code>VFXFixesLEUITM.mem</code></td></tr>
+													<tr><td><code>KaidanLEUITM.mem</code></td><td><code>VirmireHDSandsLEUITM.mem</code></td></tr>
+													<tr><td><code>LiaraLEUITM.mem</code></td><td><code>- Wrex file of your choice -</code></td></tr>
+													<tr><td><code>LiaraLOTSBLEUITM.mem</code></td><td></td></tr>
+													<tr><td><code>SheplooLEUITM.mem</code></td><td></td></tr>
+												</tbody>
+											</table>
+
+											<div class="mod-note">
+												<b>*</b> Keep <code>AllianceUniformsLEUITM.mem</code> if you are <b>not</b> using <b>Alliance Uniform Consistency</b>.
+											</div>
+											
+											<br>
+											
+											<div class="mod-note">
+												<b>* *</b> Keep <code>AsariLE1DPCompatLEUITM.mem</code> if you are using <b>LE1 Diversification Project</b>.
+											</div>
+											
+											<br>
+											
+											<p class="text-standard">
+												This gives you the best of both worlds: <b>LEUITM</b> for its alien textures and fixes, and <b>Primitives</b> for its human and asari textures.
+											</p>
+
+										</div>
+									</div>
+								</div>
+							</div>
+                            
+                        </div>
+                    </section>
+                    
+                    <!-- Panel 2 -->
+                    <section id="me2" class="panel" data-index="2">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>LE2</h3>
+                            <div class="caret">▾</div>
+                        </header>
+
+                        <div class="panel-body">
+                            <p class="text-standard">
+                                For texture modding we want the bare <code>.mem</code> files, so after you download these mods open and extract them to somwhere easy to access.
+                            </p>
+                            
+							<hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br>
+							
+                            <div id="le2-op" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/363" target="_blank">
+											A Lot Of Textures (LE2)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/CreeperLava" target="_blank">CreeperLava</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Enhanced, upscaled textures that fill in many of the blind spots left by the Legendary Edition.
+								</div>
+								
+								<div class="mod-note">
+									<b>Note:</b> A recent update introduced a new feature called Texture Override (M3TO), allowing ALOT to install like a normal mod. Since it is still a texture mod, however, it will remain here for the time being.
+								</div>
+								<!-- <div class="mod-note">
+									<b>Note:</b> A Texture Override version of ALOT is available as a torrent download. It installs like a regular content mod and is recommended, though as of writing still optional.
+								</div> -->
+							</div>
+
+							<br>
+
+							<div id="le2-is" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/363" target="_blank">
+											Improved Static Lighting (LE2)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/CreeperLava" target="_blank">CreeperLava</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Smooths out baked lighting throughout the game with minimal performance impact.
+								</div>
+							</div>
+
+							<br>
+							<hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br>
+
+							<p class="text-standard">
+								<b>A choice stands before you.</b> Two popular texture mods dominate the scene: <b>LEUITM2</b> and <b>Primitives</b>.
+								<br>
+								Each pursues a different goal. <b>LEUITM2</b> aims to bring characters more in line with their LE3 appearance, while <b>Primitives</b> tells a visual story by gradually aging both humans and asari as the trilogy gets darker.
+								<br><br>
+								<b>Personally, I prefer LEUITM2</b> and recommend it if you want the simplest setup with the broadest coverage.
+								<br>
+								<b>If both appeal to you</b>, however, then look towards the "I Want Both" section below which will explain how to combine both mods.
+							</p>
+							
+							<br>
+							
+							<div id="le2-leu" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1827" target="_blank">
+											LEUITM (LE2)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/CATACHR1SM" target="_blank">CATACHR1SM</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Lore-friendly HD textures for characters, as well as some environmental fixes.
+								</div>
+								
+								<div class="mod-note">
+									<b>Note 1:</b> Select only one file per category. For example, choose <code>WrexLEUITM2.mem</code> <i>or</i> <code>WrexBattleHardenedLEUITM2.mem</code>.<br>
+								</div>
+								<div class="mod-note">
+									<b>Note 2:</b> Skip any files that overlap with another mod you are using. For example, if you are using Liara Consistency Mod, her textures are already being replaced, so you can skip all files beginning with <code>Liara</code>.<br><br>
+									Players who have been using my mod batch file can skip: <code>AllianceUniformsLEUITM2.mem, AndersonLEUITM2.mem, AriaLEUITM2.mem, CerberusUniformsLEUITM2.mem, Human_Eyes_LEUITM2.mem (Preference), LiaraArmorLEUITM2.mem, LiaraFaceLOTSBStyleLEUITM2.mem, LiaraFaceME1StyleStyleLEUITM2.mem, LiaraFaceOGTransitionLEUITM2.mem</code>
+								</div>
+							</div>
+
+							<br>
+
+							<div id="le2-pri" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/22" target="_blank">
+											Primitives (LE2)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/CawCrowche" target="_blank">CawCrowche</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									High-quality textures for humans and asari.
+								</div>
+								
+								<div class="mod-note">
+									<b>Note 1:</b> Make sure all listed requirements are met. If you've been following this guide, you should already have everything installed.<br>
+								</div>
+								
+								<div class="mod-note">
+									<b>Note 2:</b> Download both Miscellaneous files, as they contain required fixes.
+								</div>
+							</div>
+                            
+							<div id="le2-both" class="anchor" data-parent="me2">
+								<h4>I Want Both</h4>
+
+								<div style="margin-top:8px">
+									<button id="toggleTextureImgBtn2" class="btn">Open/Close</button>
+								</div>
+
+								<div id="textureImgWrap2" class="hidden-media" aria-hidden="true" style="margin-top:10px">
+									<div class="mod-card">
+										<div class="media-body">
+
+											<p class="text-standard">
+												Extract all <code>.mem</code> files from <b>LEUITM2</b> as normal, then remove the following files before installing the remaining ones.
+											</p>
+
+											<table class="texture-table">
+												<thead>
+													<tr>
+														<th>Delete</th>
+														<th>Keep</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr><td><code>AllianceUniformsLEUITM2.mem</code>*</td><td><code>AriaLEUITM2.mem</code></td></tr>
+													<tr><td><code>AndersonLEUITM2.mem</code></td><td><code>BatarianLEUITM2.mem</code></td></tr>
+													<tr><td><code>AsariScalyLEUITM2.mem</code></td><td><code>CollectorsLEUITM2.mem</code></td></tr>
+													<tr><td><code>AsariSmoothLEUITM2.mem</code></td><td><code>EndBossLEUITM2.mem</code></td></tr>
+													<tr><td><code>AshLEUITM2.mem</code></td><td><code>EnvironmentFixesLEUITM2.mem</code></td></tr>
+													<tr><td><code>BroShepLEUITM2.mem</code></td><td><code>FeronLEUITM2.mem</code></td></tr>
+													<tr><td><code>CerberusUniformsLEUITM2.mem</code>*</td><td><code>- Garrus file of your choice -</code></td></tr>
+													<tr><td><code>ChakwasLEUITM2.mem</code></td><td><code>GruntLEUITM2.mem</code></td></tr>
+													<tr><td><code>FemShepLEUITM2.mem</code></td><td><code>KolyatLEUITM2.mem</code></td></tr>
+													<tr><td><code>Human_Eyes_LEUITM2.mem</code></td><td><code>KrogansLEUITM2.mem</code></td></tr>
+													<tr><td><code>JackLEUITM2.mem</code></td><td><code>LegionLEUITM2.mem</code></td></tr>
+													<tr><td><code>JacobLEUITM2.mem</code></td><td><code>MordinLEUITM2.mem</code></td></tr>
+													<tr><td><code>KaidanLEUITM2.mem</code></td><td><code>OverlordLEUITM2.mem</code></td></tr>
+													<tr><td><code>KasumiLEUITM2.mem</code></td><td><code>SalariansLEUITM2.mem</code></td></tr>
+													<tr><td><code>LiaraArmorLEUITM2.mem</code></td><td><code>ScionLEUITM2.mem</code></td></tr>
+													<tr><td><code>LiaraFaceLOTSBStyleLEUITM2.mem</code></td><td><code>ShadowBrokerLEUITM2.mem</code></td></tr>
+													<tr><td><code>LiaraFaceME1StyleStyleLEUITM2.mem</code></td><td><code>TelaVasirLEUITM2.mem</code></td></tr>
+													<tr><td><code>LiaraFaceOGTransitionLEUITM2.mem</code></td><td><code>ThaneLEUITM2.mem</code></td></tr>
+													<tr><td><code>MIrandaLEUITM2.mem</code></td><td><code>VolusLEUITM2.mem</code></td></tr>
+													<tr><td><code>SamaraMorinthLEUITM2.mem</code></td><td><code>VorchaLEUITM2.mem</code></td></tr>
+													<tr><td><code>SheplooLEUITM2.mem</code></td><td><code>- Wrex file of your choice -</code></td></tr>
+													<tr><td><code>TIMLEUITM2.mem</code></td><td></td></tr>
+													<tr><td><code>ZaeedLEUITM2.mem</code></td><td></td></tr>
+												</tbody>
+											</table>
+											
+											<div class="mod-note">
+												<b>*</b> Keep <code>AllianceUniformsLEUITM2.mem</code> and <code>CerberusUniformsLEUITM2.mem</code> if you are <b>not</b> using <b>Cerberus and Alliance Uniform Consistency</b>.
+											</div>
+											
+											<br>
+											
+											<p class="text-standard">
+												This gives you the best of both worlds: <b>LEUITM2</b> for its alien textures and fixes, and <b>Primitives</b> for its human and asari textures.
+											</p>
+
+										</div>
+									</div>
+								</div>
+							</div>
+							
+                        </div>
+                    </section>
+                    
+                    <!-- Panel 3 -->
+                    <section id="me3" class="panel" data-index="3">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>LE3</h3>
+                            <div class="caret">▾</div>
+                        </header>
+
+                        <div class="panel-body">
+                            <p class="text-standard">
+                                For texture modding we want the bare <code>.mem</code> files, so after you download these mods open and extract them to somwhere easy to access.
+                            </p>
+                            
+							<hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br>
+							
+                            <div id="le3-op" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/363" target="_blank">
+											A Lot Of Textures (LE3)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/CreeperLava" target="_blank">CreeperLava</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Enhanced, upscaled textures that fill in many of the blind spots left by the Legendary Edition.
+								</div>
+								
+								<div class="mod-note">
+									<b>Note:</b> A recent update introduced a new feature called Texture Override (M3TO), allowing ALOT to install like a normal mod. Since it is still a texture mod, however, it will remain here for the time being.
+								</div>
+							</div>
+
+							<br>
+
+							<div id="le3-is" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/363" target="_blank">
+											Improved Static Lighting (LE3)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/CreeperLava" target="_blank">CreeperLava</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Smooths out baked lighting throughout the game with minimal performance impact.
+								</div>
+							</div>
+
+							<br>
+
+							<div id="le3-pri" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/22" target="_blank">
+											Primitives (LE3)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/CawCrowche" target="_blank">CawCrowche</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									High-quality textures for humans and asari.
+								</div>
+
+								<div class="mod-note">
+									<b>Note 1:</b> Make sure all listed requirements are met. If you've been following this guide, you should already have everything installed.<br>
+								</div>
+								
+								<div class="mod-note">
+									<b>Note 2:</b> Download both Miscellaneous files, as they contain required fixes.
+								</div>
+							</div>
+
+							<br>
+
+							<div id="le3-dis" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1665" target="_blank">
+											Disavowed (Miranda Texture Overhaul)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/StriderMOD" target="_blank">StriderMOD</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Overhauls Miranda's appearance, including a choice of new outfits.
+								</div>
+								
+								<div class="mod-note">
+									<b>Note:</b> If you are using Miranda Mod there is a good chance you need to reinstall it and deselect "Miranda Outfits (NPC File)"
+								</div>
+							</div>
+                            
+                        </div>
+                    </section>
+                    
+                    <!-- Panel 4 -->
+                    <section id="install" class="panel" data-index="4">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>Installation</h3>
+                            <div class="caret">▾</div>
+                        </header>
+
+                        <div class="panel-body">
+                            <p class="text-standard">
+                                Now that you have everything you need all that is left is the installation itself!
+                            </p>
+                            
+                            <div id="me-m" class="anchor" data-parent="install">
+                                <h4>MEM (Mass Effect Modder)</h4>
+                                <p class="text-standard">
+                                    Just like M3, the community has created its own dedicated tool for texture modding, simply called
+                                    <b>Mass Effect Modder</b> or <b>MEM</b>.<br>
+                                    Thankfully, we can launch it directly from inside M3 this time.<br>
+                                    Open <b>M3</b> → navigate to <b>Tools</b> → select <b>Mass Effect Modder</b> from the dropdown. M3 will download and open the latest version automatically.
+                                </p>
+                            </div>
+                            
+                            <div id="me-me" class="anchor" data-parent="install">
+                                <h4>The Long Wait</h4>
+								
+								<div class="informational" style="border: 1px solid rgba(var(--accent)); background: linear-gradient(180deg, rgba(var(--accent),0.11), rgba(var(--accent),0.1));">
+									<div class="informational-carousel">
+										<div class="media">
+											<a href="./custom/img/guide/guide-textures-x.png"
+											   class="glightbox"
+											   data-title="MEM"
+											   data-description="The main window of MEM may look a little daunting, but most of it doesn't concern us.">
+												<img src="./custom/img/guide/guide-textures-x.png"
+													 alt="the main mem window"
+													 class="media-image" loading="lazy" decoding="async">
+											</a>
+											<div class="media-body">
+												<p class="media-text text-standard">
+													<br>
+													The main window might look a bit overwhelming at first, but don’t worry, most of it doesn’t concern us.<br>
+													In the column for the game you wish to mod, click on <b>Texture Modding → Install Texture Mods</b>.<br><br>
+													MEM will give you one final warning that you can’t install any more content mods afterwards. Since you’ve been such a diligent reader you know this already and can confidently click <b>OK</b>.<br><br>
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+								<br>
+								
+								<p class="text-standard">
+									Before adding your mods, <b>a quick note about order</b>: MEM installs texture mods <b>in descending order</b>, meaning that <b>mods lower on the list will overwrite those above</b> if they touch the same files.<br><br>
+									<b>For example</b>, say you have two texture mods modifying hands: <code>PrettyHands.mem</code> and <code>MagnificentGrabbers.mem</code>. You add them one after another so that the second appears lower on the list. When you install them, nothing explodes (hopefully), but in-game you’ll see only the textures from <b>Magnificent Grabbers</b>.<br><br>
+									In short: <b>Order matters!</b>
+								</p>
+								
+								<br>
+								<hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+								<br>
+								
+								<p class="text-standard">
+									When ready, click <b>Add to list</b> and select your extracted <code>.mem</code> files. I recommend your lists to look something like this:
+								</p>
+								
+                            </div>
+                            
+                            <!-- Carousel goes here -->
+                                <!-- Carousel start: M3 install (final markup) -->
+                                <div class="informational-carousel" data-gallery="m3-install">
+                                  <div class="infc-viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="M3 installation steps">
+                                    <div class="infc-track">
+
+                                      <div class="stepper infc-item">
+                                        <div class="media">
+                                          <a href="./custom/img/guide/guide-textures-le1.png"
+                                             class="glightbox"
+                                             data-title="Texture Order for LE1"
+                                             data-description="Your order should look like this, depending on your choices.">
+                                            <img src="./custom/img/guide/guide-textures-le1.png"
+                                                 alt="M3 releases page (download)"
+                                                 class="media-image" loading="lazy" decoding="async">
+                                          </a>
+
+                                          <div class="media-body">
+                                            <p class="media-text text-standard">
+                                                <b>Texture Order for LE1</b>:<br>Your order should look like this, depending on your choices.
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <div class="stepper infc-item">
+                                        <div class="media">
+                                          <a href="./custom/img/guide/guide-textures-le2.png"
+                                             class="glightbox"
+                                             data-title="Texture Order for LE2"
+                                             data-description="Your order should look like this, depending on your choices. The full list doesn't fit in the image and you can't drag the window any bigger. This feels slightly awkward.">
+                                            <img src="./custom/img/guide/guide-textures-le2.png"
+                                                 alt="Extract M3 archive to a folder"
+                                                 class="media-image" loading="lazy" decoding="async">
+                                          </a>
+
+                                          <div class="media-body">
+                                            <p class="media-text text-standard">
+                                                <b>Texture Order for LE2</b>:<br>Your order should look like this, depending on your choices.
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <div class="stepper infc-item">
+                                        <div class="media">
+                                          <a href="./custom/img/guide/guide-textures-le3.png"
+                                             class="glightbox"
+                                             data-title="Texture Order for LE3"
+                                             data-description="Your order should look like this, depending on your choices.">
+                                            <img src="./custom/img/guide/guide-textures-le3.png"
+                                                 alt="Open M3 and point to folder"
+                                                 class="media-image" loading="lazy" decoding="async">
+                                          </a>
+
+                                          <div class="media-body">
+                                            <p class="media-text text-standard">
+                                                <b>Texture Order for LE3</b>:<br>Your order should look like this, depending on your choices.
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                    </div> <!-- /.infc-track -->
+                                  </div> <!-- /.infc-viewport -->
+
+                                  <!-- Controls row (arrows + dots) placed in the HTML so layout is explicit -->
+                                  <div class="infc-controls" aria-hidden="false">
+                                    <button class="infc-arrow infc-prev" aria-label="Previous step" type="button">‹</button>
+                                    <div class="infc-dots" role="tablist" aria-label="Step indicators"></div>
+                                    <button class="infc-arrow infc-next" aria-label="Next step" type="button">›</button>
+                                  </div>
+                                </div>
+                                <!-- Carousel end -->
+                            
+                            <p class="text-standard">
+                                Once everything looks good, click <b>Install all mods</b>!<br>
+                                Now sit back and relax. Depending on your setup, this process might <b>take up to an hour or more.</b><br><br>
+                                When it’s done, you’ll see a confirmation popup. Launch your game to ensure nothing’s melted or attached itself backwards.
+                            </p>
+                            
+							<br>
+							<hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							
+                            <div id="me-par" class="anchor" data-parent="install">
+                                <h4>The End</h4>
+                                <p class="text-standard">
+                                    Congrats! You’ve successfully completed this guide, and your Mass Effect experience should now be pretty enhanced.<br>
+                                    You can now safely close both <b>MEM</b> and <b>M3</b>-your textures are fully installed.<br><br>
+                                    This also means our time together has come to an end for now. But don’t worry, I’ll be here whenever the urge for another galaxy-wide bar crawl strikes.<br>
+                                    I hope this guide has been at least a little useful to you. If so, I’d love to hear your feedback on the Nexus page.<br><br>
+                                    <b>Thank you and good night, Commander.</b>
+                                </p>
+                            </div>
+                            
+                        </div>
+                    </section>
+                    
+                </article>
+                
+                <!-- Pager -->
+                <div class="pager-box pager" role="navigation" aria-label="Panel navigation">
+                    <div class="pager-left">
+                        <button class="btn text-standard" id="expandAllBtn" aria-label="Expand all panels">Expand All</button>
+                        <button class="btn text-standard" id="closeAllBtn" aria-label="Close all panels">Close All</button>
+                    </div>
+
+                    <div class="pager-right">
+                        <button class="btn text-standard" id="prevPageBtn" aria-label="Previous page">Prev Page</button>
+                        <button class="btn text-standard" id="nextPageBtn" aria-label="Next page">Next Page</button>
+                    </div>
+                </div>
+
+                <div class="bottom-strip" aria-hidden="true"></div>
+            </div>
+        </main>
+
+        <!-- RIGHT -->
+        <aside class="right-panel">
+            <div class="contents-panel" role="navigation" aria-label="Contents">
+                <h4>Chapters</h4>
+                <nav>
+                    <ul id="contentsList" class="contents-list"></ul>
+                </nav>
+            </div>
+
+            <div class="made-by" role="contentinfo">
+                Made with <span class="heart">♥</span> by <span class="name"><a href="https://varkorax.github.io" target="_blank">Varkorax</a></span>
+            </div>
+        </aside>
+
+    </div>
+
+    <script src="./custom/external/glightbox/dist/js/glightbox.min.js" defer></script>
+    <script src="../engine/js/guide.js" defer></script>
+    <script src="../engine/js/font-accessibility.js" defer></script>
+    
+
+</body>
+</html>

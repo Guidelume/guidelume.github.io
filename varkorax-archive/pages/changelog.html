@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="noai, noimageai, noindex, nofollow" />
+        
+        <title>| Changelog</title>
+        <link rel="shortcut icon" type="image/x-icon" data-link="../custom/favicon.svg" />
+        
+        <link rel="stylesheet" href="../custom/css/global.css" />
+        <link rel="stylesheet" href="../custom/css/writing.css" />
+        <!-- Manual Override (yes this'll go into its own file once I am done) -->
+        <style>
+		/* =
+		   Global Text Override
+		   = */
+
+		.content h1,
+		.content h2,
+		.content p {
+			color: #fff !important;
+		}
+		
+		#changelog-content {
+			color: #fff !important;
+		}
+		
+		/* =
+		   Story Button
+		   = */
+		
+		.story-btn {
+			display: inline-block;
+
+			padding: 0.55rem 1.1rem;
+
+			border: 1px solid rgba(255,255,255,0.08);
+			border-radius: 0.75rem;
+
+			background: rgba(255,255,255,0.12);
+
+			color: #fff;
+			text-decoration: none;
+			font-weight: 600;
+
+			transition:
+				transform 0.2s ease,
+				background 0.2s ease,
+				border-color 0.2s ease;
+
+			transform: translateZ(0);
+			backface-visibility: hidden;
+		}
+
+		.story-btn:hover {
+			background: rgba(255,255,255,0.18);
+			border-color: rgba(255,255,255,0.16);
+
+			transform: translateY(-2px);
+		}
+		
+		.story-btn:disabled,
+		.story-btn.disabled {
+			opacity: 0.45;
+			cursor: default;
+			pointer-events: none;
+		}
+		
+		/* =
+		   Tooltips
+		   = */
+
+		[data-tooltip]::before,
+		.topbar-btn:hover[data-tooltip]::before,
+		.infobar-btn:hover[data-tooltip]::before {
+			font-family: "Lexend", sans-serif;
+		}
+
+		/* =
+		   Navigation Buttons
+		   = */
+
+		.panel-glyph {
+			width: 32px;
+			height: 32px;
+			margin-right: .4rem;
+			vertical-align: middle;
+		}
+
+		/* =
+		   Footer
+		   = */
+
+		.footer-wrapper {
+			position: fixed;
+
+			right: 64px;
+			bottom: 0;
+
+			display: flex;
+			justify-content: flex-end;
+			align-items: flex-end;
+
+			width: auto;
+			height: 128px;
+
+			overflow: hidden;
+
+			pointer-events: none;
+
+			z-index: 4;
+
+			font-family: "Lexend", sans-serif;
+		}
+
+		.footer-box {
+			display: inline-block;
+
+			padding: 8px 12px;
+
+			border: 1px solid rgba(255,255,255,0.06);
+			border-radius: 12px 12px 0 0;
+
+			background: rgba(7,12,20,0.36);
+
+			backdrop-filter: blur(6px) saturate(110%);
+			-webkit-backdrop-filter: blur(6px) saturate(110%);
+
+			box-shadow: 0 8px 22px rgba(0,0,0,0.45);
+
+			color: #fff;
+			font-size: 0.92em;
+			white-space: nowrap;
+
+			pointer-events: auto;
+
+			transition: transform 320ms ease;
+		}
+
+		.footer-heart,
+		.footer-name {
+			display: inline-block;
+
+			color: #ff984a;
+
+			transform-origin: center;
+			will-change: transform, color;
+
+			animation: footerPulse 1.6s ease-in-out infinite;
+		}
+
+		.footer-name {
+			margin-left: 6px;
+			animation-duration: 1.9s;
+		}
+		
+		@keyframes footerPulse {
+			0% {
+				transform: scale(1);
+				color: #ff9a4a;
+			}
+
+			45% {
+				transform: scale(1.04);
+				color: #ff7a2e;
+			}
+
+			100% {
+				transform: scale(1);
+				color: #ff9a4a;
+			}
+		}
+
+		/* =
+		   Animations
+		   = */
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(18px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		/* =
+		   Reduced Motion
+		   = */
+
+		@media (prefers-reduced-motion: reduce) {
+
+			.footer-heart,
+			.footer-name {
+				animation: none;
+			}
+
+			.story-btn,
+			.topbar-btn {
+				transition: none;
+			}
+		}
+
+		/* =
+		   Mobile
+		   = */
+
+		@media (max-width: 700px) {
+
+			.footer-wrapper {
+				right: 12px;
+				height: 84px;
+			}
+
+			.footer-box {
+				margin-bottom: -30px;
+
+				padding: 6px 10px;
+
+				border-radius: 10px 10px 0 0;
+			}
+			
+		}
+        </style>
+    </head>
+
+    <body>
+        <!-- Changing Background -->
+        <div id="background">
+            <div class="bg-layer" id="bg1"></div>
+            <div class="bg-layer" id="bg2"></div>
+        </div>
+		
+		<!-- Floating back button I shamelessly stole from Categories -->
+		<a
+			href="../index.html"
+			class="story-btn"
+			id="back-to-categories"
+			style="margin-left: 60px"
+			data-tooltip="Return"
+			aria-label="Return"
+		>
+			<span class="back-text" style="font-family: 'Lexend'" aria-hidden="false">Return</span>
+		</a>
+		
+        <!-- Top-left navigation -->
+        <nav id="topbar" aria-label="Primary">
+			<!-- Home Button disabled -->
+			<button
+				class="topbar-btn"
+				aria-current="page"
+				aria-label="Home"
+				disabled
+			>
+                <img data-src="../custom/img/side-home.png" alt="Home" />
+            </button>
+			
+		</nav>
+		
+        <!-- Main content -->
+		<main class="content" id="main-content" style="font-family: 'Lexend'">
+
+			<div class="readable-panel" style="font-family:'Lexend';">
+
+			<h2 id="version-title">Loading…</h2>
+
+			<p id="version-date"></p>
+
+			<hr>
+
+			<div id="changelog-content">
+				Loading changelog...
+			</div>
+
+			<div style="margin-top:2rem; display:flex; justify-content:space-between; gap:1rem;">
+				<button id="prev-log" class="story-btn">
+					← Previous
+				</button>
+
+				<button id="next-log" class="story-btn">
+					Next →
+				</button>
+			</div>
+
+		</div>
+
+		</main>
+        
+        <!-- Infobar (top-right) -->
+        <nav id="infobar" aria-label="Site utilities">
+			<!-- Settings button -->
+            <button
+                id="settings-toggle"
+                class="infobar-btn"
+                aria-expanded="false"
+                aria-controls="settings-popup"
+                data-tooltip="Settings"
+                >
+                <img data-src="../custom/img/bottom-gear.png" alt="Settings" id="settings-icon" />
+            </button>
+            
+            <div class="infobar-sep" aria-hidden="true"></div>
+			
+			<!-- Social Button -->
+            <button
+                id="notif-toggle"
+                class="infobar-btn"
+                aria-expanded="false"
+                aria-controls="social-popup"
+                data-tooltip="Socials"
+                ><a href="https://bsky.app/profile/varkorax.bsky.social">
+                <img src="../custom/img/side-social-bsky.png" alt="Socials" id="notif-icon" />
+				</a>
+            </button>
+			
+			<!-- Credits Button -->
+            <button
+                id="info-toggle"
+                class="infobar-btn"
+                aria-expanded="false"
+                aria-controls="info-popup"
+                data-tooltip="Info"
+                >
+                <img data-src="../custom/img/bottom-info.png" alt="Info" id="info-icon" />
+            </button>
+        </nav>
+        
+        <!-- SETTINGS POPUP (inlined) -->
+        <div id="settings-popup" class="popup" role="dialog" aria-hidden="true" aria-label="Settings panel" aria-modal="true">
+            <div class="popup-inner">
+                <button class="popup-start visually-hidden" aria-label="Start of settings dialog">Start settings</button>
+                <button class="popup-close" aria-label="Close settings panel">✕</button>
+
+                <div class="popup-content">
+                    <!-- IFRAME: settings page -->
+                    <iframe
+                        src="./settings.html"
+                        title="Settings"
+                        style="display:block; width:100%; height:100%; min-height:320px; border:0;"
+                        allow="clipboard-read; clipboard-write; geolocation; microphone; camera; autoplay"
+                        ></iframe>
+
+                    <noscript>
+                        <div class="content small">
+                            <p style="font-family: 'Lexend'">JavaScript is required to load the settings panel. <a class="bare-link" href="./pages/settings.html">Open settings</a></p>
+                        </div>
+                    </noscript>
+                </div>
+
+                <p class="popup-help" style="font-family: 'Lexend'">To close, click outside the window or press Escape.</p>
+            </div>
+        </div>
+
+        <!-- INFO POPUP (inlined) -->
+        <div id="info-popup" class="popup" role="dialog" aria-hidden="true" aria-label="Info panel" aria-modal="true">
+            <div class="popup-inner">
+                <button class="popup-start visually-hidden" aria-label="Start of info dialog">Start info</button>
+                <button class="popup-close" aria-label="Close info panel">✕</button>
+
+                <div class="popup-content">
+                    <!-- IFRAME: info page -->
+                    <iframe
+                        src="./info.html"
+                        title="Info"
+                        style="display:block; width:100%; height:100%; min-height:320px; border:0;"
+                        allow="clipboard-read; clipboard-write; geolocation; microphone; camera; autoplay"
+                        ></iframe>
+
+                    <noscript>
+                        <div class="content small">
+                            <p style="font-family: 'Lexend'">JavaScript is required to load the info panel. <a class="bare-link" href="./pages/info.html">Open info</a></p>
+                        </div>
+                    </noscript>
+                </div>
+
+                <p class="popup-help" style="font-family: 'Lexend'">To close, click outside the window or press Escape.</p>
+            </div>
+        </div>
+        
+        <!-- Toast container -->
+        <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+        
+		<!-- Footer Footer Footer Footlong -->
+		<div class="footer-wrapper" aria-hidden="false">
+			<div class="footer-box" role="contentinfo">
+				Made with <span class="footer-heart">♥</span> by<span class="footer-name"><a href="https://www.youtube.com/watch?v=Q2vA4Ue4Ths" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">Varkorax</a></span>
+			</div>
+		</div>
+		
+        <!-- Global JS -->
+        <script src="../custom/js/global.js" defer></script>
+		
+		<!-- Markdown parser + DOMPurify -->
+		<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+		
+		<!-- Page script: glue the floating back button under the current topbar button -->
+		<script>
+			(function () {
+				const backBtn = document.getElementById('back-to-categories');
+
+				function positionBackButton() {
+					if (!backBtn) return;
+					// find the current topbar button (the one with aria-current="page")
+					const current = document.querySelector('#topbar .topbar-btn[aria-current="page"]');
+					// If that's not found, fallback to first topbar-btn
+					const anchor = current || document.querySelector('#topbar .topbar-btn');
+					if (!anchor) return;
+
+					// ensure backBtn has fixed positioning
+					backBtn.style.position = 'fixed';
+					backBtn.style.zIndex = 1202;
+
+					// measure
+					const aRect = anchor.getBoundingClientRect();
+					const bRect = backBtn.getBoundingClientRect();
+
+					// center under anchor, with slightly larger vertical gap so hover translate doesn't clip into topbar
+					const left = Math.round(aRect.left + (aRect.width / 2) - (bRect.width / 2));
+					const top = Math.round(aRect.bottom + 16); // was 8 -> now 16 (tiny bit lower)
+
+					backBtn.style.left = left + 'px';
+					backBtn.style.top = top + 'px';
+				}
+
+				// run on DOM ready and on resize; also run again shortly after load to catch late layout shifts
+				window.addEventListener('DOMContentLoaded', () => {
+					positionBackButton();
+					// slight retry after fonts/images settle
+					setTimeout(positionBackButton, 120);
+				});
+				window.addEventListener('load', () => setTimeout(positionBackButton, 120));
+				window.addEventListener('resize', positionBackButton);
+				// optional: observe layout changes to the topbar (e.g., if icons change)
+				const topbar = document.getElementById('topbar');
+				if (topbar && window.MutationObserver) {
+					const mo = new MutationObserver(() => positionBackButton());
+					mo.observe(topbar, { attributes: true, childList: true, subtree: true });
+				}
+			})();
+		</script>
+		
+		<!-- Wiring: Changelog fetching and parsing -->
+		<script>
+			let changelog = [];
+			let current = 0;
+
+			async function loadChangelog() {
+				try {
+					const res = await fetch("./changelogs/data.json");
+
+					if (!res.ok) {
+						throw new Error("Couldn't load data.json");
+					}
+
+					changelog = await res.json();
+
+					// Newest first
+					changelog.sort(
+						(a, b) => new Date(b.date) - new Date(a.date)
+					);
+
+					await showEntry(0);
+				}
+				catch (err) {
+					console.error(err);
+
+					document.getElementById("changelog-content").innerHTML =
+						"<p>Couldn't load the changelog.</p>";
+				}
+			}
+
+			function formatDate(dateString) {
+				const date = new Date(dateString);
+
+				const day = date.getDate();
+
+				const suffix =
+					day % 10 === 1 && day !== 11 ? "st" :
+					day % 10 === 2 && day !== 12 ? "nd" :
+					day % 10 === 3 && day !== 13 ? "rd" :
+					"th";
+
+				return `${date.toLocaleString("en-US", {
+					month: "long"
+				})} ${day}${suffix}, ${date.getFullYear()}`;
+			}
+
+			async function showEntry(index) {
+
+				if (index < 0 || index >= changelog.length) {
+					return;
+				}
+
+				current = index;
+
+				const entry = changelog[current];
+
+				document.getElementById("version-title").innerHTML =
+					`<img src="../custom/img/glyph.svg" class="panel-glyph" /> ${entry.version}`;
+
+				document.getElementById("version-date").textContent =
+					formatDate(entry.date);
+
+				try {
+
+					const mdRes = await fetch(entry.md);
+
+					if (!mdRes.ok) {
+						throw new Error("Couldn't load markdown.");
+					}
+
+					const markdown = await mdRes.text();
+
+					document.getElementById("changelog-content").innerHTML =
+						DOMPurify.sanitize(
+							marked.parse(markdown)
+						);
+
+				}
+				catch (err) {
+
+					console.error(err);
+
+					document.getElementById("changelog-content").innerHTML =
+						"<p>Couldn't load this changelog entry.</p>";
+				}
+
+				updateButtons();
+			}
+
+			function updateButtons() {
+
+				const prev = document.getElementById("prev-log");
+				const next = document.getElementById("next-log");
+
+				// Older version
+				prev.disabled = (current >= changelog.length - 1);
+
+				// Newer version
+				next.disabled = (current <= 0);
+
+				prev.classList.toggle("disabled", prev.disabled);
+				next.classList.toggle("disabled", next.disabled);
+			}
+
+			document.getElementById("prev-log").addEventListener("click", () => {
+
+				if (current < changelog.length - 1) {
+					showEntry(current + 1);
+				}
+
+			});
+
+			document.getElementById("next-log").addEventListener("click", () => {
+
+				if (current > 0) {
+					showEntry(current - 1);
+				}
+
+			});
+
+			loadChangelog();
+		</script>
+		
+    </body>
+</html>

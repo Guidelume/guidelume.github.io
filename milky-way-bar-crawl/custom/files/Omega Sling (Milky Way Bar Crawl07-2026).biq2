@@ -1,0 +1,958 @@
+{
+  "game": "LE2",
+  "description": "(Update 1: Fixed some small errors) | Bold, smooth, and dangerously intoxicating - a stylish rush through the galaxy's underworld.",
+  "restorebeforeinstall": false,
+  "mods": [
+    {
+      "moddescpath": "LE2\\Unofficial LE2 Patch\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:24:46.9628739+02:00",
+      "moddeschash": "b1975ceb4a8694d1e99b290aa31c6de1",
+      "moddescsize": 1362,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/8?tab=files&file_id=12199",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Unofficial LE2 Patch"
+    },
+    {
+      "moddescpath": "LE2\\Myriad Pro Begone (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:25:39.0643895+02:00",
+      "moddeschash": "319a818995adbcbb703e217e51907078",
+      "moddescsize": 574,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1070?tab=files&file_id=12151",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Myriad Pro Begone (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\LE2 Prologue Framework\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:25:51.7687573+02:00",
+      "moddeschash": "eabbe94bc41f8b7b607c36ec12543157",
+      "moddescsize": 2963,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2138?tab=files&file_id=13737",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "LE2 Prologue Framework"
+    },
+    {
+      "moddescpath": "LE2\\Genesis Begone (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:25:55.5406504+02:00",
+      "moddeschash": "ff5a944d2383b6ff8070203b47d55ebb",
+      "moddescsize": 1769,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2213?tab=files&file_id=11428",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "03B47C30"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Genesis Begone (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\No Headgear for Squadmates\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:26:36.6063041+02:00",
+      "moddeschash": "66741ab4271a05b190ff407f332759bc",
+      "moddescsize": 3699,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/377?tab=files&file_id=12791",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "35D1E8B1",
+          "OriginalValue": "35D1E8B1"
+        },
+        {
+          "IsPlus": true,
+          "Key": "85AA15CF",
+          "OriginalValue": "85AA15CF"
+        },
+        {
+          "IsPlus": true,
+          "Key": "876F8943",
+          "OriginalValue": "876F8943"
+        },
+        {
+          "IsPlus": true,
+          "Key": "9C3F330D",
+          "OriginalValue": "9C3F330D"
+        }
+      ],
+      "allchosenoptions": [
+        "35D1E8B1",
+        "876F8943",
+        "9C3F330D",
+        "85AA15CF"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "No Headgear for Squadmates"
+    },
+    {
+      "moddescpath": "LE2\\Casual Hubs for LE2\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:26:50.4336055+02:00",
+      "moddeschash": "1a6db962149128181691b9d2111993a6",
+      "moddescsize": 5062,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1025?tab=files&file_id=9187",
+      "userchosenoptions": [
+        {
+          "IsPlus": false,
+          "Key": "BF297D8D",
+          "OriginalValue": "BF297D8D"
+        }
+      ],
+      "allchosenoptions": [
+        "FEF7A272",
+        "41A1AC81",
+        "23A11718",
+        "23EF2247",
+        "5E6936A8",
+        "7822C68D",
+        "DB2C8805",
+        "1ED33507"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Casual Hubs for LE2"
+    },
+    {
+      "moddescpath": "LE2\\Skip Mini Games\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:26:54.5929671+02:00",
+      "moddeschash": "01652a71d5cc3d3747fbf06bc01a2ce6",
+      "moddescsize": 1104,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/304?tab=files&file_id=1256",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "5A3B61FA",
+          "OriginalValue": "5A3B61FA"
+        }
+      ],
+      "allchosenoptions": [
+        "5A3B61FA"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Skip Mini Games"
+    },
+    {
+      "moddescpath": "LE2\\One Probe All Resources\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:09.3522976+02:00",
+      "moddeschash": "9a9a1e580f25aa96f9a9e389a467844a",
+      "moddescsize": 921,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/149?tab=files&file_id=1337",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "684EC245",
+          "OriginalValue": "684EC245"
+        }
+      ],
+      "allchosenoptions": [
+        "684EC245"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "One Probe All Resources"
+    },
+    {
+      "moddescpath": "LE2\\LE2 Changes For Import Credits 500000\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:10.8472224+02:00",
+      "moddeschash": "6d7f1028c5c6a78e557f1bdb3e32e611",
+      "moddescsize": 579,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1396?tab=files&file_id=5457",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "LE2 Changes For Import Credits 500.000"
+    },
+    {
+      "moddescpath": "LE2\\Shorter Notifications (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:15.6340158+02:00",
+      "moddeschash": "da9f1b449555ae0d3a1ba1f03a26363c",
+      "moddescsize": 2715,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/390?tab=files&file_id=1509",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "F1D26EF1"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Shorter Notifications (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\EGM Fix Weapons in Cutscenes LE2\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:17.4942924+02:00",
+      "moddeschash": "c00701ec62b5b5a65ca3315ada8030a1",
+      "moddescsize": 572,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2059?tab=files&file_id=8279",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "EGM Fix Weapons in Cutscenes LE2"
+    },
+    {
+      "moddescpath": "LE2\\Let Me Stay (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:19.0714716+02:00",
+      "moddeschash": "0e80a73b6e0019e1318b9edd1de11763",
+      "moddescsize": 470,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1872?tab=files&file_id=7470",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Let Me Stay (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\FISH (Minus Kelly)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:19.1663977+02:00",
+      "moddeschash": "d99f8b74d4d7ce905c4ef8da29b84d7e",
+      "moddescsize": 463,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1134?tab=files&file_id=12815",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "FISH (Minus Kelly)"
+    },
+    {
+      "moddescpath": "LE2\\Fish Feeder Mod\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:19.3562062+02:00",
+      "moddeschash": "c8f80cf6001894b6bfc5fd91d5b01786",
+      "moddescsize": 844,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1135?tab=files&file_id=4452",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Fish Feeder Mod"
+    },
+    {
+      "moddescpath": "LE2\\Fate of Executor Pallin (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:19.4676992+02:00",
+      "moddeschash": "7feeb527c0f69d122406273d5662507f",
+      "moddescsize": 1196,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2087?tab=files&file_id=12787",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Fate of Executor Pallin (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\Pilot In Location On Time\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:19.7381814+02:00",
+      "moddeschash": "fb3946d9e6e713669a11373344c46a13",
+      "moddescsize": 630,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1298?tab=files&file_id=12981",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Pilot In Location On Time"
+    },
+    {
+      "moddescpath": "LE2\\Stop Auto-Equipping Weapons\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:22.073674+02:00",
+      "moddeschash": "ebe24d412e42f5c1dcdfd64a40bb68dc",
+      "moddescsize": 1486,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1432?tab=files&file_id=7402",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "DC444589"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Stop Auto-Equipping Weapons"
+    },
+    {
+      "moddescpath": "LE2\\Overlord Morality Fix\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:37.9096291+02:00",
+      "moddeschash": "0f8232e7444dd0b99e48a807f4e4c16d",
+      "moddescsize": 602,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/468?tab=files&file_id=7106",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Overlord Morality Fix"
+    },
+    {
+      "moddescpath": "LE2\\M-44 Battle Tank (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:38.039187+02:00",
+      "moddeschash": "3f6ea684480d429ac91df9d3287a6ede",
+      "moddescsize": 528,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1316?tab=files&file_id=7635",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "M-44 Battle Tank (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\Hugo Gernsback Consistency Mod\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:39.5603031+02:00",
+      "moddeschash": "f4fc0e7978483ee70b095b75e7d50989",
+      "moddescsize": 543,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1352?tab=files&file_id=10833",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Hugo Gernsback Consistency Mod"
+    },
+    {
+      "moddescpath": "LE2\\Early-Ish\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:42.1790606+02:00",
+      "moddeschash": "29ff28e1d7bb6a06dffa8ef867a6bfb7",
+      "moddescsize": 1242,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1637?tab=files&file_id=12768",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "3D32A90A"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Early-Ish"
+    },
+    {
+      "moddescpath": "LE2\\Shortest Interrogation Ever (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:42.2978644+02:00",
+      "moddeschash": "4fff98fa65d1a2a0e0c44454578002f8",
+      "moddescsize": 518,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1178?tab=files&file_id=4343",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Shortest Interrogation Ever (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\All VIP Club Encounters\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:44.2422982+02:00",
+      "moddeschash": "8dd702ceb80504f5c544413ad4850062",
+      "moddescsize": 1712,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1039?tab=files&file_id=4630",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "7D3DFD13"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "All VIP Club Encounters"
+    },
+    {
+      "moddescpath": "LE2\\Reformatted Emails\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:44.413291+02:00",
+      "moddeschash": "c9a039a359c3108dcf6f79c76b3a4fc6",
+      "moddescsize": 422,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1304?tab=files&file_id=4803",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Reformatted Emails"
+    },
+    {
+      "moddescpath": "LE2\\Open My Ship (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:44.6145204+02:00",
+      "moddeschash": "7455ca7a3283499cf4e9af70d02b09b9",
+      "moddescsize": 366,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2775?tab=files&file_id=11580",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Open My Ship (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\Permanent CIC Holograms\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:46.0316505+02:00",
+      "moddeschash": "de99ecc4c89db66f1c026b86b635cdca",
+      "moddescsize": 776,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/868?tab=files&file_id=10324",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Permanent CIC Holograms"
+    },
+    {
+      "moddescpath": "LE2\\Platonic Post Horizon Emails\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:47.887392+02:00",
+      "moddeschash": "bf963a33253c5894363de7e2f3607db4",
+      "moddescsize": 989,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2083?tab=files&file_id=9184",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "9CD350C1",
+        "426F7C69"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Platonic Post Horizon Emails"
+    },
+    {
+      "moddescpath": "LE2\\Apollo Spacesuit Restoration\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:47.9835918+02:00",
+      "moddeschash": "4cd14032f5d2e0929f6a4c41c197995a",
+      "moddescsize": 1006,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1712?tab=files&file_id=12723",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Apollo Spacesuit Restoration"
+    },
+    {
+      "moddescpath": "LE2\\WrexWreav Consistency Mod (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:48.1563283+02:00",
+      "moddeschash": "735cc69e92071378ef04b6181e36b0e4",
+      "moddescsize": 525,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/861?tab=files&file_id=11746",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Wrex/Wreav Consistency Mod (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\Samara Cut Shadow Broker Dossiers Restored\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:48.2677122+02:00",
+      "moddeschash": "9916e40ec86bc3b42ceea6c90da85da9",
+      "moddescsize": 738,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1782?tab=files&file_id=12208",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Samara Cut Shadow Broker Dossiers Restored"
+    },
+    {
+      "moddescpath": "LE2\\Instant Shadow Broker Rewards\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:51.3075721+02:00",
+      "moddeschash": "58b17b9a046ff1ab44c5f2f70cbec383",
+      "moddescsize": 1442,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1180?tab=files&file_id=7299",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "8A875C70"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Instant Shadow Broker Rewards"
+    },
+    {
+      "moddescpath": "LE2\\Earlier Cabin Invites\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:27:57.9671642+02:00",
+      "moddeschash": "f2e6277e7e4d106692d638261e9e1b08",
+      "moddescsize": 5234,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1220?tab=files&file_id=13007",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "A3B34AE2",
+          "OriginalValue": "A3B34AE2"
+        }
+      ],
+      "allchosenoptions": [
+        "8582DE6C",
+        "A3B34AE2"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Earlier Cabin Invites"
+    },
+    {
+      "moddescpath": "LE2\\Reaper Fight Timer LE2\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:00.0941654+02:00",
+      "moddeschash": "dca3af901b63fdf43dfcdf2bade6a0c4",
+      "moddescsize": 2315,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1831?tab=files&file_id=7302",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Reaper Fight Timer LE2"
+    },
+    {
+      "moddescpath": "LE2\\DLC Timings Mod\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:12.8644195+02:00",
+      "moddeschash": "445e0cbc2cd9d3c0661a3ac6506d4e6f",
+      "moddescsize": 5201,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/382?tab=files&file_id=12211",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "A0D2AE0A",
+          "OriginalValue": "A0D2AE0A"
+        },
+        {
+          "IsPlus": true,
+          "Key": "27A97CB7",
+          "OriginalValue": "27A97CB7"
+        }
+      ],
+      "allchosenoptions": [
+        "D05B4895",
+        "A0D2AE0A",
+        "27A97CB7"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "DLC Timings Mod"
+    },
+    {
+      "moddescpath": "LE2\\Cerberus Daily News Emails\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:13.0755265+02:00",
+      "moddeschash": "f8e6293e3d391af3d568aa55e980d96a",
+      "moddescsize": 396,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1624?tab=files&file_id=11981",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Cerberus Daily News Emails"
+    },
+    {
+      "moddescpath": "LE2\\Zaeed's Wholesome Revenge (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:13.297556+02:00",
+      "moddeschash": "c6a0b04ec9e976bf36c45fd06f20368b",
+      "moddescsize": 490,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1384?tab=files&file_id=7338",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Zaeed's Wholesome Revenge (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\Nos Astra Mineral Exchange\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:13.474433+02:00",
+      "moddeschash": "7aa0709611e90816e9cb38fe33d239c5",
+      "moddescsize": 1471,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1205?tab=files&file_id=13271",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Nos Astra Mineral Exchange"
+    },
+    {
+      "moddescpath": "LE2\\Geth Retrofits (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:16.5141266+02:00",
+      "moddeschash": "d913f95df2a8f453cc0b643586c9a972",
+      "moddescsize": 1435,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2600?tab=files&file_id=13607",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Geth Retrofits (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\Modern Weapon Pack\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:18.3661288+02:00",
+      "moddeschash": "7f34f9d075db66a0a3c8edb90c90f5a0",
+      "moddescsize": 861,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/520?tab=files&file_id=8071",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Modern Weapon Pack"
+    },
+    {
+      "moddescpath": "LE2\\Expanded Shepard Armory (ESA) LE2\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:28.6474912+02:00",
+      "moddeschash": "46e3b60ccfe56722e73f56643f76c855",
+      "moddescsize": 3807,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/5?tab=files&file_id=13646",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "AF21FD28",
+          "OriginalValue": "AF21FD28"
+        }
+      ],
+      "allchosenoptions": [
+        "full",
+        "AF21FD28"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Expanded Shepard Armory (ESA) LE2"
+    },
+    {
+      "moddescpath": "LE2\\Expanded Squadmate Armory (ESA Addon) LE2\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:30.5858261+02:00",
+      "moddeschash": "3ecc929194e79c3c6710443c0557aad7",
+      "moddescsize": 906,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1846?tab=files&file_id=13688",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Expanded Squadmate Armory (ESA Addon) LE2"
+    },
+    {
+      "moddescpath": "LE2\\Extended Romance Scenes\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:44.2386353+02:00",
+      "moddeschash": "f60624744a062b01f182bb93542b0ff3",
+      "moddescsize": 2666,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1198?tab=files&file_id=12280",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Extended Romance Scenes"
+    },
+    {
+      "moddescpath": "LE2\\Liara Consistency Mod (ME2LE)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:54.6688357+02:00",
+      "moddeschash": "1fd66a42c9327ed4448d762306942fbd",
+      "moddescsize": 4392,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1062?tab=files&file_id=12847",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "LE3",
+          "OriginalValue": "LE3"
+        }
+      ],
+      "allchosenoptions": [
+        "LE3",
+        "E6829D96"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Liara Consistency Mod (ME2LE)"
+    },
+    {
+      "moddescpath": "LE2\\Liara's Alternate LE3 Armor for LotSB (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:54.9801152+02:00",
+      "moddeschash": "616d896ffa9df61e7494dbeb8b02a6f5",
+      "moddescsize": 741,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1781?tab=files&file_id=12210",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Liara's Alternate LE3 Armor for LotSB (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\Unique Udina Face Restored LE2\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:58.9447312+02:00",
+      "moddeschash": "1849c3f460ad1195aa1330d92ffe9b8b",
+      "moddescsize": 2631,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2715?tab=files&file_id=12805",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "9DC422C3",
+          "OriginalValue": "9DC422C3"
+        }
+      ],
+      "allchosenoptions": [
+        "9DC422C3"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Unique Udina Face Restored LE2"
+    },
+    {
+      "moddescpath": "LE2\\Aria Consistency Mod\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:28:59.1079811+02:00",
+      "moddeschash": "bc6a613a4cbff70dcb3a54c90f3946e7",
+      "moddescsize": 636,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1068?tab=files&file_id=12731",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Aria Consistency Mod"
+    },
+    {
+      "moddescpath": "LE2\\Quarian Admiralty Board Consistency Mod (MELE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:29:00.9900054+02:00",
+      "moddeschash": "a8c8c4b65dc6336610959f94e89dee69",
+      "moddescsize": 1900,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2157?tab=files&file_id=8800",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "663823FD",
+        "73C14E46",
+        "98DB46E1",
+        "D6C60361"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Quarian Admiralty Board Consistency Mod (MELE2)"
+    },
+    {
+      "moddescpath": "LE2\\Oriana looks like Miranda's Twin (ME2LE)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:29:04.979973+02:00",
+      "moddeschash": "09feda50cf35696382604b9f3c3f90e1",
+      "moddescsize": 1658,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/413?tab=files&file_id=12980",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "790C1D75",
+          "OriginalValue": "790C1D75"
+        }
+      ],
+      "allchosenoptions": [
+        "790C1D75"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Oriana looks like Miranda's Twin (ME2LE)"
+    },
+    {
+      "moddescpath": "LE2\\CerberusAlliance Uniform Consistency\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:29:16.5102742+02:00",
+      "moddeschash": "970381dafe8d8a933f9cd134ed9db0b6",
+      "moddescsize": 2378,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1021?tab=files&file_id=12904",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "B000B82B",
+          "OriginalValue": "B000B82B"
+        },
+        {
+          "IsPlus": true,
+          "Key": "B44E6E4E",
+          "OriginalValue": "B44E6E4E"
+        }
+      ],
+      "allchosenoptions": [
+        "B7C239CD",
+        "B44E6E4E",
+        "B000B82B"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Cerberus/Alliance Uniform Consistency"
+    },
+    {
+      "moddescpath": "LE2\\Cerberus Ladies Wear Cerberus\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:29:19.9848417+02:00",
+      "moddeschash": "6a089af3389096172e024dfe0f85b9c7",
+      "moddescsize": 1049,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/376?tab=files&file_id=12733",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Cerberus Ladies Wear Cerberus"
+    },
+    {
+      "moddescpath": "LE2\\Kelly & Kenson Restoration\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:29:23.8473358+02:00",
+      "moddeschash": "e7030b561f192b85d7ea488852803c49",
+      "moddescsize": 2416,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1000?tab=files&file_id=8810",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "58D67329",
+        "E954A751"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Kelly & Kenson Restoration"
+    },
+    {
+      "moddescpath": "LE2\\Early Recruitment\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:29:41.3803044+02:00",
+      "moddeschash": "1ac7ae5b8f40897ed1ec3e7f3ecc90b3",
+      "moddescsize": 10369,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/384?tab=files&file_id=13268",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "classic",
+          "OriginalValue": "classic"
+        }
+      ],
+      "allchosenoptions": [
+        "classic",
+        "le2patch",
+        "013D973E",
+        "brokerdefault",
+        "cerbinstalled"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Early Recruitment"
+    },
+    {
+      "moddescpath": "LE2\\Anderson & Hackett Consistency Mod\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:29:48.8588689+02:00",
+      "moddeschash": "9ac26b9f2568b43f8ed0d373faba7157",
+      "moddescsize": 2790,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1063?tab=files&file_id=12722",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "55BF948C",
+          "OriginalValue": "55BF948C"
+        }
+      ],
+      "allchosenoptions": [
+        "0DCE10AD",
+        "DA560F9D",
+        "55BF948C"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Anderson & Hackett Consistency Mod"
+    },
+    {
+      "moddescpath": "LE2\\Sheploo Appearance Consistency Project\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:29:49.1433008+02:00",
+      "moddeschash": "c8cbf76be7224daa03b2bc1e7019afb0",
+      "moddescsize": 884,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/484?tab=files&file_id=3953",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Sheploo Appearance Consistency Project"
+    },
+    {
+      "moddescpath": "LE2\\Kasumi Eye Tweak LE2\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:29:55.2325407+02:00",
+      "moddeschash": "e4adebb6136440733a7d4e9e8b92112b",
+      "moddescsize": 735,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1484?tab=files&file_id=9339",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "D9650599",
+          "OriginalValue": "D9650599"
+        }
+      ],
+      "allchosenoptions": [
+        "D9650599"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Kasumi Eye Tweak LE2"
+    },
+    {
+      "moddescpath": "LE2\\Improved Normandy Crash Site Flashback Textures\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:29:59.5714237+02:00",
+      "moddeschash": "6b4545aebc0b1365606e07017d80a2e4",
+      "moddescsize": 1495,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/874?tab=files&file_id=12717",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "FD302DE9"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Improved Normandy Crash Site Flashback Textures"
+    },
+    {
+      "moddescpath": "LE2\\Kaidan & Ashley LE3 Armors for Horizon (MELE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:30:06.6203706+02:00",
+      "moddeschash": "08367ece5357a128d027179c3e69192d",
+      "moddescsize": 3595,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1799?tab=files&file_id=12818",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "4E8C75C8",
+        "5FB09CE1"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Kaidan & Ashley LE3 Armors for Horizon (MELE2)"
+    },
+    {
+      "moddescpath": "LE2\\Subtle Ammo Icons (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:30:12.4532114+02:00",
+      "moddeschash": "80f506b245390644cdba08d71dade263",
+      "moddescsize": 2066,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/3257?tab=files&file_id=13667",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "subtleicons",
+        "subtleholograms"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Subtle Ammo Icons (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\Extended Galaxy Map LE2 BETA\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:30:31.1537687+02:00",
+      "moddeschash": "83c81b71e98046803ce239dcb847971e",
+      "moddescsize": 2433,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2535?tab=files&file_id=13272",
+      "userchosenoptions": [
+        {
+          "IsPlus": false,
+          "Key": "5EFF5BB8",
+          "OriginalValue": "5EFF5BB8"
+        }
+      ],
+      "allchosenoptions": [
+        "ME1Clusters",
+        "ME3Clusters"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Extended Galaxy Map LE2 BETA"
+    },
+    {
+      "moddescpath": "LE2\\Interactive Intai'sei Apartment (LE2)\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:30:34.5152834+02:00",
+      "moddeschash": "3a05369631d94114190a386615950c34",
+      "moddescsize": 1972,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2536?tab=files&file_id=13016",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "B7C239CD"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Interactive Intai'sei Apartment (LE2)"
+    },
+    {
+      "moddescpath": "LE2\\A Lot of Videos for LE2\\moddesc.ini",
+      "configurationtime": "2026-07-26T19:30:34.8110895+02:00",
+      "moddeschash": "a2b92658ad70a80f0e76c93478c17df8",
+      "moddescsize": 627,
+      "downloadlink": null,
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "A Lot of Videos for LE2"
+    }
+  ],
+  "asimods": [
+    {
+      "updategroup": 30,
+      "version": 2
+    },
+    {
+      "updategroup": 45,
+      "version": 2
+    },
+    {
+      "updategroup": 89,
+      "version": 3
+    }
+  ],
+  "texturemodfiles": [],
+  "queuename": "Omega Sling (Milky Way Bar Crawl | 07-2026)",
+  "ImporterDescription": "Mods that will be installed by install group:\r\n - Unofficial LE2 Patch\r\n - Myriad Pro Begone (LE2)\r\n - LE2 Prologue Framework\r\n - Genesis Begone (LE2)\r\n - No Headgear for Squadmates\r\n - Casual Hubs for LE2\r\n - Skip Mini Games\r\n - One Probe All Resources\r\n - LE2 Changes For Import Credits 500.000\r\n - Shorter Notifications (LE2)\r\n - EGM Fix Weapons in Cutscenes LE2\r\n - Let Me Stay (LE2)\r\n - FISH (Minus Kelly)\r\n - Fish Feeder Mod\r\n - Fate of Executor Pallin (LE2)\r\n - Pilot In Location On Time\r\n - Stop Auto-Equipping Weapons\r\n - Overlord Morality Fix\r\n - M-44 Battle Tank (LE2)\r\n - Hugo Gernsback Consistency Mod\r\n - Early-Ish\r\n - Shortest Interrogation Ever (LE2)\r\n - All VIP Club Encounters\r\n - Reformatted Emails\r\n - Open My Ship (LE2)\r\n - Permanent CIC Holograms\r\n - Platonic Post Horizon Emails\r\n - Apollo Spacesuit Restoration\r\n - Wrex/Wreav Consistency Mod (LE2)\r\n - Samara Cut Shadow Broker Dossiers Restored\r\n - Instant Shadow Broker Rewards\r\n - Earlier Cabin Invites\r\n - Reaper Fight Timer LE2\r\n - DLC Timings Mod\r\n - Cerberus Daily News Emails\r\n - Zaeed's Wholesome Revenge (LE2)\r\n - Nos Astra Mineral Exchange\r\n - Geth Retrofits (LE2)\r\n - Modern Weapon Pack\r\n - Expanded Shepard Armory (ESA) LE2\r\n - Expanded Squadmate Armory (ESA Addon) LE2\r\n - Extended Romance Scenes\r\n - Liara Consistency Mod (ME2LE)\r\n - Liara's Alternate LE3 Armor for LotSB (LE2)\r\n - Unique Udina Face Restored LE2\r\n - Aria Consistency Mod\r\n - Quarian Admiralty Board Consistency Mod (MELE2)\r\n - Oriana looks like Miranda's Twin (ME2LE)\r\n - Cerberus/Alliance Uniform Consistency\r\n - Cerberus Ladies Wear Cerberus\r\n - Kelly & Kenson Restoration\r\n - Early Recruitment\r\n - Anderson & Hackett Consistency Mod\r\n - Sheploo Appearance Consistency Project\r\n - Kasumi Eye Tweak LE2\r\n - Improved Normandy Crash Site Flashback Textures\r\n - Kaidan & Ashley LE3 Armors for Horizon (MELE2)\r\n - Subtle Ammo Icons (LE2)\r\n - Extended Galaxy Map LE2 BETA\r\n - Interactive Intai'sei Apartment (LE2)\r\n - A Lot of Videos for LE2\r\n - AutoTOC (ASI mod)\r\n - PNG Screenshots (ASI mod)\r\n - Texture Override (ASI mod)\r\n\nImporting will add this install group to Batch Installer. This does not import any of the listed mods."
+}

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	
+	<title>MWBC | Changelog</title>
+	<meta property="og:title" content="Milky Way Bar Crawl">
+	<meta property="og:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta property="og:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	<meta property="og:url" content="https://guidelume.github.io/milky-way-bar-crawl/changelog.html">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Milky Way Bar Crawl">
+	<meta name="twitter:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta name="twitter:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	<link rel="shortcut icon" href="./custom/favicon.svg" />
+	
+	<link rel="stylesheet" href="../engine/css/fonts.css" />
+	<link rel="stylesheet" href="../engine/css/guide.css" />
+    <link rel="stylesheet" href="../engine/css/accessible-fonts.css" />
+</head>
+<body>
+
+	<!-- Background (single reliable layer) -->
+	<div class="bg-viewport" aria-hidden="true">
+		<div id="titleBackground" class="title-bg" style="background-image:url('./custom/img/background/bg-galaxy-14.jpg');"></div>
+	</div>
+	<div class="bg-vignette" aria-hidden="true"></div>
+
+	<div class="layout" id="layoutRoot">
+
+		<!-- LEFT -->
+		<aside class="left-panel" id="leftPanel" role="navigation" aria-label="Chapters">
+
+			<div class="nav-section open" data-section="main">
+				<button class="nav-section-header" type="button" aria-expanded="true">
+					<span>Milky Way Bar Crawl</span>
+					<span class="nav-section-caret">▾</span>
+				</button>
+				
+				<ul class="chap-list">
+					<li class="chap-item" data-href="intro.html">
+						<a class="chap-link" href="intro.html">1. Introduction</a>
+					</li>
+
+					<li class="chap-item" data-href="setup.html">
+						<a class="chap-link" href="setup.html">2. Setup</a>
+					</li>
+
+					<li class="chap-item" data-href="me1.html">
+						<a class="chap-link" href="me1.html">3.1. LE1</a>
+					</li>
+
+					<li class="chap-item" data-href="me2.html">
+						<a class="chap-link" href="me2.html">3.2. LE2</a>
+					</li>
+
+					<li class="chap-item" data-href="me3.html">
+						<a class="chap-link" href="me3.html">3.3. LE3</a>
+					</li>
+
+					<li class="chap-item" data-href="finish.html">
+						<a class="chap-link" href="finish.html">4. Finish</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="after-hours">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>After Hours</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="extras.html">
+						<a class="chap-link" href="extras.html">5. Extras</a>
+					</li>
+
+					<li class="chap-item" data-href="textures.html">
+						<a class="chap-link" href="textures.html">6. Textures</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="appendices">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>Appendices</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="questions.html">
+						<a class="chap-link" href="questions.html">7. Common Questions</a>
+					</li>
+
+					<li class="chap-item" data-href="changelog.html">
+						<a class="chap-link" href="changelog.html">8. Changelog</a>
+					</li>
+
+					<li class="chap-item" data-href="credits.html">
+						<a class="chap-link" href="credits.html">9. Credits</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-updated" role="contentinfo">
+				Last Updated:<br>
+				August 2026 · v2.1
+			</div>
+			
+		</aside>
+		
+		<!-- CENTER -->
+		<main class="center-col" role="main">
+			<div class="content-shell" id="contentShell">
+				
+				<div class="title-box">
+					<div id="titleBackground" class="title-bg"></div>
+					<button id="home" class="btn text-standard" aria-label="Return to Start"><a href="../index-mwbc.html">Back to Start</a></button>
+					<h1 id="projectTitle">Appendices - Changelog</h1>
+					<button id="fontToggle" class="btn text-standard" aria-label="Toggle accessible fonts" title="Font Toggle">Aa</button>
+				</div>
+				
+				<div class="content-progress" aria-hidden="true">
+					<div class="content-progress-bar"></div>
+				</div>
+				
+				<article class="content-box" id="contentBox" tabindex="0" aria-labelledby="stepTitle">
+					
+					<!--
+					Comment on new version:
+					- General performance improvements (I hope). Thanks to VentruePL for bringing this to my attention
+					- Reworked the Start page in preparation for future things
+					- Added a Return to Start button to every page
+					- Reworked the appearance and behavior of the left nav
+					- Added a progress bar to every page
+					- Improved right-side navigation scrolling behavior
+					- Fixed right-side navigation highlighting when jumping directly to entries
+					- Added "Explaining Choices" bonus sections to each game (only ME3 has an entry right now though)
+					
+					-->
+					
+					<!-- Changelog 6 -->
+					<section id="change6" class="panel" data-index="0">
+						<header class="panel-header" role="button" aria-expanded="true">
+							<h3>Changelog #6</h3>
+							<div class="caret">▾</div>
+						</header>
+						
+						<div class="panel-body">
+							<p class="text-standard">
+								<b>Milky Way Bar Crawl <code>Big-Rigs-Over-The-Road-Racing</code> / August 2026</b><br>
+								(v2.0 → v2.1)
+							</p>
+							
+							<hr style="color:#fff;width:37%;text-align:left;margin-left:0">
+							
+							<p class="text-standard">
+								
+								<b>Guide Related:</b><br><br>
+								- General performance improvements (I hope). Thanks to VentruePL for bringing this to my attention<br>
+								- Reworked the Start page in preparation for future things<br>
+								- Added a Return to Start button to every page<br>
+								- Reworked the appearance and behavior of the left nav<br>
+								- Added a progress bar to every page<br>
+								- Improved right-side navigation scrolling behavior<br>
+								- Fixed right-side navigation highlighting when jumping directly to entries<br>
+								- Added "Explaining Choices" bonus sections to each game (only ME3 has an entry right now though)<br><br>
+								
+								<b>That’s it for this not-so-small update!</b><br><br>
+								
+								<b>Next update</b>: Probably a week or two after N7 day! If I keep saying it, it'll be true eventually!!
+							</p>
+						</div>
+					</section>
+					
+					<!-- Changelog 5 -->
+					<section id="change5" class="panel" data-index="1">
+						<header class="panel-header" role="button" aria-expanded="true">
+							<h3>Changelog #5</h3>
+							<div class="caret">▾</div>
+						</header>
+						
+						<div class="panel-body">
+							<p class="text-standard">
+								<b>Milky Way Bar Crawl <code>Maintenance Update 1</code> / July 2026</b><br>
+								(No Version Change)
+							</p>
+							
+							<hr style="color:#fff;width:37%;text-align:left;margin-left:0">
+							
+							<p class="text-standard">
+								
+								<b>Guide Related:</b><br><br>
+								- Reworded the Batch Mod instructions.<br><br>
+								
+								<b>Mod List Updates:</b><br><br>
+								
+								&nbsp;&nbsp;&nbsp;&nbsp;• Updated all Batch Mod files to fix being unable to download some mods through the Installer.<br><br>
+								
+								<b>That’s it for this maintenance update!</b><br><br>
+								
+								<b>Next (full) update</b>: Probably (still) a week or two after N7 day!
+							</p>
+						</div>
+					</section>
+					
+					<!-- Changelog 4 -->
+					<section id="change4" class="panel" data-index="2">
+						<header class="panel-header" role="button" aria-expanded="true">
+							<h3>Changelog #4</h3>
+							<div class="caret">▾</div>
+						</header>
+						
+						<div class="panel-body">
+							<p class="text-standard">
+								<b>Milky Way Bar Crawl <code>Obligatory-Beach-Episode</code> / July 2026</b><br>
+								(v1.2 → v2.0)
+							</p>
+							
+							<hr style="color:#fff;width:37%;text-align:left;margin-left:0">
+							
+							<p class="text-standard">
+								<b>Behind The Scenes:</b><br><br>
+								- Separated the guide into its own repository so it can now be reached under <a href="#"><b><u>milkywaybarcrawl.github.io</u></b></a><br><br>
+								
+								<b>Guide Related:</b><br><br>
+								- Reworked <b>every page</b> to improve clarity, flow and to strengthen the "bar crawl" theming.<br>
+								- Visually overhauled the way mods are presented and added the name of the author to each one.<br>
+								- Changed FAQ into Common Questions and reworked the content.<br><br>
+								
+								<b>Mod List Updates (Summer Break Edition):</b><br><br>
+								
+								&nbsp;&nbsp;&nbsp;&nbsp;• Updated all mods to their latest version<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Updated all mod batch files<br><br>
+								
+								→ <b>LE1</b><br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added LE1 Datapads Collection<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;- Removed Mira Please Be Quiet<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;- Removed Smoother GUI<br>
+								<br>
+								
+								→ <b>LE2</b><br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added No Headgear for Squadmates<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added Improved Normandy Crash Site Flashback Textures<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added Kaidan & Ashley LE3 Armors for Horizon<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added Subtle Ammo Icons<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added Extended Galaxy Map<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added Interactive Intai'sei Apartment<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;- Removed Suicide Mission Overhaul Mod<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;- Removed Smoother GUI<br>
+								<br>
+								
+								→ <b>LE3</b><br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added Leviathan Retrofits<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added Subtle Ammo Icons<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;- Removed Orikon's Integrated Collector Faction<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;- Removed Holster Mod<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;- Removed Smoother GUI<br>
+								<br>
+								
+								→ <b>Extras</b><br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added Children of Rannoch (LE1, LE2)<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added Smoother GUI (LE1, LE2, LE3)<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added Same-Gender Romances (LE1, LE2)<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;+ Added Glorious Elevators (LE3)<br>
+								<br>
+								
+								<b>That’s it for the big summer update!</b><br><br>
+								
+								On a more personal note, stepping away from the guide for a few months did me a world of good.<br>
+								I think with this complete rework I am a lot closer to the tone I aimed for originally.<br><br>
+								
+								<b>Next update</b>: Probably a week or two after N7 day!
+							</p>
+						</div>
+					</section>
+					
+					<!-- Changelog 3 -->
+					<section id="change3" class="panel" data-index="3">
+						<header class="panel-header" role="button" aria-expanded="true">
+							<h3>Changelog #3</h3>
+							<div class="caret">▾</div>
+						</header>
+						
+						<div class="panel-body">
+							<p class="text-standard">
+								<b>Milky Way Bar Crawl <code>ver. Post-N7-1</code> / November 10th 2025</b><br>
+								(v1.1 → v1.2)
+							</p>
+							
+							<hr style="color:#fff;width:37%;text-align:left;margin-left:0">
+							
+							<p class="text-standard">
+								- General cleanup under the hood. The site should now run a tiny bit better.<br>
+								- Rephrased and polished text across multiple sections:<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Introduction (also added a spoiler warning)<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Setup<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Individual game pages<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Textures (also added an image to break up long text block)<br>
+								- Expanded the Finish page with more substance<br>
+								- Added new mods to the Extras page<br>
+								<br>
+								<b>Mod List Updates (N7 Day additions & adjustments):</b><br><br>
+
+								→ <b>LE1</b><br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Updated to use the new Community Patch Framework<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Morlan’s Iconic Armor Store<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Unique Udina Face Restored<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Anderson Consistency Mod<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Prothean Consistency Mod<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Spectre Expansion Mod<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Removed Eclectic Emails<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Removed Alternate Feros Claw Cutscene<br>
+								<br>
+
+								→ <b>LE2</b><br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Liara’s Alternate LE3 Armor (LotSB)<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Unique Udina Face Restored<br>
+								<br>
+
+								→ <b>LE3</b><br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Unique Udina Face Restored<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Orikon’s Integrated Collector Faction<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Holster Mod<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Diana Allers Overhaul<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Fate of Emily Wong<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Removed Leviathan Overhaul<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Removed Emily Lives<br>
+								<br>
+
+								- Created new versions of all Mod Batch files to include N7 Day updates<br>
+								(Minus for LE1 since a few mods take longer to update so I've created a slightly slimmer version for now)<br><br>
+
+								That’s it for N7 Day!<br>
+								The next update is planned around <b>Christmas</b>.
+							</p>
+						</div>
+					</section>
+					
+					<!-- Changelog 2 (I am sure that will never trip me up lol) -->
+					<section id="change2" class="panel" data-index="4">
+						<header class="panel-header" role="button" aria-expanded="true">
+							<h3>Changelog #2</h3>
+							<div class="caret">▾</div>
+						</header>
+						
+						<div class="panel-body">
+							<p class="text-standard">
+								<b>Milky Way Bar Crawl <code>ver. Pre-Release-2</code> / November 1st 2025</b><br>
+								(v1.0 → v1.1)
+							</p>
+							<hr style="color:#fff;width:40%;text-align:left;margin-left:0">
+							<p class="text-standard">
+								- Added FAQ page<br>
+								- Slight rework of the Credits page<br>
+								- Slightly rephrased some text on the Introduction page<br>
+								- Reworked the Textures page<br>
+								- Mod list changes:<br>
+								&nbsp;&nbsp;&nbsp;&nbsp;• Added Kasumi Eye Tweaks to LE2 and LE3<br>
+								- Rephrased some of the notes for individual mods<br>
+								- Replaced the landing page background and added the new guide logo<br>
+								<br>
+								<b>True Horror</b>: Pushed a few hours early because I got impatient. <b>Happy Halloween.</b>
+							</p>
+						</div>
+					</section>
+					
+					<!-- Changelog 1 -->
+					<section id="change" class="panel" data-index="5">
+						<header class="panel-header" role="button" aria-expanded="false">
+							<h3>Changelog #1</h3>
+							<div class="caret">▾</div>
+						</header>
+						
+						<div class="panel-body">
+							<p class="text-standard">
+								<b>Milky Way Bar Crawl <code>ver. Pre-Release-1</code> / October 22nd 2025</b><br>
+								(Initial release)
+							</p>
+							<hr style="color:#fff;width:40%;text-align:left;margin-left:0">
+							<p class="text-standard">
+								- All those changelogs, yup yup.<br>
+								- First version uploaded.<br>
+								- Doubtless I’ll be changing a thousand things with time.
+							</p>
+						</div>
+					</section>
+					
+				</article>
+				
+				<!-- Pager -->
+				<div class="pager-box pager" role="navigation" aria-label="Panel navigation">
+					<div class="pager-left">
+						<button class="btn text-standard" id="expandAllBtn" aria-label="Expand all panels">Expand All</button>
+						<button class="btn text-standard" id="closeAllBtn" aria-label="Close all panels">Close All</button>
+					</div>
+
+					<div class="pager-right">
+						<button class="btn text-standard" id="prevPageBtn" aria-label="Previous page">Prev Page</button>
+						<button class="btn text-standard" id="nextPageBtn" aria-label="Next page">Next Page</button>
+					</div>
+				</div>
+
+				<div class="bottom-strip" aria-hidden="true"></div>
+			</div>
+		</main>
+
+		<!-- RIGHT -->
+		<aside class="right-panel">
+			<div class="contents-panel" role="navigation" aria-label="Contents">
+				<h4>Chapters</h4>
+				<nav>
+					<ul id="contentsList" class="contents-list"></ul>
+				</nav>
+			</div>
+
+			<div class="made-by" role="contentinfo">
+				Made with <span class="heart">♥</span> by <span class="name"><a href="https://varkorax.github.io" target="_blank">Varkorax</a></span>
+			</div>
+		</aside>
+
+	</div>
+
+	<script src="../engine/js/guide.js" defer></script>
+    <script src="../engine/js/font-accessibility.js" defer></script>
+	
+
+</body>
+</html>

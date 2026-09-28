@@ -1,0 +1,11 @@
+[
+    {
+        "version":"Version 2.0",
+        "date":"2026-07-18",
+        "summary": [
+			"Major rewrite of... basically everything."
+			],
+        "md":"changelogs/2.0.md",
+		"featured": true
+    }
+]

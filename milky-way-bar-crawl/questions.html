@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    
+    <title>MWBC | Common Questions</title>
+	<meta property="og:title" content="Milky Way Bar Crawl">
+	<meta property="og:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta property="og:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	<meta property="og:url" content="https://guidelume.github.io/milky-way-bar-crawl/questions.html">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Milky Way Bar Crawl">
+	<meta name="twitter:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta name="twitter:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+    <link rel="shortcut icon" href="./custom/favicon.svg" />
+    
+	<link rel="stylesheet" href="../engine/css/fonts.css" />
+    <link rel="stylesheet" href="../engine/css/guide.css" />
+    <link rel="stylesheet" href="../engine/css/accessible-fonts.css" />
+</head>
+<body>
+
+    <!-- Background (single reliable layer) -->
+    <div class="bg-viewport" aria-hidden="true">
+        <div id="titleBackground" class="title-bg" style="background-image:url('./custom/img/background/bg-galaxy-14.jpg');"></div>
+    </div>
+    <div class="bg-vignette" aria-hidden="true"></div>
+
+    <div class="layout" id="layoutRoot">
+
+        <!-- LEFT -->
+		<aside class="left-panel" id="leftPanel" role="navigation" aria-label="Chapters">
+
+			<div class="nav-section open" data-section="main">
+				<button class="nav-section-header" type="button" aria-expanded="true">
+					<span>Milky Way Bar Crawl</span>
+					<span class="nav-section-caret">▾</span>
+				</button>
+				
+				<ul class="chap-list">
+					<li class="chap-item" data-href="intro.html">
+						<a class="chap-link" href="intro.html">1. Introduction</a>
+					</li>
+
+					<li class="chap-item" data-href="setup.html">
+						<a class="chap-link" href="setup.html">2. Setup</a>
+					</li>
+
+					<li class="chap-item" data-href="me1.html">
+						<a class="chap-link" href="me1.html">3.1. LE1</a>
+					</li>
+
+					<li class="chap-item" data-href="me2.html">
+						<a class="chap-link" href="me2.html">3.2. LE2</a>
+					</li>
+
+					<li class="chap-item" data-href="me3.html">
+						<a class="chap-link" href="me3.html">3.3. LE3</a>
+					</li>
+
+					<li class="chap-item" data-href="finish.html">
+						<a class="chap-link" href="finish.html">4. Finish</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="after-hours">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>After Hours</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="extras.html">
+						<a class="chap-link" href="extras.html">5. Extras</a>
+					</li>
+
+					<li class="chap-item" data-href="textures.html">
+						<a class="chap-link" href="textures.html">6. Textures</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="appendices">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>Appendices</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="questions.html">
+						<a class="chap-link" href="questions.html">7. Common Questions</a>
+					</li>
+
+					<li class="chap-item" data-href="changelog.html">
+						<a class="chap-link" href="changelog.html">8. Changelog</a>
+					</li>
+
+					<li class="chap-item" data-href="credits.html">
+						<a class="chap-link" href="credits.html">9. Credits</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-updated" role="contentinfo">
+				Last Updated:<br>
+				August 2026 · v2.1
+			</div>
+			
+		</aside>
+        
+        <!-- CENTER -->
+        <main class="center-col" role="main">
+            <div class="content-shell" id="contentShell">
+
+                <div class="title-box">
+                    <div id="titleBackground" class="title-bg"></div>
+					<button id="home" class="btn text-standard" aria-label="Return to Start"><a href="../index-mwbc.html">Back to Start</a></button>
+                    <h1 id="projectTitle">Appendices - Common Questions</h1>
+                    <button id="fontToggle" class="btn text-standard" aria-label="Toggle accessible fonts" title="Font Toggle">Aa</button>
+                </div>
+				
+				<div class="content-progress" aria-hidden="true">
+						<div class="content-progress-bar"></div>
+				</div>
+				
+                <article class="content-box" id="contentBox" tabindex="0" aria-labelledby="stepTitle">
+                    
+                    <!-- Panel 0 -->
+                    <section id="faq" class="panel" data-index="0">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>"A mod updated. Should I install the update?"</h3>
+                            <div class="caret">▾</div>
+                        </header>
+                        <div class="panel-body">
+                            <p class="text-standard">
+								Usually no - at least not in the middle of a playthrough.<br>
+								Unless the update specifically fixes a problem you're experiencing, it's generally safest to finish your current run first. Updating content mods mid-playthrough can occasionally introduce new issues or incompatibilities.<br>
+								If you're starting a new playthrough, updating is usually a good idea.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Panel 1 -->
+                    <section id="faq" class="panel" data-index="1">
+                        <header class="panel-header" role="button" aria-expanded="false">
+                            <h3>"Can I add more mods later?"</h3>
+                            <div class="caret">▾</div>
+                        </header>
+                        <div class="panel-body">
+                            <p class="text-standard">
+								Absolutely.<br>
+								As long as you haven't started installing texture mods yet, you can keep expanding your setup whenever you like.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Panel 2 -->
+                    <section id="faq" class="panel" data-index="2">
+                        <header class="panel-header" role="button" aria-expanded="false">
+                            <h3>"M3 says my game is texture modded."</h3>
+                            <div class="caret">▾</div>
+                        </header>
+                        <div class="panel-body">
+                            <p class="text-standard">
+								If you texture modded your game, that's expected.<br>
+								It's a safety feature of M3 to protect your game from corruption.<br>
+								If you need to install additional content mods, you'll need to restore a clean backup or reinstall the game.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Panel 3 -->
+                    <section id="faq" class="panel" data-index="3">
+                        <header class="panel-header" role="button" aria-expanded="false">
+                            <h3>"A mod disappeared from Nexus!"</h3>
+                            <div class="caret">▾</div>
+                        </header>
+                        <div class="panel-body">
+                            <p class="text-standard">
+								It happens from time to time.<br>
+								Authors sometimes hide, replace, or remove their work.<br>
+								If that affects this guide I'll either replace the recommendation or update the list during the next maintenance pass.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Panel 4 -->
+                    <section id="faq" class="panel" data-index="4">
+                        <header class="panel-header" role="button" aria-expanded="false">
+                            <h3>"Where should I ask for help?"</h3>
+                            <div class="caret">▾</div>
+                        </header>
+                        <div class="panel-body">
+                            <p class="text-standard">
+								If you've run into trouble:<br>
+								<ol style="font-family: 'Quicksand'">
+									<li>Read the mod's description page.</li>
+									<li>Check the comments section on Nexus.</li>
+									<li>Check this guide to make sure nothing was skipped.</li>
+									<li>If you're still stuck, feel free to contact me.</li>
+								</ol>
+                            </p>
+                        </div>
+                    </section>
+					
+					<!-- Panel 5 -->
+                    <section id="faq" class="panel" data-index="5">
+                        <header class="panel-header" role="button" aria-expanded="false">
+                            <h3>"The guide recommends a mod I don't like."</h3>
+                            <div class="caret">▾</div>
+                        </header>
+                        <div class="panel-body">
+                            <p class="text-standard">
+								That's perfectly fine.<br>
+								This is a curated guide, not the only correct way to mod Mass Effect.<br>
+								Skip anything that doesn't appeal to you - just keep an eye on any dependencies or compatibility notes.
+                            </p>
+                        </div>
+                    </section>
+
+                </article>
+                
+                <!-- Pager -->
+                <div class="pager-box pager" role="navigation" aria-label="Panel navigation">
+                    <div class="pager-left">
+                        <button class="btn text-standard" id="expandAllBtn" aria-label="Expand all panels">Expand All</button>
+                        <button class="btn text-standard" id="closeAllBtn" aria-label="Close all panels">Close All</button>
+                    </div>
+
+                    <div class="pager-right">
+                        <button class="btn text-standard" id="prevPageBtn" aria-label="Previous page">Prev Page</button>
+                        <button class="btn text-standard" id="nextPageBtn" aria-label="Next page">Next Page</button>
+                    </div>
+                </div>
+
+                <div class="bottom-strip" aria-hidden="true"></div>
+            </div>
+        </main>
+
+        <!-- RIGHT -->
+        <aside class="right-panel">
+            <div class="contents-panel" role="navigation" aria-label="Contents">
+                <h4>Chapters</h4>
+                <nav>
+                    <ul id="contentsList" class="contents-list"></ul>
+                </nav>
+            </div>
+
+            <div class="made-by" role="contentinfo">
+                Made with <span class="heart">♥</span> by <span class="name"><a href="https://varkorax.github.io" target="_blank">Varkorax</a></span>
+            </div>
+        </aside>
+
+    </div>
+
+    <script src="../engine/js/guide.js" defer></script>
+    <script src="../engine/js/font-accessibility.js" defer></script>
+    
+
+</body>
+</html>

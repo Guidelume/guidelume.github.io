@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	
+	<title>MWBC | Introduction</title>
+	<link rel="shortcut icon" href="./custom/favicon.svg" />
+	
+	<!-- Open Graph support -->
+	<meta property="og:title" content="Milky Way Bar Crawl">
+	<meta property="og:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta property="og:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	<meta property="og:url" content="https://guidelume.github.io/milky-way-bar-crawl/intro.html">
+	<meta property="og:type" content="website">
+	
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Milky Way Bar Crawl">
+	<meta name="twitter:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta name="twitter:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	
+	<!-- Stylesheets -->
+	<link rel="stylesheet" href="../engine/external/glightbox/dist/css/glightbox.css" />
+	<link rel="stylesheet" href="../engine/css/fonts.css" />
+	<link rel="stylesheet" href="../engine/css/guide.css" />
+    <link rel="stylesheet" href="../engine/css/accessible-fonts.css" />
+</head>
+<body>
+	<!-- Background -->
+	<div class="bg-viewport" aria-hidden="true">
+		<div id="bgLayer" class="bg-layer" style="background-image:url('./custom/img/background/bg-galaxy-1.jpg');"></div>
+	</div>
+	<div class="bg-vignette" aria-hidden="true"></div>
+	
+	<div class="layout" id="layoutRoot">
+		
+		<!-- LEFT -->
+		<aside class="left-panel" id="leftPanel" role="navigation" aria-label="Chapters">
+
+			<div class="nav-section open" data-section="main">
+				<button class="nav-section-header" type="button" aria-expanded="true">
+					<span>Milky Way Bar Crawl</span>
+					<span class="nav-section-caret">▾</span>
+				</button>
+				
+				<ul class="chap-list">
+					<li class="chap-item" data-href="intro.html">
+						<a class="chap-link" href="intro.html">1. Introduction</a>
+					</li>
+
+					<li class="chap-item" data-href="setup.html">
+						<a class="chap-link" href="setup.html">2. Setup</a>
+					</li>
+
+					<li class="chap-item" data-href="me1.html">
+						<a class="chap-link" href="me1.html">3.1. LE1</a>
+					</li>
+
+					<li class="chap-item" data-href="me2.html">
+						<a class="chap-link" href="me2.html">3.2. LE2</a>
+					</li>
+
+					<li class="chap-item" data-href="me3.html">
+						<a class="chap-link" href="me3.html">3.3. LE3</a>
+					</li>
+
+					<li class="chap-item" data-href="finish.html">
+						<a class="chap-link" href="finish.html">4. Finish</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="after-hours">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>After Hours</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="extras.html">
+						<a class="chap-link" href="extras.html">5. Extras</a>
+					</li>
+
+					<li class="chap-item" data-href="textures.html">
+						<a class="chap-link" href="textures.html">6. Textures</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="appendices">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>Appendices</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="questions.html">
+						<a class="chap-link" href="questions.html">7. Common Questions</a>
+					</li>
+
+					<li class="chap-item" data-href="changelog.html">
+						<a class="chap-link" href="changelog.html">8. Changelog</a>
+					</li>
+
+					<li class="chap-item" data-href="credits.html">
+						<a class="chap-link" href="credits.html">9. Credits</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-updated" role="contentinfo">
+				Last Updated:<br>
+				August 2026 · v2.1
+			</div>
+			
+		</aside>
+
+		<!-- CENTER -->
+		<main class="center-col" role="main">
+			<div class="content-shell" id="contentShell">
+
+				<div class="title-box">
+					<div id="titleBackground" class="title-bg"></div>
+					<button id="home" class="btn text-standard" aria-label="Return to Start"><a href="../index-mwbc.html">Back to Start</a></button>
+					<h1 id="projectTitle">Milky Way Bar Crawl - Introduction</h1>
+					<button id="fontToggle" class="btn text-standard" aria-label="Toggle accessible fonts" title="Font Toggle">Aa</button>
+				</div>
+				
+				<div class="content-progress" aria-hidden="true">
+						<div class="content-progress-bar"></div>
+				</div>
+				
+				<article class="content-box" id="contentBox" tabindex="0" aria-labelledby="projectTitle">
+					
+					<!-- Panels -->
+					<section id="intro-preamble" class="panel open" data-index="0">
+						<header class="panel-header" role="button" aria-expanded="true">
+							<h3>Welcome...</h3>
+							<div class="caret">▾</div>
+						</header>
+						<div class="panel-body">
+							<p class="text-standard">
+								...to the <b>Milky Way Bar Crawl</b>! A modding guide for the <b>Mass Effect Legendary Edition</b>!<br><br>
+								
+								Over the course of this guide we'll give all three games a <b>comprehensive overhaul</b>. The goal is to help you make the trilogy feel more <b>immersive, cohesive, and alive</b> on repeat playthroughs.<br>
+							</p>
+							
+							<p class="text-standard">
+								Of course, this is only <b>one of many ways</b> to experience the trilogy, and by no means a definitive one. I'd say modding <i>Mass Effect</i> is on the less complex side, especially compared to behemoths like <i>Skyrim</i>, but it can still feel daunting if you have never done it before. That's where this guide comes in.
+							</p>
+							
+							<div class="caution">
+								<div class="icon">?!</div>
+								<p class="text-standard">
+									<b>Obligatory Spoiler Warning:</b><br>
+									This guide is written with the assumption that you have <b>already finished the trilogy at least once</b> (or several times, let's be honest) and are now looking for ways to spice up your runs.<br>
+									If this is your first journey through the galaxy, I highly recommend experiencing the trilogy unmodded first. Many of the mods featured here spoil story moments simply through their names and descriptions.
+								</p>
+							</div>
+							
+							<br>
+
+							<div class="informational">
+								<div class="media">
+									<a href="./custom/img/guide/guide-intro-saves.png"
+									   class="glightbox"
+									   data-title="Old Savegames"
+									   data-description="While a few got lost along the way, I still have most of my save files, including the oldest from January 2012 (I was 13 ._.)">
+										<img src="./custom/img/guide/guide-intro-saves.png"
+											 alt="a folder of old savegames"
+											 class="media-image" loading="lazy" decoding="async">
+									</a>
+									<div class="media-body">
+										<p class="media-text text-standard">
+											<br>
+											<strong>Wait, who are you?</strong><br>
+											My name is Tom, but I mostly go by Varkorax. I have been playing <i>Mass Effect</i> since about 2012. Between the <i><abbr title="Original Trilogy">OT</abbr></i> and the <i><abbr title="Legendary Edition">LE</abbr></i>, I’ve completed each game well over <strong>20 times</strong>.
+											I started modding the <i><abbr title="Original Trilogy">OT</abbr></i> around 2018, and have not played without mods since. So while <i>Milky Way Bar Crawl</i> is only about a year old, I have been refining my lists for years.
+										</p>
+									</div>
+								</div>
+							</div>
+							<p class="text-standard">
+								<br>(<b>PSSST</b>: You can click on images to view them in fullscreen.)<br>
+								(<b>PSSST++</b>: If you find the text hard to read, there is a button in the upper right corner which switches the font to something more legible.)
+							</p>
+						</div>
+					</section>
+					
+					<section id="intro-structure" class="panel" data-index="3">
+						<header class="panel-header" role="button" aria-expanded="false">
+							<h3>Structure</h3>
+							<div class="caret">▸</div>
+						</header>
+						<div class="panel-body">
+							<p class="text-standard">
+								Every good bar crawl needs an itinerary.<br><br>
+								
+								We start by getting everything ready in <b>Setup</b>, then visit each game in order with <b>dedicated mod lists</b> for each game.<br><br>
+								
+								Once the essentials are in place, we'll finish the evening in <b>After Hours</b>, where you'll find texture mods and a few optional additions for anyone looking to go a little further.
+							</p>
+						</div>
+					</section>
+					
+					<section id="intro-terminology" class="panel" data-index="2">
+						<header class="panel-header" role="button" aria-expanded="false">
+							<h3>Terminology</h3>
+							<div class="caret">▸</div>
+						</header>
+
+						<div class="panel-body">
+							<p class="text-standard">
+								A quick primer on a few terms you'll see frequently while modding Mass Effect:
+							</p>
+
+							<table class="text-standard terminology-table">
+								<thead>
+									<tr>
+										<th>Term</th>
+										<th>Full</th>
+										<th>Description</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><b>OT</b></td>
+										<td>Original Trilogy</td>
+										<td>The original PC versions released between 2008 and 2012.</td>
+									</tr>
+									<tr>
+										<td><b>LE</b></td>
+										<td>Legendary Edition</td>
+										<td>The remastered version of the trilogy released in 2021.</td>
+									</tr>
+									<tr>
+										<td><b>LE1 / LE2 / LE3</b></td>
+										<td>Legendary Edition (per game)</td>
+										<td>Shorthand for a specific LE title.</td>
+									</tr>
+									<tr>
+										<td><b>M3</b></td>
+										<td>ME3Tweaks Mod Manager</td>
+										<td>The standard tool in the Mass Effect modding scene.</td>
+									</tr>
+									<tr>
+										<td><b>MEM</b></td>
+										<td>Mass Effect Modder</td>
+										<td>A tool used to install and manage Mass Effect textures.</td>
+									</tr>
+									<tr>
+										<td><b>Batch Install Group</b></td>
+										<td>—</td>
+										<td>A feature of M3 that installs a preconfigured list of mods.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</section>
+					
+					<section id="intro-beforewebegin" class="panel" data-index="1">
+						<header class="panel-header" role="button" aria-expanded="false">
+							<h3>Before We Begin</h3>
+							<div class="caret">▸</div>
+						</header>
+						
+						<div class="panel-body">
+							<p class="text-standard">
+								Before we can get this crawl going, there are a few last things you need to know:
+							</p>
+							
+							<!-- Carousel start: General Info -->
+							<div class="informational-carousel" data-gallery="general-info">
+								<div class="infc-viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="General Information">
+									<div class="infc-track">
+									
+										<div class="stepper infc-item">
+											<div class="media">
+												<a href="./custom/img/guide/guide-before-version.svg" class="glightbox" style="width: 200px" data-title="Version Information" data-description="Supported game versions and platforms.">
+													<img src="./custom/img/guide/guide-before-version.svg" alt="Version information image" class="media-image" loading="lazy" decoding="async">
+												</a>
+												<div class="media-body">
+													<p class="media-text">
+														<b>Version</b>:<br> This guide is written for the <b>English</b> release of the game on <b>Steam</b> or the <b>EA App</b>.<br>
+														Only <b>Windows 10 64-bit (Non-LTSC)</b> or newer is <i>officially</i> supported. It <i>may</i> run on Linux, but I cannot offer you help if you try it.
+													</p>
+												</div>
+											</div>
+										</div>
+
+										<div class="stepper infc-item">
+											<div class="media">
+												<a href="./custom/img/guide/guide-before-legal.svg" class="glightbox" style="width: 200px" data-title="Legal Notice" data-description="Guidelines for supported game copies.">
+													<img src="./custom/img/guide/guide-before-legal.svg" alt="Legal notice image" class="media-image" loading="lazy" decoding="async">
+												</a>
+												<div class="media-body">
+													<p class="media-text">
+														<b>Legal</b>:<br> It should go without saying, but <b>cracked or modified copies</b> are not supported.<br>
+														The game goes regularly on sale for as low as 5$/€/£ No excuses, Commander.
+													</p>
+												</div>
+											</div>
+										</div>
+									
+										<div class="stepper infc-item">
+											<div class="media">
+												<a href="./custom/img/guide/guide-before-perf.svg" class="glightbox" style="width: 200px" data-title="Performance Tips" data-description="Expected performance and hardware suggestions.">
+													<img src="./custom/img/guide/guide-before-perf.svg" alt="Performance information image" class="media-image" loading="lazy" decoding="async">
+												</a>
+												<div class="media-body">
+													<p class="media-text">
+														<b>Performance</b>:<br> Generally, if you can run the LE and get a stable framerate, you'll be fine.<br>
+														My setup (<code>NVIDIA RTX 2060 Super [8 GB VRAM], Ryzen 7 3700X, 16 GB RAM</code>) is a touch older, but runs all three games fully modded at <b>1080p / 60 FPS</b>.<br>
+														I also strongly recommend installing the game on an <b>SSD</b> to keep load times down.
+													</p>
+												</div>
+											</div>
+										</div>
+									  
+										<div class="stepper infc-item">
+											<div class="media">
+												<a href="./custom/img/guide/guide-before-gameplay.svg" class="glightbox" style="width: 200px" data-title="Gameplay Input" data-description="Recommended control method.">
+													<img src="./custom/img/guide/guide-before-gameplay.svg" alt="Gameplay input image" class="media-image" loading="lazy" decoding="async">
+												</a>
+												<div class="media-body">
+													<p class="media-text">
+														<b>Gameplay</b>:<br> This guide was designed with <b>Keyboard and Mouse</b> in mind.<br>
+														Not that controllers <i>won't</i> work, but I don't play that way so I can't guarantee anything.
+													</p>
+												</div>
+											</div>
+										</div>
+									  
+									</div>
+								</div>
+
+								<div class="infc-controls" aria-hidden="false">
+									<button class="infc-arrow infc-prev" aria-label="Previous step" type="button">‹</button>
+									<div class="infc-dots" role="tablist" aria-label="Step indicators"></div>
+									<button class="infc-arrow infc-next" aria-label="Next step" type="button">›</button>
+								</div>
+							</div>
+							<!-- Carousel end -->
+
+							<p class="text-standard">
+								Additionally, there are a few things you’ll need to bring to the bar table:
+							</p>
+
+							<!-- Carousel start: Requirements -->
+							<div class="informational-carousel" data-gallery="requirements">
+								<div class="infc-viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Preparation Requirements">
+									<div class="infc-track">
+									  
+										<div class="stepper infc-item">
+											<div class="media">
+												<a href="./custom/img/guide/guide-before-time.svg" class="glightbox" style="width: 200px" data-title="Time Notice" data-description="Time Requirements.">
+													<img src="./custom/img/guide/guide-before-time.svg" alt="Time notice image" class="media-image" loading="lazy" decoding="async">
+												</a>
+												<div class="media-body">
+													<p class="media-text">
+														<b>Time</b>:<br> This guide should take roughly <b>one hour</b> per game. Texture modding depends heavily on your hardware, but can extend the time per game by another hour or more.
+													</p>
+												</div>
+											</div>
+										</div>
+										
+										<div class="stepper infc-item">
+											<div class="media">
+												<a href="./custom/img/guide/guide-before-attention.svg" class="glightbox" style="width: 200px" data-title="Attention" data-description="Why careful reading matters.">
+													<img src="./custom/img/guide/guide-before-attention.svg" alt="Attention to detail image" class="media-image" loading="lazy" decoding="async">
+												</a>
+												<div class="media-body">
+													<p class="media-text">
+														<b>Attention</b>:<br> Don’t skim please. I wrote each step down for a reason. Skipping will most likely lead to issues down the line.
+													</p>
+												</div>
+											</div>
+										</div>
+										
+										<div class="stepper infc-item">
+											<div class="media">
+												<a href="./custom/img/guide/guide-before-pc.svg" class="glightbox" style="width: 200px" data-title="PC Familiarity" data-description="Basic PC skills required.">
+													<img src="./custom/img/guide/guide-before-pc.svg" alt="PC familiarity image" class="media-image" loading="lazy" decoding="async">
+												</a>
+												<div class="media-body">
+													<p class="media-text">
+														<b>Basic PC familiarity</b>:<br> Installing software, handling archives, navigating file paths and light troubleshooting.
+													</p>
+												</div>
+											</div>
+										</div>
+										
+										<div class="stepper infc-item">
+											<div class="media">
+												<a href="./custom/img/guide/guide-before-disk.svg" class="glightbox" style="width: 200px" data-title="Disk Space" data-description="Storage requirements and estimates.">
+													<img src="./custom/img/guide/guide-before-disk.svg" alt="Disk space image" class="media-image" loading="lazy" decoding="async">
+												</a>
+												<div class="media-body">
+													<p class="media-text">
+														<b>Disk space</b>:<br> The Legendary Edition itself takes up <b>~110 GB</b>.<br> Depending on your choices, having <b>~200 GB free</b> should cover most setups.<br>
+														Modding all three games at once and/or storing all archives can push this closer to <b>~250 GB</b>.
+													</p>
+												</div>
+											</div>
+										</div>
+										
+										<div class="stepper infc-item">
+											<div class="media">
+												<a href="./custom/img/guide/guide-before-archive.svg" class="glightbox" style="width: 200px" data-title="Archive Tool" data-description="Recommended tool for compressed files.">
+													<img src="./custom/img/guide/guide-before-archive.svg" alt="Archive tool image" class="media-image" loading="lazy" decoding="async">
+												</a>
+												<div class="media-body">
+													<p class="media-text">
+														<b>Archive tool</b>:<br> You’ll need something to open compressed files. I recommend <strong><u><a href="https://www.7-zip.org">7-Zip</a></u></strong>.
+													</p>
+												</div>
+											</div>
+										</div>
+
+										<div class="stepper infc-item">
+											<div class="media">
+												<a href="./custom/img/guide/guide-before-download.svg" class="glightbox" style="width: 200px" data-title="Downloads" data-description="Where to get mods and download considerations.">
+													<img src="./custom/img/guide/guide-before-download.svg" alt="Downloads image" class="media-image" loading="lazy" decoding="async">
+												</a>
+												<div class="media-body">
+													<p class="media-text">
+														<b>Downloads</b>:<br> All mods for the LE are hosted on <b>Nexus Mods</b>. You’ll need a free account to download them.
+													</p>
+													<br><br>
+													<div class="caution">
+														<div class="icon">?</div>
+														<p class="media-text">
+															<b>Caution</b>: Free accounts are capped at 3 MB/s. Considering that some mods are quite large, a month of <b>Premium</b> may be worthwhile.<br>
+															A few mods also offer torrent downloads as an alternative. If you choose that route, I recommend <b><u><a href="https://transmissionbt.com">Transmission</a></u></b>.
+														</p>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="stepper infc-item">
+											<div class="media">
+												<a href="./custom/img/guide/guide-before-backup.svg" class="glightbox" style="width: 200px" data-title="Backup" data-description="Optional but highly recommended.">
+													<img src="./custom/img/guide/guide-before-backup.svg" alt="Backup image" class="media-image" loading="lazy" decoding="async">
+												</a>
+												<div class="media-body">
+													<p class="media-text">
+														<b>Backup (Optional)</b>:<br> If you have spare storage, I highly recommend backing up your unmodded game folder.<br> More on this later.
+													</p>
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="infc-controls" aria-hidden="false">
+									<button class="infc-arrow infc-prev" aria-label="Previous step" type="button">‹</button>
+									<div class="infc-dots" role="tablist" aria-label="Step indicators"></div>
+									<button class="infc-arrow infc-next" aria-label="Next step" type="button">›</button>
+								</div>
+							</div>
+							<!-- Carousel end -->
+						</div>
+					</section>
+					
+				</article>
+
+				<!-- Pager -->
+				<div class="pager-box pager" role="navigation" aria-label="Panel navigation">
+					<div class="pager-left">
+						<button class="btn text-standard" id="expandAllBtn" aria-label="Expand all panels">Expand All</button>
+						<button class="btn text-standard" id="closeAllBtn" aria-label="Close all panels">Close All</button>
+					</div>
+
+					<div class="pager-right">
+						<button class="btn text-standard" id="prevPageBtn" aria-label="Previous page">Prev Page</button>
+						<button class="btn text-standard" id="nextPageBtn" aria-label="Next page">Next Page</button>
+					</div>
+				</div>
+
+				<div class="bottom-strip" aria-hidden="true"></div>
+			</div>
+		</main>
+
+		<!-- RIGHT -->
+		<aside class="right-panel">
+			<div class="contents-panel" role="navigation" aria-label="Contents">
+				<h4>Chapters</h4>
+				<nav>
+					<ul id="contentsList" class="contents-list"></ul>
+				</nav>
+			</div>
+
+			<div class="made-by" role="contentinfo">
+				Made with <span class="heart">♥</span> by <span class="name"><a href="https://varkorax.github.io" target="_blank">Varkorax</a></span>
+			</div>
+		</aside>
+		
+	</div>
+	
+	<script src="../engine/js/guide.js" defer></script>
+    <script src="../engine/js/font-accessibility.js" defer></script>
+	<script src="../engine/external/glightbox/dist/js/glightbox.min.js"></script>
+	<script>
+		const lightbox = GLightbox({
+			touchNavigation: true,
+			loop: false,
+			zoomable: true,
+			autoplayVideos: false,
+		});
+	</script>
+	
+	
+</body>
+</html>

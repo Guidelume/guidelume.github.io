@@ -1,0 +1,180 @@
+/* Headline styling inside readable-panel */
+#stories-headline {
+	font-size: 1.6rem;
+	margin: 0 0 0.35rem 0;
+	letter-spacing: 0.2px;
+}
+
+/* lead paragraph styling */
+.stories-lead {
+	margin: 0 0 1rem 0;
+	opacity: 0.95;
+	font-size: 1rem;
+	line-height: 1.5;
+}
+
+/* --- Ensure the two panels stack vertically on the page --- */
+/* headline-panel and buttons-panel use the same readable-panel styles
+   but are forced to be block-level and centered so they appear one
+   beneath the other (not inline). */
+.headline-panel,
+.buttons-panel {
+	display: flex;
+	flex-direction: column; /* stack vertically */
+	width: 100%;         /* same max width as readable-panel */
+	max-width: none;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 1.25rem 1.5rem;       /* keep same padding as readable-panel */
+	border-radius: 14px;
+	background: rgba(0,0,0,0.56);
+	backdrop-filter: blur(10px) saturate(160%);
+	-webkit-backdrop-filter: blur(10px) saturate(160%);
+	box-shadow: 0 18px 46px rgba(0,0,0,0.45);
+	transition: opacity 260ms ease, transform 260ms ease, background 220ms ease;
+	color: #ffffff;
+}
+
+/* spacing: ensure the buttons panel sits a little beneath the headline */
+.buttons-panel { margin-top: 18px; }
+
+/* slightly reduce prominence at night (still visible) */
+body.theme-night .headline-panel,
+body.theme-night .buttons-panel {
+	opacity: 0.9;
+	background: rgba(0,0,0,0.42);
+}
+
+/* Button container (flexible) */
+.button-container {
+	display: flex;
+	justify-content: center;
+	align-items: stretch;
+	gap: 1.25rem;
+	margin-top: 0.5rem;    /* tightened up since buttons are inside their own panel */
+	flex-wrap: wrap;
+	width: 100%;
+}
+
+/* Story button base (flexible cards)
+   - default: frosted look (night-ish)
+   - day mode: dark grey surface via .theme-day on body */
+.story-btn {
+	position: relative;
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+
+	/* flexible sizing */
+	flex: 1 1 220px;      /* stretch but don't go smaller than 220px */
+	min-width: 180px;
+	max-width: 28rem;
+
+	padding: 1.05rem 0.9rem;
+	border-radius: 0.9rem;
+	text-decoration: none;
+
+	/* frosted default (night-ish) */
+	background: var(--btn-frost-bg);
+	border: 1px solid var(--btn-frost-border);
+	color: var(--btn-text, #ffffff);
+	backdrop-filter: blur(10px) saturate(160%);
+	-webkit-backdrop-filter: blur(10px) saturate(160%);
+
+	box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+	transition: transform 0.18s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.18s ease;
+	overflow: hidden;
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
+/* Day mode: darker solid surface to preserve legibility on bright backgrounds */
+body.theme-day .story-btn {
+	background: var(--btn-day-bg);
+	border: 1px solid var(--btn-day-border);
+	color: var(--btn-text, #ffffff);
+	box-shadow: 0 8px 26px rgba(0,0,0,0.45);
+}
+
+/* hover: subtle light highlight (replaces wood/texture) */
+.story-btn:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 12px 36px rgba(0,0,0,0.38);
+
+	/* subtle highlight overlay */
+	background-image: linear-gradient(rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+}
+
+/* ensure text sits above backgrounds */
+.story-btn .title,
+.story-btn .tagline {
+	position: relative;
+	z-index: 2;
+	text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+}
+
+/* Title & tagline sizes */
+.story-btn .title {
+	font-size: 1.05rem;
+	font-weight: 600;
+	margin-bottom: 0.25rem;
+	letter-spacing: 0.2px;
+}
+.story-btn .tagline {
+	font-size: 0.85rem;
+	opacity: 0.95;
+	line-height: 1.25;
+}
+
+/* keyboard focus */
+.story-btn:focus {
+	outline: 3px solid rgba(100,150,255,0.14);
+	outline-offset: 3px;
+	transform: translateY(-2px);
+}
+
+/* Responsive: stack buttons vertically on narrow screens */
+@media (max-width: 560px) {
+	.button-container { gap: 0.8rem; padding-left: 0.5rem; padding-right: 0.5rem; }
+	.story-btn { width: 100%; max-width: 100%; min-width: auto; flex: 1 1 100%; padding: 1rem; }
+	.headline-panel,
+	.buttons-panel { width: calc(100% - 24px); padding: 1rem; margin-left: 12px; margin-right: 12px; }
+}
+
+/* Ensure readable-panel text inherits the panel color */
+.readable-panel h1,
+.readable-panel p,
+.headline-panel h1,
+.headline-panel p,
+.buttons-panel p {
+	color: inherit;
+}
+
+/* ==========================================
+   LANDING PAGE GRID
+   ========================================== */
+
+/* Container holding Latest Story + Updated */
+.landing-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1.25rem;
+
+	width: min(92%, 75rem);
+	margin: 1.5rem auto 0;
+}
+
+/* Make the panels fill their grid cells nicely */
+.landing-grid .readable-panel {
+	width: 100%;
+	margin: 0;
+}
+
+/* Mobile layout */
+@media (max-width: 800px) {
+	.landing-grid {
+		grid-template-columns: 1fr;
+	}
+}

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+	<title>MWBC | Setup</title>
+	<meta property="og:title" content="Milky Way Bar Crawl">
+	<meta property="og:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta property="og:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	<meta property="og:url" content="https://guidelume.github.io/milky-way-bar-crawl/setup.html">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Milky Way Bar Crawl">
+	<meta name="twitter:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta name="twitter:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	<link rel="shortcut icon" href="./custom/favicon.svg" />
+	
+	<link rel="stylesheet" href="../engine/css/fonts.css" />
+	<link rel="stylesheet" href="./custom/external/glightbox/dist/css/glightbox.css" />
+	<link rel="stylesheet" href="../engine/css/guide.css" />
+    <link rel="stylesheet" href="../engine/css/accessible-fonts.css" />
+	<link rel="stylesheet" href="./custom/css/me1.css" />
+	<style>
+	:root {
+		--accent-r: 230;   /* darker orange */
+		--accent-g: 130;
+		--accent-b: 60;
+		--accent: var(--accent-r),var(--accent-g),var(--accent-b);
+	}
+	</style>
+</head>
+<body>
+
+	<!-- Background (single reliable layer) -->
+	<div class="bg-viewport" aria-hidden="true">
+		<div id="bgLayer" class="bg-layer" style="background-image:url('./custom/img/background/bg-galaxy-1.jpg');"></div>
+	</div>
+	<div class="bg-vignette" aria-hidden="true"></div>
+
+	<div class="layout" id="layoutRoot">
+
+		<!-- LEFT -->
+		<aside class="left-panel" id="leftPanel" role="navigation" aria-label="Chapters">
+
+			<div class="nav-section open" data-section="main">
+				<button class="nav-section-header" type="button" aria-expanded="true">
+					<span>Milky Way Bar Crawl</span>
+					<span class="nav-section-caret">▾</span>
+				</button>
+				
+				<ul class="chap-list">
+					<li class="chap-item" data-href="intro.html">
+						<a class="chap-link" href="intro.html">1. Introduction</a>
+					</li>
+
+					<li class="chap-item" data-href="setup.html">
+						<a class="chap-link" href="setup.html">2. Setup</a>
+					</li>
+
+					<li class="chap-item" data-href="me1.html">
+						<a class="chap-link" href="me1.html">3.1. LE1</a>
+					</li>
+
+					<li class="chap-item" data-href="me2.html">
+						<a class="chap-link" href="me2.html">3.2. LE2</a>
+					</li>
+
+					<li class="chap-item" data-href="me3.html">
+						<a class="chap-link" href="me3.html">3.3. LE3</a>
+					</li>
+
+					<li class="chap-item" data-href="finish.html">
+						<a class="chap-link" href="finish.html">4. Finish</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="after-hours">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>After Hours</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="extras.html">
+						<a class="chap-link" href="extras.html">5. Extras</a>
+					</li>
+
+					<li class="chap-item" data-href="textures.html">
+						<a class="chap-link" href="textures.html">6. Textures</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="appendices">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>Appendices</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="questions.html">
+						<a class="chap-link" href="questions.html">7. Common Questions</a>
+					</li>
+
+					<li class="chap-item" data-href="changelog.html">
+						<a class="chap-link" href="changelog.html">8. Changelog</a>
+					</li>
+
+					<li class="chap-item" data-href="credits.html">
+						<a class="chap-link" href="credits.html">9. Credits</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-updated" role="contentinfo">
+				Last Updated:<br>
+				August 2026 · v2.1
+			</div>
+			
+		</aside>
+
+		<!-- CENTER -->
+		<main class="center-col" role="main">
+			<div class="content-shell" id="contentShell">
+
+				<div class="title-box">
+					<div id="titleBackground" class="title-bg"></div>
+					<button id="home" class="btn text-standard" aria-label="Return to Start"><a href="../index-mwbc.html">Back to Start</a></button>
+					<h1 id="projectTitle">Milky Way Bar Crawl - Setup</h1>
+					<button id="fontToggle" class="btn text-standard" aria-label="Toggle accessible fonts" title="Font Toggle">Aa</button>
+				</div>
+				
+				<div class="content-progress" aria-hidden="true">
+						<div class="content-progress-bar"></div>
+				</div>
+				
+				<article class="content-box" id="contentBox" tabindex="0" aria-labelledby="stepTitle">
+
+					<!-- Panel 0 -->
+					<section id="preamble" class="panel open" data-index="0">
+						<header class="panel-header" role="button" aria-expanded="true">
+							<h3>Preparing the Games</h3>
+							<div class="caret">▾</div>
+						</header>
+
+						<div class="panel-body">
+							<p class="text-standard">
+								Before we start installing mods, let's make sure the games themselves are ready.<br>
+								<b>(PSSST: Experienced Bar Crawlers can skip ahead to point 4)</b>
+							</p>
+
+							<!-- Subsection 0.1 -->
+							<div id="preamble-installing" class="anchor" data-parent="preamble">
+								<h4>Installation</h4>
+								<p class="text-standard">
+									First, we’ll make sure your copy of <strong>Mass Effect Legendary Edition</strong> is installed and working properly.
+								</p>
+
+								<div class="warning">
+									<div class="icon">!</div>
+									<p class="text-standard">
+										If you’ve tried modding the LE before, <b>start from a clean installation.</b><br>
+										Annoying, I know. But a clean slate will save you from a <em>lot</em> of trouble later.<br><br>
+										Locate your current installation, delete the entire game folder, and redownload the game.
+									</p>
+								</div>
+								
+								<br>
+								<p class="text-standard">
+									When (re)installing, choose a location <strong>outside protected Windows directories</strong> (like Program Files) to avoid permission issues.<br><br>
+									If you are using the <strong>EA App</strong>, simply pick a custom install path (e.g. <code>C:\Games\EA</code>).
+								</p>
+
+								<p class="text-standard">
+									If you are on <strong>Steam</strong>, the ideal setup is a second library on a separate SSD.<br>
+									If you don’t have a second SSD, you can use the 
+									<strong><u><a href="https://github.com/LostDragonist/steam-library-setup-tool" target="_blank">Steam Library Setup Tool</a></u></strong>
+									to create a second library on your main drive <wbr>(e.g. <code>C:\Games\Steam</code>).</wbr>
+								</p>
+							</div>
+							
+							<!-- Subsection 0.2 -->
+							<div id="preamble-starting" class="anchor" data-parent="preamble">
+								<h4>First Boot</h4>
+								
+								<hr style="color:#fff;width:99%;margin-left:0">
+								<br>
+								
+								<p class="text-standard">
+									<b>Optional, but recommended</b>: Before starting the game, you may wish to disable the <strong>in-game overlay</strong>, as it can occasionally interfere with modded launches.<br>
+									<em>(If you installed via Steam, you’ll want to disable both the Steam <strong>and</strong> EA App overlays.)</em>
+								</p>
+								
+								<div style="margin-top:8px">
+									<button id="toggleTextureImgBtn" class="btn">Open/Close</button>
+								</div>
+								<div id="textureImgWrap" class="hidden-media" aria-hidden="true" style="margin-top:10px">
+									<div class="informational">
+										<div class="media-body">
+											<p class="text-standard">
+												<strong>To disable the Steam Overlay:</strong>
+											</p>
+											<ol class="text-standard">
+												<li>Locate <em>Mass Effect Legendary Edition</em> in your Steam Library.</li>
+												<li>Right-click it → <strong>Properties</strong>.</li>
+												<li>Under the <em>General</em> tab, uncheck <strong>Enable the Steam Overlay while in-game</strong>.</li>
+											</ol>
+
+											<p class="text-standard">
+												<strong>To disable the EA App Overlay:</strong>
+											</p>
+											<ol class="text-standard">
+												<li>Click the three lines in the top-left corner of the EA App.</li>
+												<li>Go to <strong>Settings → Application</strong>.</li>
+												<li>Scroll to <strong>In-game Overlay</strong> and uncheck it.</li>
+											</ol>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<p class="text-standard">
+									<b>Optional, but equally recommended</b>: You may also want to disable <b>automatic updates</b>, though the chance of LE getting another update is virtually zero.
+								</p>
+								
+								<div style="margin-top:8px">
+									<button id="toggleTextureImgBtn2" class="btn">Open/Close</button>
+								</div>
+								<div id="textureImgWrap2" class="hidden-media" aria-hidden="true" style="margin-top:10px">
+									<div class="informational">
+										<div class="media-body">
+											<p class="text-standard">
+												<strong>To disable automatic updates in the EA App:</strong>
+											</p>
+											<ol class="text-standard">
+												<li>Click the three lines in the top-left corner of the EA App.</li>
+												<li>Go to <strong>Settings → Application</strong>.</li>
+												<li>Scroll to <strong>Automatic Updates</strong> and uncheck it.</li>
+											</ol>
+										</div>
+									</div>
+								</div>
+								
+								<br>
+								<hr style="color:#fff;width:99%;margin-left:0">
+								<br>
+								
+								<p class="text-standard">
+									Once everything is in order, <b>start each game once</b> and make any graphical adjustments you need.<br>In the launcher, select <b>options</b> and make sure <b>subtitle size is set to small</b>. This is needed for a mod which'll replace the font the games use for dialogue.<br><br>
+									Your games should now be ready, which means we can move on to the tool that will actually handle your mods:
+								</p>
+							</div>
+						</div>
+					</section>
+
+					<!-- Panel 1 -->
+					<section id="requirements" class="panel" data-index="1">
+						<header class="panel-header" role="button" aria-expanded="false">
+							<h3>Preparing the Mod Manager</h3>
+							<div class="caret">▸</div>
+						</header>
+
+						<div class="panel-body">
+							<p class="text-standard">
+								Unlike with many other games, Mass Effect doesn't use Vortex or MO2.<br>
+								Instead, everything in this guide is handled by M3, a community made Mod Manager.
+							</p>
+
+							<!-- Subsection 1.1 -->
+							<div id="requirements-m3install" class="anchor" data-parent="requirements">
+								<h4>Installing M3 (ME3Tweaks Mod Manager)</h4>
+								<p class="text-standard">
+									M3 is our central hub for modding Mass Effect. It manages and installs mods across all three games, OT and LE.<br>
+									You can download the latest version from the official GitHub page: 
+									<strong><u><a href="https://github.com/ME3Tweaks/ME3TweaksModManager/releases" target="_blank">ME3Tweaks Mod Manager Releases</a></u></strong>
+								</p>
+
+								<div class="warning">
+									<div class="icon">!</div>
+									<p class="text-standard">
+										Do <b>not</b> extract M3 inside your game directory or a protected system folder.<br>
+										I recommend keeping all modding related files in a separate, easy-to-access location (e.g. <code>C:\Mods\MELE</code>).
+									</p>
+								</div>
+							</div>
+
+							<!-- Subsection 1.2 -->
+							<div id="requirements-backup" class="anchor" data-parent="requirements">
+								<h4>Optional: Backup</h4>
+								<p class="text-standard">
+									As mentioned earlier, if you have the space available I recommend making a backup of your unmodded game.<br>
+									This allows you to restore a clean copy in case something breaks later.<br>
+									M3 will remind you about this each time it starts, but you can safely close that window if you don’t plan to make one.<br><br>
+									If you do wish to create one, click on <b>Backup &amp; Restore → Backup</b>, follow the on-screen instructions in M3 and select an appropriate location (e.g. <code>D:\Backup\MELE</code>).
+								</p>
+							</div>
+							
+							<br>
+							<hr style="color:#fff;width:99%;margin-left:0">
+							<br>
+								
+							<p class="text-standard">
+								M3 should now be ready, which means there is only one last thing to take care of before you can start modding:
+							</p>
+							
+						</div>
+					</section>
+
+					<!-- Panel 2 -->
+					<section id="installing" class="panel" data-index="2">
+						<header class="panel-header" role="button" aria-expanded="false">
+							<h3>Installing Mods</h3>
+							<div class="caret">▸</div>
+						</header>
+						<div class="panel-body">
+							<p class="guide-text text-standard">
+								Ok, I lied. But we’re almost ready now. Before we dive into the lists, let's take a quick look at how mods make their way into M3.<br>
+								You have two options:
+							</p>
+
+							<div id="download-m3" class="anchor" data-parent="installing">
+								<h4>Downloading Through M3</h4>
+								<p class="guide-text text-standard">
+									M3 can download mods directly from Nexus Mods:
+								</p>
+								<ol class="guide-text text-standard">
+									<li>Click the <b>Nexus icon</b> in the top-right corner and log into your Nexus account.</li>
+									<li>
+										Once authorized, you should now see your name in the top right.
+										Click on it and, in the window that opens, click <b>Configure "Download with Manager"</b>, then
+										<b>Register ME3Tweaks Mod Manager as handler</b>.
+									</li>
+									<li>Now, when you click <b>Download with Mod Manager</b> on a Nexus page, M3 will handle it automatically.</li>
+								</ol>
+							</div>
+
+							<div id="download-man" class="anchor" data-parent="installing">
+								<h4>Downloading Manually</h4>
+								<p class="guide-text text-standard">
+									You may prefer to (or in some cases need to) download something manually. These usually come as <code>.zip</code> or <code>.7z</code> archives.
+								</p>
+								<p class="guide-text text-standard">
+									Keep them organized near your M3 folder (e.g. <code>C:\Mods\MELE\ME1 Downloads</code>).
+								</p>
+								<p class="guide-text text-standard">
+									Once downloaded, you can:
+								</p>
+								<ul class="guide-text text-standard">
+									<li>drag and drop the archive into M3, or</li>
+									<li>use <b>Mod Management → Import Mod → Archive</b>.</li>
+								</ul>
+							</div>
+
+							<br>
+							<hr style="color:#fff;width:99%;margin-left:0">
+							<br>
+							
+							<div class="media">
+								<a href="./custom/img/guide/guide-setup-x.png"
+									class="glightbox"
+									data-title="M3 Mod Import"
+									data-description="The mod import window of M3, using Myriad Pro Begone as an example">
+									<img src="./custom/img/guide/guide-setup-x.png"
+										alt="m3 import mod window"
+										class="media-image" loading="lazy" decoding="async">
+								</a>
+								<div class="media-body">
+									<br>
+									<p class="media-text text-standard">
+										No matter how you get them, you’ll see an import window that shows details about the mod and gives you the option to install it immediately or just add it to your library.<br>
+										<br><b>Always import your mods</b>. It makes managing and troubleshooting much easier later.
+									</p>
+								</div>
+							</div>
+							
+							<div class="caution">
+								<div class="icon">?!</div>
+								<p class="text-standard">
+									Do <b>not</b> try to manually install mods.<br>
+									M3 performs a lot of technical wizardry while installing them, so just dragging and dropping files into the game folder will do nothing at best and may break your game at worst.
+								</p>
+							</div>
+							
+							<br>
+							<p class="guide-text text-standard">
+								You can now click on a mod in the left panel to select it, and then click <b>Apply Mod</b> in the bottom right to install it.<br>
+								If you haven't made a backup, M3 will warn you about that every time you install a mod, but you can safely continue.<br>
+								You may be asked to select patches or customize something. If you are unsure about a choice, I recommend reading through the mod’s Nexus page.
+							</p>
+
+							<div id="uninstall" class="anchor" data-parent="installing">
+								<h4>Optional: Removing Mods</h4>
+								<p class="text-standard">
+									Should you wish or need to uninstall or disable a mod, you can do so like this:
+								</p>
+								<ol class="text-standard">
+									<li>Select the right game from the center dropdown menu.</li>
+									<li>Click on <b>Manage Target</b> in the upper right. This will show a list of all installed mods.</li>
+									<li>Find the mod you wish to uninstall or disable.</li>
+									<li>Click <b>Disable</b> to remove it temporarily, or <b>Delete</b> to remove it entirely.</li>
+								</ol>
+							</div>
+							
+							<br>
+							<hr style="color:#fff;width:99%;margin-left:0">
+							
+							<div id="manual-loadorder" class="anchor" data-parent="manual">
+								<h4>Golden Rules</h4>
+								<p class="text-standard">
+									Before we continue, there are <b>two rules</b> worth remembering:<br><br>
+
+									<b>1. Content first, Textures last! *</b><br>
+									Due to technical reasons outside the scope of this guide, textures should <i>always</i> be installed last.
+									Once you begin texture modding, you <b>cannot</b> install new content mods or updates.
+									You’ll see plenty of warnings about this, but trust me, doing so <b>will</b> break your game.<br>
+									
+									<i style="font-size: 12px">* Due to some recent technical breakthroughs this isn't quite as true anymore, but the principle of it still applies!</i><br><br>
+									
+									<b>2. Read the Nexus page, check for compatibility!</b><br>
+									It’s the best way to understand what a mod does, whether it needs a patch, or if it conflicts with another.<br><br>
+
+									Failure to follow these rules will be met with swift reprimand, and the knowledge that somewhere
+									I’m shaking my head at you in quiet disapproval.
+								</p>
+							</div>
+							
+							<br>
+							<hr style="color:#fff;width:99%;margin-left:0">
+							<br>
+							
+							<p class="text-standard">
+								With all this newfound knowledge under your belt, only one choice remains before you can start modding:
+							</p>
+							
+						</div>
+					</section>
+					
+					<!-- Panel 3 -->
+					<section id="route" class="panel" data-index="3">
+						<header class="panel-header" role="button" aria-expanded="false">
+							<h3>Choosing Your Route</h3>
+							<div class="caret">▸</div>
+						</header>
+
+						<div class="panel-body">
+							<p class="text-standard">
+								Generally there are two ways you can proceed through the main portion of this guide:<br>
+								<b>Batch</b> or <b>Manual</b>
+							</p>
+
+							<div id="route-batch" class="anchor" data-parent="route">
+								<h4>Option A: Batch</h4>
+								<p class="text-standard">
+									I provide you with a <b>preconfigured setup file</b> for M3. You’ll still have to download each mod from within M3, 
+									but installation and, more importantly, configuration happen automatically.
+								</p>
+								<ul class="text-standard" style="margin-top: 0.5em; margin-bottom: 1.5em;">
+									<li><b>Pro:</b> Convenient. M3 takes care of setup and settings for you. Just confirm downloads and click install.</li>
+									<li><b>Con:</b> Inflexible: you get <i>my</i> intended setup, nothing more. Editing batch files is possible but best left for when you’re more experienced.</li>
+								</ul>
+							</div>
+
+							<div id="route-manual" class="anchor" data-parent="route">
+								<h4>Option B: Manual</h4>
+								<p class="text-standard">
+									Downloading and installing each mod yourself using one of the provided lists.
+								</p>
+								<ul class="text-standard" style="margin-top: 0.5em; margin-bottom: 1.5em;">
+									<li><b>Pro:</b> Full control. You pick exactly what you want. Don’t like one of my choices? Skip it.</li>
+									<li><b>Con:</b> More room for mistakes if you blindly add or skip things without checking.</li>
+								</ul>
+							</div>
+
+							<div id="route-which" class="anchor" data-parent="route">
+								<h4>Which Should I Pick?</h4>
+								<p class="text-standard">
+									As your bartender for the evening I'd say the choice mostly comes down to your comfort level:
+								</p>
+								<ul class="text-standard">
+									<li><b>Curated:</b> If you’re new to modding or want a curated, hassle-free experience, use the <b>Batch</b> setup.</li>
+									<li><b>Trailblazer:</b> If you’re familiar with modding or want to customize everything yourself, go <b>Manual</b>.</li>
+								</ul>
+							</div>
+
+							<p class="text-standard">
+								With that decision made, we can have a little taste of what modding the games will be like with:
+							</p>
+						</div>
+					</section>
+
+					<!-- Panel 4 -->
+					<section id="launcher" class="panel" data-index="4">
+						<header class="panel-header" role="button" aria-expanded="false">
+							<h3>Aperitif: Launcher</h3>
+							<div class="caret">▸</div>
+						</header>
+
+						<div class="panel-body">
+							<p class="text-standard">
+								Before diving into the main games, there’s one small area we can polish first: the <b>Launcher</b> itself.<br>
+								Technically this section is optional, but it's quick, helps tidy up an interface you’ll be seeing a lot, and is a good low stakes test run.
+							</p>
+							
+							<br>
+							<hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br>
+							
+							<div id="myriad-pro-begone" class="mod-card anchor" data-parent="launcher">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1070" target="_blank">
+											Myriad Pro Begone
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Audemus" target="_blank">Audemus</a>
+									</div>
+								</div>
+								
+								<div class="mod-description text-standard">
+									Replaces the font used throughout the launcher with something more fitting for the setting.<br>
+								</div>
+								
+								<div class="mod-note">
+									<b>Note </b>: The file you download has a version for every game plus the launcher. You may import everything if you want or just choose the launcher version.
+								</div>
+							</div>
+							
+							<br>
+							<!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="launcher-smooth" class="mod-card anchor" data-parent="launcher">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2120" target="_blank">
+											Smoother GUI (Launcher)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Deepk" target="_blank">Deepk</a>
+									</div>
+								</div>
+								
+								<div class="mod-description text-standard">
+									Increases the fps of the launcher animations and GUI elements.
+								</div>
+								
+								<div class="mod-note">
+									<b>Note </b>: I recommend the "Alternative" option.
+								</div>
+							</div>
+							
+							<br>
+							<hr style="color:#fff;width:99%;margin-left:0">
+							<br>
+							
+							<p class="text-standard">
+								And that's it for the launcher. These tweaks are small but set a nice tone for what’s to come.<br>
+								With the setup complete and your preferred route chosen, it’s time for the main course!
+							</p>
+						</div>
+					</section>
+					
+				</article>
+
+				<!-- Pager -->
+				<div class="pager-box pager" role="navigation" aria-label="Panel navigation">
+					<div class="pager-left">
+						<button class="btn text-standard" id="expandAllBtn" aria-label="Expand all panels">Expand All</button>
+						<button class="btn text-standard" id="closeAllBtn" aria-label="Close all panels">Close All</button>
+					</div>
+
+					<div class="pager-right">
+						<button class="btn text-standard" id="prevPageBtn" aria-label="Previous page">Prev Page</button>
+						<button class="btn text-standard" id="nextPageBtn" aria-label="Next page">Next Page</button>
+					</div>
+				</div>
+
+				<div class="bottom-strip" aria-hidden="true"></div>
+			</div>
+		</main>
+
+		<!-- RIGHT -->
+		<aside class="right-panel">
+			<div class="contents-panel" role="navigation" aria-label="Contents">
+				<h4>Chapters</h4>
+				<nav>
+					<ul id="contentsList" class="contents-list"></ul>
+				</nav>
+			</div>
+
+			<div class="made-by" role="contentinfo">
+				Made with <span class="heart">♥</span> by <span class="name"><a href="https://varkorax.github.io" target="_blank">Varkorax</a></span>
+			</div>
+		</aside>
+
+	</div>
+	
+	<script src="../engine/js/guide.js" defer></script>
+    <script src="../engine/js/font-accessibility.js" defer></script>
+	<script src="./custom/external/glightbox/dist/js/glightbox.min.js"></script>
+	<script>
+		const lightbox = GLightbox({
+			touchNavigation: true,
+			loop: false,
+			zoomable: true,
+			autoplayVideos: false,
+		});
+	</script>
+	
+
+</body>
+</html>

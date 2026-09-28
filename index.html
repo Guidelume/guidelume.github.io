@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" data-onboarding-stage="intro">
+<!--
+	Index.html V5 - A complete rewrite that hopefully futureproofs this a little
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>| BETA Guidelume</title>
+	
+    <meta property="og:title" content="Guidelume">
+    <meta property="og:description" content="Breaking through the gloom, a solitary beam of light.">
+    <meta property="og:image" content="https://guidelume.github.io/engine/preview.png">
+    <meta property="og:url" content="https://guidelume.github.io/index.html">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Guidelume">
+    <meta name="twitter:description" content="Breaking through the gloom, a solitary beam of light.">
+    <meta name="twitter:image" content="https://guidelume.github.io/engine/preview.png">
+	
+    <link rel="shortcut icon" href="./engine/dagaz.svg">
+	
+    <link rel="stylesheet" href="./engine/css/global-v2.css">
+    <link rel="stylesheet" href="./engine/css/fonts.css">
+    <link rel="stylesheet" href="./engine/css/accessible-fonts.css">
+	
+    <script src="./engine/js/font-accessibility.js" defer></script>
+    <script src="./engine/js/markdown-renderer.js" defer></script>
+    <!-- For links on Nexus add ?from=nexus&guide=name-of-the-guide
+		This will automatically skip setup, put the site into Reader mode and open the guide -->
+	<script>
+        try {
+            const query = new URLSearchParams(window.location.search);
+            const nexusGuideRequest =
+                query.get("from") === "nexus" && query.get("guide") === "mwbc";
+            const savedMemory = JSON.parse(localStorage.getItem("guidelume_desktop_memory"));
+            const savedExperience = localStorage.getItem("guidelume_experience");
+            if (
+                savedMemory?.settings?.onboardingComplete === true
+                || ["interactive", "reader", "basic"].includes(savedExperience)
+                || nexusGuideRequest
+            ) {
+                document.documentElement.dataset.onboardingStage = "complete";
+            }
+        } catch {
+            // Keep the first-run desktop hidden if saved state cannot be read.
+        }
+    </script>
+    <script src="./engine/js/global.js" defer></script>
+</head>
+<body>
+    <div id="crt">
+        <main class="setup-page pixel-sharp">
+            <header class="setup-header">
+                <img
+                    class="guidelume-logo"
+                    src="./engine/img/guidelume-logo.png"
+                    alt="Guidelume"
+                >
+                <p class="tagline">
+                    Breaking through the gloom, a solitary beam of light.
+                </p>
+            </header>
+            <!-- Desktop icon -->
+            <!-- Memory Attempt RC5
+                 Everything seems to work so far -->
+            <div
+                class="desktop-icon"
+                role="button"
+                tabindex="0"
+                data-icon="setup"
+                data-open-window="setup"
+                data-memory="desktop-icon-setup"
+                data-x="0.25"
+                data-y="0.25"
+            >
+                <img
+                    src="./engine/dagaz.svg"
+                    alt=""
+                >
+                <span>
+                    Guidelume Setup
+                </span>
+            </div>
+            <div
+                class="desktop-icon"
+                role="button"
+                tabindex="0"
+                data-icon="readme"
+                data-open-window="readme"
+                data-x="0.25"
+                data-y="0.44"
+            >
+                <img
+                    src="./engine/dagaz.svg"
+                    alt=""
+                >
+                <span>README</span>
+            </div>
+            <div
+                class="desktop-icon"
+                role="button"
+                tabindex="0"
+                data-icon="mwbc"
+                data-open-window="mwbc"
+                data-x="0.25"
+                data-y="0.64"
+            >
+                <img src="./engine/dagaz.svg" alt="">
+                <span>Milky Way Bar Crawl</span>
+            </div>
+            <nav
+                class="taskbar taskbar-bottom"
+                data-taskbar-position="bottom"
+            >
+                <button
+                    type="button"
+                    class="start-button"
+                    aria-label="Open start menu"
+                    aria-expanded="false"
+                    aria-controls="startMenu"
+                    aria-haspopup="dialog"
+                >
+                    <img
+                        src="./engine/dagaz.svg"
+                        alt=""
+                        aria-hidden="true"
+                    >
+                </button>
+                <div class="taskbar-windows">
+                    <!-- Window buttons are created when windows open. -->
+                </div>
+                <time class="taskbar-clock" aria-label="Current local time and date" aria-live="off">
+                    <span class="taskbar-time"></span>
+                    <span class="taskbar-date"></span>
+                </time>
+            </nav>
+
+            <section class="start-menu" id="startMenu" role="dialog" aria-label="Start menu" hidden>
+                <button
+                    type="button"
+                    class="start-menu-reset start-menu-action"
+                    data-open-window="accessibility"
+                    data-close-start-menu="true"
+                >Accessibility</button>
+                <button
+                    type="button"
+                    class="start-menu-reset start-menu-action"
+                    id="openSettings"
+                    data-open-window="settings"
+                    data-close-start-menu="true"
+                >
+                    Settings
+                </button>
+                <label class="crt-toggle">
+                    <input type="checkbox" id="crtToggle" checked>
+                    <span>CRT effects</span>
+                </label>
+                <button type="button" class="start-menu-reset" data-action="reset">Switch Modes</button>
+            </section>
+            <!-- Main setup window -->
+            <!-- Memory Attempt RC5
+                 Windows persist through reloads and state changes -->
+            <section
+                class="setup-window"
+                data-window="setup"
+                data-window-width="760px"
+                data-window-height="560px"
+                hidden
+                aria-labelledby="setup-title"
+            >
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left">
+                        <img
+                            class="title-icon"
+                            src="./engine/favicon.svg"
+                            alt=""
+                            aria-hidden="true"
+                        >
+                        <span id="setup-title">
+                            Guidelume Setup
+                        </span>
+                    </div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="setup" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="setup" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button
+                        type="button"
+                        class="window-close"
+                        data-close-window="setup"
+                        aria-label="Close window"
+                    >
+                        X
+                    </button>
+                </div>
+                <div class="setup-content">
+                    <h1>
+                        Welcome to Guidelume
+                    </h1>
+                    <p>
+                        Guidelume can be experienced in two different ways.
+                    </p>
+                    <div class="experience-choice">
+                        <article class="choice">
+                            <h2>
+                                Reader Mode
+                            </h2>
+                            <p>
+                                A calm, reading-focused experience for browsing projects and guides.
+                            </p>
+                            <button
+                                type="button"
+                                class="setup-button"
+                                data-experience="reader"
+                            >
+                                Continue with Reader Mode
+                            </button>
+                        </article>
+                        <article class="choice">
+                            <h2>
+                                Interactive Mode
+                            </h2>
+                            <p>
+                                Explore an interactive desktop with draggable windows and appearance choices.
+                            </p>
+                            <button
+                                type="button"
+                                class="setup-button"
+                                data-experience="interactive"
+                            >
+                                Continue with Interactive Mode
+                            </button>
+                        </article>
+                    </div>
+                    <p class="setup-note">
+                        You can change your experience later from Guidelume's settings.
+                    </p>
+                </div>
+            </section>
+            <section
+                class="setup-window"
+                data-window="readme"
+                data-window-width="max(760px, 55vw)"
+                data-window-height="560px"
+                hidden
+                aria-labelledby="readme-title"
+            >
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left">
+                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                        <span id="readme-title">README</span>
+                    </div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="readme" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="readme" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="readme" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content readme-content" data-markdown-src="./engine/readme.md" aria-live="polite">
+                    <p>Loading README…</p>
+                </div>
+            </section>
+            <section
+                class="setup-window"
+                data-window="reset-confirmation"
+                data-window-width="420px"
+                data-window-height="280px"
+                hidden
+                aria-labelledby="reset-confirmation-title"
+            >
+                <div class="setup-titlebar">
+                    <div class="titlebar-left">
+                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                        <span id="reset-confirmation-title">Confirm mode switch</span>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="reset-confirmation" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content reset-confirmation-content">
+                    <p>This will reset all saved Guidelume settings and restart setup. If you arrived from Nexus, consider opening Guidelume Setup instead.</p>
+                    <div class="confirmation-actions">
+                        <button type="button" class="secondary-button confirmation-button" data-confirm-reset="no">No</button>
+                        <button type="button" class="secondary-button confirmation-button" data-confirm-reset="yes">Yes</button>
+                    </div>
+                </div>
+            </section>
+            <section
+                class="setup-window"
+                data-window="mwbc"
+                data-fixed-maximized="true"
+                data-window-width="760px"
+                data-window-height="560px"
+                hidden
+                aria-labelledby="mwbc-title"
+            >
+                <div class="setup-titlebar">
+                    <div class="titlebar-left">
+                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                        <span id="mwbc-title">Milky Way Bar Crawl</span>
+                    </div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="mwbc" aria-label="Minimize window">−</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="mwbc" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content demo-content">
+                    <iframe data-src="./index-mwbc.html" title="Milky Way Bar Crawl" loading="lazy"></iframe>
+                </div>
+            </section>
+            <section
+                class="setup-window"
+                data-window="onboarding"
+                data-window-width="500px"
+                data-window-height="380px"
+                hidden
+                aria-labelledby="onboarding-title"
+            >
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left">
+                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                        <span id="onboarding-title">A few things to know</span>
+                    </div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="onboarding" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="onboarding" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="onboarding" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content onboarding-content">
+                    <h1>Welcome to Interactive Mode</h1>
+                    <p>Drag windows by their title bars and drag desktop icons to arrange your workspace.</p>
+                    <p>Use the Start menu’s Settings panel for desktop adjustments, including colors, backgrounds, taskbar position, and CRT effects.</p>
+                    <button type="button" class="setup-button" id="finishOnboarding">Understood</button>
+                </div>
+            </section>
+            <!-- Desktop appearance choice window -->
+            <section
+                class="setup-window"
+                data-window="appearance"
+                data-window-width="640px"
+                data-window-height="620px"
+                data-default-theme="amber"
+                data-default-taskbar="bottom"
+                hidden
+                aria-labelledby="appearance-title"
+            >
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left">
+                        <img
+                            class="title-icon"
+                            src="./engine/dagaz.svg"
+                            alt=""
+                            aria-hidden="true"
+                        >
+                        <span id="appearance-title">
+                            Desktop Appearance
+                        </span>
+                    </div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="appearance" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="appearance" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button
+                        type="button"
+                        class="window-close"
+                        data-close-window="appearance"
+                        aria-label="Close window"
+                    >
+                        X
+                    </button>
+                </div>
+                <div class="setup-content">
+                    <button
+                        type="button"
+                        class="secondary-button appearance-back"
+                        data-open-window="setup"
+                        data-close-current="appearance"
+                        data-scroll-top="true"
+                    >
+                        &lt; Back
+                    </button>
+                    <h1>
+                        Choose your desktop
+                    </h1>
+                    <p>
+                        Personalize the look of Guidelume.
+                    </p>
+                    <!-- Theme selection -->
+                    <h2>
+                        Theme
+                    </h2>
+                    <div class="color-grid" role="group" aria-label="Theme selection">
+                        <button
+                            type="button"
+                            class="color-choice selected"
+                            data-color="amber"
+                        >
+                            <span class="color-preview color-amber"></span>
+                            <span>
+                                Amber (default)
+                            </span>
+                        </button>
+                        <button
+                            type="button"
+                            class="color-choice"
+                            data-color="blue"
+                        >
+                            <span class="color-preview color-blue"></span>
+                            <span>
+                                Azure
+                            </span>
+                        </button>
+                        <button
+                            type="button"
+                            class="color-choice"
+                            data-color="violet"
+                        >
+                            <span class="color-preview color-violet"></span>
+                            <span>
+                                Violet
+                            </span>
+                        </button>
+                        <button
+                            type="button"
+                            class="color-choice"
+                            data-color="green"
+                        >
+                            <span class="color-preview color-green"></span>
+                            <span>
+                                Verdant
+                            </span>
+                        </button>
+                    </div>
+                    <h2>Background</h2>
+					<!-- Inspired by Smartphone colors lol. You think I could get away with Space Grey? -->
+                    <div class="color-grid background-grid" role="group" aria-label="Background color">
+                        <button type="button" class="color-choice selected" data-background="midnight">
+                            <span class="background-preview preview-midnight"></span>
+                            <span>Midnight (default)</span>
+                        </button>
+                        <button type="button" class="color-choice" data-background="slate">
+                            <span class="background-preview preview-slate"></span>
+                            <span>Slate</span>
+                        </button>
+                        <button type="button" class="color-choice" data-background="plum">
+                            <span class="background-preview preview-plum"></span>
+                            <span>Plum</span>
+                        </button>
+                        <button type="button" class="color-choice" data-background="forest">
+                            <span class="background-preview preview-forest"></span>
+                            <span>Forest</span>
+                        </button>
+                    </div>
+                    <!-- Taskbar selection -->
+                    <h2>
+                        Taskbar position
+                    </h2>
+                    <div class="taskbar-choice" role="group" aria-label="Taskbar position">
+                        <button
+                            type="button"
+                            class="taskbar-option"
+                            data-taskbar="top"
+                        >
+                            <div class="taskbar-preview top-preview">
+                                <span></span>
+                            </div>
+                            Top
+                        </button>
+                        <button
+                            type="button"
+                            class="taskbar-option selected"
+                            data-taskbar="bottom"
+                        >
+                            <div class="taskbar-preview bottom-preview">
+                                <span></span>
+                            </div>
+                            Bottom
+                        </button>
+                    </div>
+                    <div class="choice-actions">
+                        <button
+                            type="button"
+                            class="setup-button"
+                            id="finishSetup"
+                            disabled
+                        >
+                            Continue
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <section
+                class="setup-window"
+                data-window="settings"
+                data-window-width="780px"
+                data-window-height="700px"
+                hidden
+                aria-labelledby="settings-title"
+            >
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left">
+                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                        <span id="settings-title">Settings</span>
+                    </div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="settings" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="settings" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="settings" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content settings-content">
+                    <h1>Desktop settings</h1>
+                    <p>Adjust your theme, background, and taskbar position.</p>
+                    <p class="settings-unavailable-note" id="settingsUnavailableNote">These options are unavailable in Reader Mode. To change them, go through Setup again and choose Interactive Mode.</p>
+                    <h2>Theme</h2>
+                    <div class="color-grid" role="group" aria-label="Theme selection">
+                        <button type="button" class="color-choice" data-color="amber">
+                            <span class="color-preview color-amber"></span><span>Amber (default)</span>
+                        </button>
+                        <button type="button" class="color-choice" data-color="blue">
+                            <span class="color-preview color-blue"></span><span>Azure</span>
+                        </button>
+                        <button type="button" class="color-choice" data-color="violet">
+                            <span class="color-preview color-violet"></span><span>Violet</span>
+                        </button>
+                        <button type="button" class="color-choice" data-color="green">
+                            <span class="color-preview color-green"></span><span>Verdant</span>
+                        </button>
+                    </div>
+                    <h2>Background</h2>
+                    <div class="color-grid background-grid" role="group" aria-label="Background color">
+                        <button type="button" class="color-choice" data-background="midnight">
+                            <span class="background-preview preview-midnight"></span><span>Midnight (default)</span>
+                        </button>
+                        <button type="button" class="color-choice" data-background="slate">
+                            <span class="background-preview preview-slate"></span><span>Slate</span>
+                        </button>
+                        <button type="button" class="color-choice" data-background="plum">
+                            <span class="background-preview preview-plum"></span><span>Plum</span>
+                        </button>
+                        <button type="button" class="color-choice" data-background="forest">
+                            <span class="background-preview preview-forest"></span><span>Forest</span>
+                        </button>
+                    </div>
+                    <h2>Taskbar position</h2>
+                    <div class="taskbar-choice" role="group" aria-label="Taskbar position">
+                        <button type="button" class="taskbar-option" data-taskbar="top">
+                            <div class="taskbar-preview top-preview"><span></span></div>
+                            Top
+                        </button>
+                        <button type="button" class="taskbar-option" data-taskbar="bottom">
+                            <div class="taskbar-preview bottom-preview"><span></span></div>
+                            Bottom
+                        </button>
+                    </div>
+                    <p class="settings-note">More features will come with time.</p>
+                </div>
+            </section>
+            <section
+                class="setup-window"
+                data-window="accessibility"
+                data-window-width="620px"
+                data-window-height="540px"
+                hidden
+                aria-labelledby="accessibility-title"
+            >
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left">
+                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                        <span id="accessibility-title">Accessibility</span>
+                    </div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="accessibility" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="accessibility" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="accessibility" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content accessibility-content">
+                    <h1>Accessibility</h1>
+                    <p>Choose a comfortable text size.</p>
+                    <div class="accessibility-size-options" role="group" aria-label="Text size">
+                        <button type="button" class="accessibility-size" data-text-size="small" aria-pressed="false">Small</button>
+                        <button type="button" class="accessibility-size selected" data-text-size="default" aria-pressed="true">Default</button>
+                        <button type="button" class="accessibility-size" data-text-size="large" aria-pressed="false">Large</button>
+                        <button type="button" class="accessibility-size" data-text-size="extra-large" aria-pressed="false">Extra Large</button>
+                    </div>
+					<span>Alternative Font</span>
+					<button type="button" class="accessibility-font-toggle start-menu-reset" data-accessible-font-toggle data-accessible-font-label aria-pressed="false">Accessible Font: Off</button>
+					<p class="accessibility-note">Replaces the default Quicksand with Lexend.</p>
+					<br>
+					<span>Motion</span>
+					<label class="crt-toggle accessibility-motion-toggle">
+                        <input type="checkbox" id="reducedMotionToggle">
+                        <span>Reduced motion</span>
+                    </label>
+                    <p class="accessibility-note">When enabled, window opening and closing animations are turned off.</p>
+				</div>
+            </section>
+        </main>
+        <div
+            id="scanlines"
+            aria-hidden="true"
+        ></div>
+    </div>
+</body>
+</html>

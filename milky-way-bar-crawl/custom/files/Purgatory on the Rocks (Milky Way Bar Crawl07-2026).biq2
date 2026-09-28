@@ -1,0 +1,668 @@
+{
+  "game": "LE3",
+  "description": "(Update 1: Fixed some small errors) | Dark, burning, and bittersweet - one last drink at the edge of all things.",
+  "restorebeforeinstall": false,
+  "mods": [
+    {
+      "moddescpath": "LE3\\LE3 Community Patch & Framework\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:33:06.0930323+02:00",
+      "moddeschash": "fbdda37f8870485a91f9717c15c09c9c",
+      "moddescsize": 2998,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/13?tab=files&file_id=13154",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "889B1823",
+        "39AC4138",
+        "0ED9AC44"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "LE3 Community Patch & Framework"
+    },
+    {
+      "moddescpath": "LE3\\Myriad Pro Begone (LE3)\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:33:40.2390396+02:00",
+      "moddeschash": "200b4b452829cf836251fa4d153a7a33",
+      "moddescsize": 981,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1070?tab=files&file_id=12151",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Myriad Pro Begone (LE3)"
+    },
+    {
+      "moddescpath": "LE3\\Journal Enhanced (LE3)\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:33:48.9236138+02:00",
+      "moddeschash": "78b1b65cac50138d866a357a61c9c162",
+      "moddescsize": 1140,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1508?tab=files&file_id=9128",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "9832071C"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Journal Enhanced (LE3)"
+    },
+    {
+      "moddescpath": "LE3\\Permanent CIC Holograms\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:33:52.9323555+02:00",
+      "moddeschash": "e0dd4c826d7c03f126f5e2eec843f245",
+      "moddescsize": 809,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/868?tab=files&file_id=10324",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Permanent CIC Holograms"
+    },
+    {
+      "moddescpath": "LE3\\FISH (Plus Kelly)\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:33:57.7123948+02:00",
+      "moddeschash": "e628df9fe109ece9a325044a3c202d01",
+      "moddescsize": 742,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/386?tab=files&file_id=12757",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "B00A72C3"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "FISH (Plus Kelly)"
+    },
+    {
+      "moddescpath": "LE3\\Diana Allers Overhaul\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:03.8540706+02:00",
+      "moddeschash": "360a85aae033c5a808230673a12b6771",
+      "moddescsize": 1275,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1136?tab=files&file_id=4044",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "8B810260",
+          "OriginalValue": "8B810260"
+        }
+      ],
+      "allchosenoptions": [
+        "8B810260"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Diana Allers Overhaul"
+    },
+    {
+      "moddescpath": "LE3\\Fate of Emily Wong LE3\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:04.0724307+02:00",
+      "moddeschash": "74fab55eeff9523d4e9ffffb0e7b7cd6",
+      "moddescsize": 541,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1223?tab=files&file_id=4879",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Fate of Emily Wong LE3"
+    },
+    {
+      "moddescpath": "LE3\\Reegar Lives\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:04.1614064+02:00",
+      "moddeschash": "8efd138a7beeb7d1258630d81fb0173c",
+      "moddescsize": 511,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1129?tab=files&file_id=4034",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Reegar Lives"
+    },
+    {
+      "moddescpath": "LE3\\Apartment Additions\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:04.371728+02:00",
+      "moddeschash": "317911d3715bbd98308e11a7cded6c9c",
+      "moddescsize": 516,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1598?tab=files&file_id=6466",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Apartment Additions"
+    },
+    {
+      "moddescpath": "LE3\\Pinnacle Station Apartment (LE3)\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:04.5516333+02:00",
+      "moddeschash": "17e89c17ae16501586d79d4e9311530d",
+      "moddescsize": 453,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1588?tab=files&file_id=10521",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Pinnacle Station Apartment (LE3)"
+    },
+    {
+      "moddescpath": "LE3\\Datapad App Messages Expanded\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:04.9738405+02:00",
+      "moddeschash": "caa2b7a8c619eb82634d45b1df3a807a",
+      "moddescsize": 402,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2790?tab=files&file_id=12469",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Datapad App Messages Expanded"
+    },
+    {
+      "moddescpath": "LE3\\Remove Enemy Smoke Grenades\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:08.0987874+02:00",
+      "moddeschash": "78167f1f50f7b716fa51fc18883f72dc",
+      "moddescsize": 729,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1691?tab=files&file_id=10306",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Remove Enemy Smoke Grenades"
+    },
+    {
+      "moddescpath": "LE3\\No Movement Penalty During Rannoch Boss Fight\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:11.1465884+02:00",
+      "moddeschash": "310a030f1265f1ce1f1c5caa28bfbdf2",
+      "moddescsize": 815,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1156?tab=files&file_id=6039",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "No Movement Penalty During Rannoch Boss Fight"
+    },
+    {
+      "moddescpath": "LE3\\Infinite Ammo in Geth Consensus\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:11.3963069+02:00",
+      "moddeschash": "227dbc8ccffd786c7bf3deb7f59a240e",
+      "moddescsize": 415,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1565?tab=files&file_id=6261",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Infinite Ammo in Geth Consensus"
+    },
+    {
+      "moddescpath": "LE3\\Oriana looks like Miranda's Twin (ME3LE)\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:16.5598915+02:00",
+      "moddeschash": "516bed9720c4f2fb7ed09f0387784643",
+      "moddescsize": 2958,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/430?tab=files&file_id=2637",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "F719E0C2",
+          "OriginalValue": "F719E0C2"
+        }
+      ],
+      "allchosenoptions": [
+        "F719E0C2"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Oriana looks like Miranda's Twin (ME3LE)"
+    },
+    {
+      "moddescpath": "LE3\\Unique Kahlee Sanders\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:16.7596633+02:00",
+      "moddeschash": "720148bef50d55938703f0e13e662eb1",
+      "moddescsize": 1234,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1175?tab=files&file_id=13014",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Unique Kahlee Sanders"
+    },
+    {
+      "moddescpath": "LE3\\Kasumi Eye Tweak LE3\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:17.0750975+02:00",
+      "moddeschash": "9fc4ec237cc917bff4ab96b27a27bf12",
+      "moddescsize": 366,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1484?tab=files&file_id=8691",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Kasumi Eye Tweak LE3"
+    },
+    {
+      "moddescpath": "LE3\\Dreams Remade\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:20.4133011+02:00",
+      "moddeschash": "4c85fa75c5dadd6900eb05a788a3b092",
+      "moddescsize": 760,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1630?tab=files&file_id=13482",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Dreams Remade"
+    },
+    {
+      "moddescpath": "LE3\\Expanded Universe - Mod Menu\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:20.7801854+02:00",
+      "moddeschash": "a30ea94613cc7a37dd263b807cbdc76e",
+      "moddescsize": 523,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1824?tab=files&file_id=8130",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Expanded Universe - Mod Menu"
+    },
+    {
+      "moddescpath": "LE3\\Expanded Galaxy Mod (LE)\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:34.6372166+02:00",
+      "moddeschash": "0994d27115d25ef6cea4c5fc98bee602",
+      "moddescsize": 18051,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/422?tab=files&file_id=13159",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "40CB52EC",
+        "3C552D16",
+        "D0DB2884",
+        "175DF112",
+        "AF4F9E53",
+        "FBBDC5B1"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Expanded Galaxy Mod (LE)"
+    },
+    {
+      "moddescpath": "LE3\\WiredTexan's Shorter Notifications (LE3)\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:47.8571693+02:00",
+      "moddeschash": "ada3e7127c759b9b20c2d207034c4b08",
+      "moddescsize": 4329,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/803?tab=files&file_id=3517",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "CE6266A1",
+          "OriginalValue": "CE6266A1"
+        }
+      ],
+      "allchosenoptions": [
+        "CE6266A1"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "WiredTexan's Shorter Notifications (LE3)"
+    },
+    {
+      "moddescpath": "LE3\\Omega Hub\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:34:53.3084598+02:00",
+      "moddeschash": "b762676bdea69edc070453a0a6d87636",
+      "moddescsize": 866,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1597?tab=files&file_id=11736",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "10B60E97",
+          "OriginalValue": "10B60E97"
+        }
+      ],
+      "allchosenoptions": [
+        "10B60E97"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Omega Hub"
+    },
+    {
+      "moddescpath": "LE3\\Miranda Mod (LE3)\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:35:02.470014+02:00",
+      "moddeschash": "31ca2fa6ccf323a9e9c2541581dcbcb7",
+      "moddescsize": 4401,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1350?tab=files&file_id=11836",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "DAED7FFE",
+          "OriginalValue": "DAED7FFE"
+        },
+        {
+          "IsPlus": true,
+          "Key": "16FC271E",
+          "OriginalValue": "16FC271E"
+        }
+      ],
+      "allchosenoptions": [
+        "D9561B62",
+        "A11D911B",
+        "6D533C50",
+        "13F477CD",
+        "56EA7B31",
+        "53BEF5EA",
+        "E1D0B124",
+        "16FC271E",
+        "DAED7FFE",
+        "289239BD"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Miranda Mod (LE3)"
+    },
+    {
+      "moddescpath": "LE3\\N7 A Spectre's Gift\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:35:04.2360155+02:00",
+      "moddeschash": "5a3ec9917918d8c488c0fc43b302cd66",
+      "moddescsize": 515,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1956?tab=files&file_id=8908",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "N7: A Spectre's Gift"
+    },
+    {
+      "moddescpath": "LE3\\Citadel Epilogue Mod (FULL)\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:35:05.4204247+02:00",
+      "moddeschash": "8dd5999634778b88d2724030f94def90",
+      "moddescsize": 731,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1018?tab=files&file_id=13490",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Citadel Epilogue Mod (FULL)"
+    },
+    {
+      "moddescpath": "LE3\\Audemus' Happy Ending Mod\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:35:07.6349323+02:00",
+      "moddeschash": "469b33a1cc43efabf3ceda159a0e129a",
+      "moddescsize": 867,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/323?tab=files&file_id=13311",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Audemus' Happy Ending Mod"
+    },
+    {
+      "moddescpath": "LE3\\Armax Expansion Mod\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:35:10.9324795+02:00",
+      "moddeschash": "ead8b460d9b09ea8707a825aa6025e25",
+      "moddescsize": 520,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1269?tab=files&file_id=10441",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Armax Expansion Mod"
+    },
+    {
+      "moddescpath": "LE3\\Harbinger Overhaul Mod\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:35:11.7134674+02:00",
+      "moddeschash": "84751a5d580a87a4aa8aca60d40ac68e",
+      "moddescsize": 373,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/711?tab=files&file_id=10785",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Harbinger Overhaul Mod"
+    },
+    {
+      "moddescpath": "LE3\\LE3 Diversification Project\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:35:17.9864256+02:00",
+      "moddeschash": "79c3f0dcf61029b24e74e6271974d073",
+      "moddescsize": 2176,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1174?tab=files&file_id=12236",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "890D91D4",
+          "OriginalValue": "890D91D4"
+        }
+      ],
+      "allchosenoptions": [
+        "890D91D4",
+        "B6663AB2",
+        "2E37A71B",
+        "58D13268",
+        "57CC7475"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "LE3 Diversification Project"
+    },
+    {
+      "moddescpath": "LE3\\Liara Mourns the Dead\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:36:39.6732988+02:00",
+      "moddeschash": "a1ea87d1180c346b7bbde0e505bfdbaa",
+      "moddescsize": 876,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1713?tab=files&file_id=12819",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "0F152DA2",
+          "OriginalValue": "0F152DA2"
+        }
+      ],
+      "allchosenoptions": [
+        "0F152DA2"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Liara Mourns the Dead"
+    },
+    {
+      "moddescpath": "LE3\\Spectre Expansion Mod\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:36:43.0975338+02:00",
+      "moddeschash": "f90dd06a000da67ebe4170e2eec9a57f",
+      "moddescsize": 1274,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/15?tab=files&file_id=12331",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "3E145C50",
+          "OriginalValue": "3E145C50"
+        }
+      ],
+      "allchosenoptions": [
+        "3E145C50",
+        "9D18710F"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Spectre Expansion Mod"
+    },
+    {
+      "moddescpath": "LE3\\Reaper Retrofits\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:36:49.0216332+02:00",
+      "moddeschash": "db11dbc795551e608bd114c1e1c351be",
+      "moddescsize": 1312,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/833?tab=files&file_id=11740",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "9D18710F",
+        "11253F56"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Reaper Retrofits"
+    },
+    {
+      "moddescpath": "LE3\\Take Earth Back\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:36:52.0879827+02:00",
+      "moddeschash": "14b3f099a0097e5b762e3ebf9da94b70",
+      "moddescsize": 973,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/16?tab=files&file_id=10779",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "31C9861D"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Take Earth Back"
+    },
+    {
+      "moddescpath": "LE3\\Leviathan Retrofits\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:37:02.7916967+02:00",
+      "moddeschash": "7dfad250c1bb7adf63cb491d071a48c0",
+      "moddescsize": 994,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2445?tab=files&file_id=10438",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "F14A7994",
+        "37BF4E88"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Leviathan Retrofits"
+    },
+    {
+      "moddescpath": "LE3\\Geth Retrofits\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:37:06.2771563+02:00",
+      "moddeschash": "0e8e34e48a1a1dc7f1f1d13061f11187",
+      "moddescsize": 1439,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/847?tab=files&file_id=11738",
+      "userchosenoptions": [
+        {
+          "IsPlus": false,
+          "Key": "F86D2B57",
+          "OriginalValue": "F86D2B57"
+        }
+      ],
+      "allchosenoptions": [
+        "9D18710F"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Geth Retrofits"
+    },
+    {
+      "moddescpath": "LE3\\Cerberus Retrofits\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:37:09.3855804+02:00",
+      "moddeschash": "efac889bac32e16bd84e2ac2f78d4cd4",
+      "moddescsize": 1714,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/709?tab=files&file_id=12244",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "9D18710F",
+        "9B9266EF",
+        "11253F56"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Cerberus Retrofits"
+    },
+    {
+      "moddescpath": "LE3\\Reworked Kai Leng\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:37:25.860433+02:00",
+      "moddeschash": "1db3a54c5cff2507e58eb8ec6061ad8d",
+      "moddescsize": 1552,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/1038?tab=files&file_id=11821",
+      "userchosenoptions": [
+        {
+          "IsPlus": true,
+          "Key": "258A1070",
+          "OriginalValue": "258A1070"
+        },
+        {
+          "IsPlus": true,
+          "Key": "04F889F4",
+          "OriginalValue": "04F889F4"
+        }
+      ],
+      "allchosenoptions": [
+        "258A1070",
+        "04F889F4"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Reworked Kai Leng"
+    },
+    {
+      "moddescpath": "LE3\\CAT6 Retrofits\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:37:28.4923202+02:00",
+      "moddeschash": "009696d9de013100852754c1bc55fb5a",
+      "moddescsize": 1507,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2410?tab=files&file_id=11737",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "B4ED51EE",
+        "F14A7994",
+        "37BF4E88"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "CAT6 Retrofits"
+    },
+    {
+      "moddescpath": "LE3\\Unique Udina Face Restored LE3\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:37:36.1497092+02:00",
+      "moddeschash": "77ff518fe9312254c58945709e8f8392",
+      "moddescsize": 1295,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/2716?tab=files&file_id=12361",
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "Unique Udina Face Restored LE3"
+    },
+    {
+      "moddescpath": "LE3\\Subtle Ammo Icons (LE3)\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:37:55.8812396+02:00",
+      "moddeschash": "c39f6d82b3ea894222204eb40f85dc9c",
+      "moddescsize": 1197,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/3257?tab=files&file_id=13666",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "subtleicons"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "Subtle Ammo Icons (LE3)"
+    },
+    {
+      "moddescpath": "LE3\\LE3 Opening Remaster\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:37:59.8087667+02:00",
+      "moddeschash": "bea523d7e72aeed0e3c6c6b6550b7dad",
+      "moddescsize": 907,
+      "downloadlink": "https://nexusmods.com/masseffectlegendaryedition/mods/19?tab=files&file_id=13491",
+      "userchosenoptions": [],
+      "allchosenoptions": [
+        "4F6D5C37"
+      ],
+      "haschosenoptions": true,
+      "IsStandalone": false,
+      "modname": "LE3 Opening Remaster"
+    },
+    {
+      "moddescpath": "LE3\\A Lot of Videos for LE3\\moddesc.ini",
+      "configurationtime": "2026-07-26T20:38:00.0465733+02:00",
+      "moddeschash": "620df3f8e9c9637d24876b4b980d5b04",
+      "moddescsize": 627,
+      "downloadlink": null,
+      "userchosenoptions": [],
+      "allchosenoptions": [],
+      "haschosenoptions": true,
+      "IsStandalone": true,
+      "modname": "A Lot of Videos for LE3"
+    }
+  ],
+  "asimods": [
+    {
+      "updategroup": 31,
+      "version": 2
+    },
+    {
+      "updategroup": 46,
+      "version": 2
+    },
+    {
+      "updategroup": 87,
+      "version": 3
+    }
+  ],
+  "texturemodfiles": [],
+  "queuename": "Purgatory on the Rocks (Milky Way Bar Crawl | 07-2026)",
+  "ImporterDescription": "Mods that will be installed by install group:\r\n - LE3 Community Patch & Framework\r\n - Myriad Pro Begone (LE3)\r\n - Journal Enhanced (LE3)\r\n - Permanent CIC Holograms\r\n - FISH (Plus Kelly)\r\n - Diana Allers Overhaul\r\n - Fate of Emily Wong LE3\r\n - Reegar Lives\r\n - Apartment Additions\r\n - Pinnacle Station Apartment (LE3)\r\n - Datapad App Messages Expanded\r\n - Remove Enemy Smoke Grenades\r\n - No Movement Penalty During Rannoch Boss Fight\r\n - Infinite Ammo in Geth Consensus\r\n - Oriana looks like Miranda's Twin (ME3LE)\r\n - Unique Kahlee Sanders\r\n - Kasumi Eye Tweak LE3\r\n - Dreams Remade\r\n - Expanded Universe - Mod Menu\r\n - Expanded Galaxy Mod (LE)\r\n - WiredTexan's Shorter Notifications (LE3)\r\n - Omega Hub\r\n - Miranda Mod (LE3)\r\n - N7: A Spectre's Gift\r\n - Citadel Epilogue Mod (FULL)\r\n - Audemus' Happy Ending Mod\r\n - Armax Expansion Mod\r\n - Harbinger Overhaul Mod\r\n - LE3 Diversification Project\r\n - Liara Mourns the Dead\r\n - Spectre Expansion Mod\r\n - Reaper Retrofits\r\n - Take Earth Back\r\n - Leviathan Retrofits\r\n - Geth Retrofits\r\n - Cerberus Retrofits\r\n - Reworked Kai Leng\r\n - CAT6 Retrofits\r\n - Unique Udina Face Restored LE3\r\n - Subtle Ammo Icons (LE3)\r\n - LE3 Opening Remaster\r\n - A Lot of Videos for LE3\r\n - AutoTOC (ASI mod)\r\n - PNG Screenshots (ASI mod)\r\n - Texture Override (ASI mod)\r\n\nImporting will add this install group to Batch Installer. This does not import any of the listed mods."
+}

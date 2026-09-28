@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    
+    <title>MWBC | Extras</title>
+	<meta property="og:title" content="Milky Way Bar Crawl">
+	<meta property="og:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta property="og:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	<meta property="og:url" content="https://guidelume.github.io/milky-way-bar-crawl/extras.html">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Milky Way Bar Crawl">
+	<meta name="twitter:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta name="twitter:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+    <link rel="shortcut icon" href="./custom/favicon.svg" />
+    
+	<link rel="stylesheet" href="../engine/css/fonts.css" />
+    <link rel="stylesheet" href="../engine/css/guide.css" />
+    <link rel="stylesheet" href="../engine/css/accessible-fonts.css" />
+	<link rel="stylesheet" href="./custom/css/extras.css" />
+</head>
+<body>
+
+    <!-- Background (single reliable layer) -->
+    <div class="bg-viewport" aria-hidden="true">
+        <div id="bgLayer" class="bg-layer" style="background-image:url('./custom/img/background/bg-extra-2-c1.webp');"></div>
+    </div>
+    <div class="bg-vignette" aria-hidden="true"></div>
+
+    <div class="layout" id="layoutRoot">
+
+        <!-- LEFT -->
+		<aside class="left-panel" id="leftPanel" role="navigation" aria-label="Chapters">
+
+			<div class="nav-section open" data-section="main">
+				<button class="nav-section-header" type="button" aria-expanded="true">
+					<span>Milky Way Bar Crawl</span>
+					<span class="nav-section-caret">▾</span>
+				</button>
+				
+				<ul class="chap-list">
+					<li class="chap-item" data-href="intro.html">
+						<a class="chap-link" href="intro.html">1. Introduction</a>
+					</li>
+
+					<li class="chap-item" data-href="setup.html">
+						<a class="chap-link" href="setup.html">2. Setup</a>
+					</li>
+
+					<li class="chap-item" data-href="me1.html">
+						<a class="chap-link" href="me1.html">3.1. LE1</a>
+					</li>
+
+					<li class="chap-item" data-href="me2.html">
+						<a class="chap-link" href="me2.html">3.2. LE2</a>
+					</li>
+
+					<li class="chap-item" data-href="me3.html">
+						<a class="chap-link" href="me3.html">3.3. LE3</a>
+					</li>
+
+					<li class="chap-item" data-href="finish.html">
+						<a class="chap-link" href="finish.html">4. Finish</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="after-hours">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>After Hours</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="extras.html">
+						<a class="chap-link" href="extras.html">5. Extras</a>
+					</li>
+
+					<li class="chap-item" data-href="textures.html">
+						<a class="chap-link" href="textures.html">6. Textures</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="appendices">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>Appendices</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="questions.html">
+						<a class="chap-link" href="questions.html">7. Common Questions</a>
+					</li>
+
+					<li class="chap-item" data-href="changelog.html">
+						<a class="chap-link" href="changelog.html">8. Changelog</a>
+					</li>
+
+					<li class="chap-item" data-href="credits.html">
+						<a class="chap-link" href="credits.html">9. Credits</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-updated" role="contentinfo">
+				Last Updated:<br>
+				August 2026 · v2.1
+			</div>
+			
+		</aside>
+
+        <!-- CENTER -->
+        <main class="center-col" role="main">
+            <div class="content-shell" id="contentShell">
+
+                <div class="title-box">
+                    <div id="titleBackground" class="title-bg"></div>
+					<button id="home" class="btn text-standard" aria-label="Return to Start"><a href="../index-mwbc.html">Back to Start</a></button>
+                    <h1 id="projectTitle">After Hours - Extras</h1>
+                    <button id="fontToggle" class="btn text-standard" aria-label="Toggle accessible fonts" title="Font Toggle">Aa</button>
+                </div>
+				
+				<div class="content-progress" aria-hidden="true">
+					<div class="content-progress-bar"></div>
+				</div>
+				
+                <article class="content-box" id="contentBox" tabindex="0" aria-labelledby="stepTitle">
+                    
+                    <!-- Panel 0 -->
+                    <section id="preamble" class="panel open" data-index="0">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>Time To Choose</h3>
+                            <div class="caret">▾</div>
+                        </header>
+
+                        <div class="panel-body">
+                            <p class="text-standard">
+                                Welcome to the Extras Section!<br><br>
+                                This is where you'll find mods that didn't quite make the main lists, but are still well worth a look.<br>
+								While I can recommend each of them in good conscience, I don't personally use every mod listed here. Because of that, support is necessarily a little more limited, so be sure to read each mod page carefully before installing any of them.
+                            </p>
+                            
+                            <!-- Subsection 0.1 -->
+                            <div id="preamble-last" class="anchor" data-parent="preamble">
+                                <h4>A Note on Appearance Mods</h4>
+                                <div class="caution">
+                                    <div class="icon">!</div>
+                                    <p class="text-standard">
+                                        Many appearance mods require you to use the <b><u><a href="https://github.com/KarlitosVII/trilogy-save-editor">Trilogy Save Editor</a></u></b> to give your Shepard these styles manually.<br>
+                                        Be extra careful reading the instructions for these mods.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </section>
+                    
+					<!--
+					Possible additions I forgot:
+					- Scottina LE3 Mods
+					- Holster Mod LE3
+					- ?
+					-->
+					
+                    <!-- Panel 1 -->
+                    <section id="me1" class="panel" data-index="1">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>LE1</h3>
+                            <div class="caret">▾</div>
+                        </header>
+                        
+                        <div class="panel-body">
+                            <p class="text-standard">
+                                A light sprinkling of flavor for a glass that is threatening to shatter if you look at it funny.
+                            </p>
+                            
+                            <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br>
+							
+							<div id="unc-morality" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1394" target="_blank">
+											UNC Morality
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/vegz" target="_blank">vegz</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Allows you to play both UNC missions that are normally gated behind a high paragon/renegade score.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="da-o" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1560" target="_blank">
+											LE1 Definitive Audio Overhaul
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Devinite" target="_blank">Devinite</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Overhauls a ton of sounds effects by using those of later games.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="re-p" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/532" target="_blank">
+											Replenish Grenades LE1
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/HenBagle" target="_blank">HenBagle</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Allows you to replenish your grenades from your locker on the Normandy.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="qu-ick" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1026" target="_blank">
+											Quick Loot (LE1)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/rondeeno" target="_blank">rondeeno</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Prevents the recovered items menu from appearing when looting, making the experience more seamless.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="les-s" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/822" target="_blank">
+											Less Intense Vigil
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/HenBagle" target="_blank">HenBagle</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Reduces the visual intensity of Vigil for those sensitive to flashing lights.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="chi-ld" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1812" target="_blank">
+											Children of Rannoch (LE1)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/mithran56" target="_blank">mithran56</a> and naNuke
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									A very extensive visual overhaul of the Quarians.<br>
+									I like the vanilla look of the Quarians, but this is probably my favorite reinterpretation of them.<br>
+									The only reason it's here is because, as of writing, there is no version for LE3 yet.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="smt-gui1" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2121" target="_blank">
+											Smoother GUI (LE1)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Deepk" target="_blank">Deepk</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									The menus and other GUI elements in the game are animated at 30fps which might come across as sluggish. This mod increases their fps to 60.<br>
+									I've been staring at these menus for over a decade so seeing them so smooth just looks odd to me.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="om-key1" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/959" target="_blank">
+											Omni-Key Separator (LE1)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Herobrine24" target="_blank">Herobrine24</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									A lot of interactions like sprint or use are bundled into a single Omni-Key, i.e. spacebar or equivalent. This mod lets you freely rebind these actions.<br>
+									I never found this particularly annoying.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="pu-nch" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1524" target="_blank">
+											Punch Charles Saracino
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/beccatoria" target="_blank">beccatoria</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Does what it says on the tin.<br>
+									The interaction is funny, but I don't need to see it every playthrough.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="sam-e1" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/564" target="_blank">
+											Same-Gender Romances (LE1)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/rondeeno" target="_blank">rondeeno</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Allows Ashley and Kaidan to be romanced by both MaleShep and FemShep.<br>
+									I usually end up romancing Liara or Garrus, so I've never had much use for it.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="mor-n" class="mod-card anchor" data-parent="me1">
+								<div class="mod-header">
+									<h4>Community Creators: Appearance</h4>
+								</div>
+
+								<div class="mod-description text-standard">
+									If you're looking to customize your Shepard, there are two creators I'd like to highlight:
+								</div>
+								
+								<h4>
+									<a href="https://next.nexusmods.com/profile/MorningAngel/mods?gameId=3712" target="_blank">
+										MorningAngel
+									</a>
+								</h4>
+								
+								<p class="text-standard">
+									and
+								</p>
+								
+								<h4>
+									<a href="https://next.nexusmods.com/profile/clericofshadows/mods?gameId=3712" target="_blank">
+										ClericOfShadows
+									</a>
+								</h4>
+
+								<div class="mod-description text-standard">
+									Their work is truly without equal.
+								</div>
+							</div>
+                            
+                        </div>
+                    </section>
+                    
+                    <!-- Panel 2 -->
+                    <section id="me2" class="panel" data-index="2">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>LE2</h3>
+                            <div class="caret">▾</div>
+                        </header>
+                        
+                        <div class="panel-body">
+                            <p class="text-standard">
+                                Garnish for what many call their favorite. Which is good because the recipe list reads like a word search.
+                            </p>
+                            
+                            <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br>
+							
+                            <div id="dog-tag" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2615" target="_blank">
+											Dogtag Tracker
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/vegz" target="_blank">vegz</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Adds a distance tracker during the Normandy Crash Site DLC, making it much easier to track down every dog tag.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="kol-yat" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1701" target="_blank">
+											Skip Kolyat Trailing Section
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Herobrine24" target="_blank">Herobrine24</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Skips the trailing section of Thane's loyalty mission.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="jac-ob" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1035" target="_blank">
+											Jacob Respects Thane and Tali
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Herobrine24" target="_blank">Herobrine24</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Removes several comments from Jacob that come across as unnecessarily hostile towards Thane and Tali.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="shep-more" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/187" target="_blank">
+											EGM Armors for LE2
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Kkjiro" target="_blank">Kinkojiro</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Even more armors! Backported from the OT version of EGM or Ark Mod.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="chi-ld" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2156" target="_blank">
+											Children of Rannoch (LE2)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/mithran56" target="_blank">mithran56</a> and naNuke
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									A very extensive visual overhaul of the Quarians.<br>
+									I like the vanilla look of the Quarians, but this is probably my favorite reinterpretation of them.<br>
+									The only reason it's here is because, as of writing, there is no version for LE3 yet.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="hair-mo3" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1498" target="_blank">
+											Halcyon Hairpack (LE2)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Audemus" target="_blank">Audemus</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									New hairstyles based on designs from The Outer Worlds.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="smt-gui2" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2122" target="_blank">
+											Smoother GUI (LE2)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Deepk" target="_blank">Deepk</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									The menus and other GUI elements in the game are animated at 30fps which might come across as sluggish. This mod increases their fps to 60.<br>
+									I've been staring at these menus for over a decade so seeing them so smooth just looks odd to me.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="om-key1" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/959" target="_blank">
+											Omni-Key Separator (LE2)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Herobrine24" target="_blank">Herobrine24</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									A lot of interactions like sprint or use are bundled into a single Omni-Key, i.e. spacebar or equivalent. This mod lets you freely rebind these actions.<br>
+									I never found this particularly annoying.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="mo-sto" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2603" target="_blank">
+											Store Interface on Normandy
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/vegz" target="_blank">vegz</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Adds a store interface to the Normandy, similar to the one found in LE3. For a 10% markup you can shop from the comfort of your... uh, engineering deck.<br>
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="sam-e1" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1115" target="_blank">
+											Same-Gender Romances (LE2)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/rondeeno" target="_blank">rondeeno</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Allows Thane and Tali to be romanced by both MaleShep and FemShep. Also allows for other same gender content where possible and imports same gender romances from LE1 correctly.<br>
+									I usually end up romancing Liara or Garrus, so I've never had much use for it.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="mo-gay" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/489" target="_blank">
+											More Gay Romances (LE2)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Mentlegen3218" target="_blank">Mentlegen</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Allows FemShep to romance Miranda and Jack by utilising unused dialogue and splicing.
+								</div>
+								
+								<div class="mod-note">
+									<b>Note:</b> The mod still works as of writing, but the author has retired from modding.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="mor-n" class="mod-card anchor" data-parent="me2">
+								<div class="mod-header">
+									<h4>Community Creators: Appearance</h4>
+								</div>
+
+								<div class="mod-description text-standard">
+									If you're looking to customize your Shepard, there are two creators I'd like to highlight:
+								</div>
+
+								<h4>
+									<a href="https://next.nexusmods.com/profile/MorningAngel/mods?gameId=3712" target="_blank">
+										MorningAngel
+									</a>
+								</h4>
+
+								<p class="text-standard">
+									and
+								</p>
+
+								<h4>
+									<a href="https://next.nexusmods.com/profile/clericofshadows/mods?gameId=3712" target="_blank">
+										ClericOfShadows
+									</a>
+								</h4>
+
+								<div class="mod-description text-standard">
+									Their work is truly without equal.
+								</div>
+							</div>
+                            
+                        </div>
+                    </section>
+                    
+                    <!-- Panel 3 -->
+                    <section id="me3" class="panel" data-index="3">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>LE3</h3>
+                            <div class="caret">▾</div>
+                        </header>
+                        
+                        <div class="panel-body">
+                            <p class="text-standard">
+								Some see a mess, some see a masterpiece. Me? I see 400 cupcakes.
+                            </p>
+                            
+                            <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br>
+							
+                            <div id="smt-gui3" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2123" target="_blank">
+											Smoother GUI (LE3)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Deepk" target="_blank">Deepk</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									The menus and other GUI elements in the game are animated at 30fps which might come across as sluggish. This mod increases their fps to 60.<br>
+									I've been staring at these menus for over a decade so seeing them so smooth just looks odd to me.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="om-key3" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/959" target="_blank">
+											Omni-Key Separator (LE3)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Herobrine24" target="_blank">Herobrine24</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									A lot of interactions like sprint or use are bundled into a single Omni-Key, i.e. spacebar or equivalent. This mod lets you freely rebind these actions.<br>
+									I never found this particularly annoying.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="glo-rious" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2771" target="_blank">
+											Glorious Elevators
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/linkenski" target="_blank">Lunkensko</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Replaces the static elevator on the Normandy with an actual moving one!
+								</div>
+								
+								<div class="mod-note">
+									<b>Note:</b> As of writing the mod is <b>not compatible</b> with EGM or Dreams Remade.
+								</div>
+							</div>
+							
+							<br>
+							
+							<div id="al-ter" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2507" target="_blank">
+											Altered Assassin
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/beccatoria" target="_blank">beccatoria</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Replaces Kai Leng with either Miranda or Jacob, including new dialogue, a revised boss battle, and an overhauled narrative arc for Jacob in either story path.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="shep-mor3" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/187" target="_blank">
+											EGM Armors for LE3
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Kkjiro" target="_blank">Kinkojiro</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Even more armors! Backported from the OT version of EGM or Ark Mod.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="hair-mo5" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1499" target="_blank">
+											Halcyon Hairpack (LE3)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Audemus" target="_blank">Audemus</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									New hairstyles based on designs from The Outer Worlds.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							
+							
+							
+							
+							<div id="mor-n" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>Community Creators: Appearance</h4>
+								</div>
+
+								<div class="mod-description text-standard">
+									If you're looking to customize your Shepard, there are two creators I'd like to highlight:
+								</div>
+
+								<h4>
+									<a href="https://next.nexusmods.com/profile/MorningAngel/mods?gameId=3712" target="_blank">
+										MorningAngel
+									</a>
+								</h4>
+
+								<p class="text-standard">
+									and
+								</p>
+
+								<h4>
+									<a href="https://next.nexusmods.com/profile/clericofshadows/mods?gameId=3712" target="_blank">
+										ClericOfShadows
+									</a>
+								</h4>
+
+								<div class="mod-description text-standard">
+									Their work is truly without equal.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="shep-v" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/850" target="_blank">
+											FemShep v BroShep - Duel of Your Shepards
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Exkywor" target="_blank">Exkywor</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Allows you to fully customize the look of your Citadel clone.
+								</div>
+
+								<div class="mod-note">
+									<b>Note:</b> Properly setting this mod up can be a little tricky. There is a guide on the Nexus page that should get you through okay.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="kai-kai" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1424" target="_blank">
+											Kaidan Alenko Overhaul (LE3)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/MentalHygiene" target="_blank">MentalHygiene</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									A new look for Kaidan including some new outfits.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="kai-arm" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2234" target="_blank">
+											Kaidan Alenko's Guardian Armory (LE3)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/clericofshadows" target="_blank">ClericOfShadows</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									New armors for Kaidan based on designs from Destiny 2.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="ash-bash" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1209" target="_blank">
+											Ashley Consistency Project
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Jenya66" target="_blank">Jenya66</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Brings Ashley's LE1 look to LE3.
+								</div>
+
+								<div class="mod-note">
+									<b>Note:</b> If you use EGM make sure to check your settings and use the same outfit.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="ash-arm" class="mod-card anchor" data-parent="me3">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2233" target="_blank">
+											Ashley Williams's Guardian Armory (LE3)
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/clericofshadows" target="_blank">ClericOfShadows</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									New armors for Ashley based on designs from Destiny 2.
+								</div>
+							</div>
+                            
+                        </div>
+                    </section>
+                    
+                </article>
+                
+                <!-- Pager -->
+                <div class="pager-box pager" role="navigation" aria-label="Panel navigation">
+                    <div class="pager-left">
+                        <button class="btn text-standard" id="expandAllBtn" aria-label="Expand all panels">Expand All</button>
+                        <button class="btn text-standard" id="closeAllBtn" aria-label="Close all panels">Close All</button>
+                    </div>
+
+                    <div class="pager-right">
+                        <button class="btn text-standard" id="prevPageBtn" aria-label="Previous page">Prev Page</button>
+                        <button class="btn text-standard" id="nextPageBtn" aria-label="Next page">Next Page</button>
+                    </div>
+                </div>
+
+                <div class="bottom-strip" aria-hidden="true"></div>
+            </div>
+        </main>
+
+        <!-- RIGHT -->
+        <aside class="right-panel">
+            <div class="contents-panel" role="navigation" aria-label="Contents">
+                <h4>Chapters</h4>
+                <nav>
+                    <ul id="contentsList" class="contents-list"></ul>
+                </nav>
+            </div>
+
+            <div class="made-by" role="contentinfo">
+                Made with <span class="heart">♥</span> by <span class="name"><a href="https://varkorax.github.io" target="_blank">Varkorax</a></span>
+            </div>
+        </aside>
+
+    </div>
+
+    <script src="../engine/js/guide.js" defer></script>
+    <script src="../engine/js/font-accessibility.js" defer></script>
+    
+
+</body>
+</html>

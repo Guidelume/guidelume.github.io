@@ -1,0 +1,251 @@
+/* File: custom/css/categories.css
+   Notepad++ friendly (tabs used, tab size = 4)
+*/
+
+/* Page-level content padding */
+.content {
+	padding: 140px 20px 40px 20px; /* match global content spacing */
+}
+
+/* Headline panel uses readable-panel look but ensure block layout and center */
+.headline-panel {
+	display: block;
+	width: min(92%, 75ch);
+	max-width: 75ch;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 1.25rem 1.5rem;
+	border-radius: 14px;
+	background: rgba(0,0,0,0.56);
+	backdrop-filter: blur(10px) saturate(160%);
+	-webkit-backdrop-filter: blur(10px) saturate(160%);
+	box-shadow: 0 18px 46px rgba(0,0,0,0.45);
+	transition: opacity 260ms ease, transform 260ms ease, background 220ms ease;
+	color: #ffffff;
+}
+
+/* Back floating button panel (smaller frosted round control)
+   Positioned programmatically directly under the current topbar button */
+.topbar-back-btn {
+	position: fixed; /* JS will set exact left/top so we keep position fixed */
+	min-width: 48px;
+	height: 48px;
+	padding: 0 14px; /* allow text while keeping same pill feel */
+	border-radius: 999px;
+	display: inline-grid;
+	place-items: center;
+	background: var(--btn-frost-bg);
+	border: 1px solid var(--btn-frost-border);
+	backdrop-filter: blur(12px) saturate(160%);
+	-webkit-backdrop-filter: blur(12px) saturate(160%);
+	box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+	transition: transform 0.14s ease, background 0.12s ease, border-color 0.12s ease, left 120ms ease, top 120ms ease;
+	z-index: 1202;
+	text-decoration: none;
+	color: #ffffff;
+	font-weight: 600;
+	font-size: 0.95rem;
+	white-space: nowrap;
+	line-height: 1;
+}
+
+/* keep compatibility if an SVG ever remains in markup */
+.topbar-back-btn svg { display: block; width: 18px; height: 18px; }
+
+/* small adjustment for the text inside the control */
+.topbar-back-btn .back-text {
+	display: inline-block;
+	padding: 0; /* padding handled by the anchor itself */
+	vertical-align: middle;
+}
+
+/* hover/active behavior preserved */
+.topbar-back-btn:hover {
+	transform: translateY(-3px);
+	background: rgba(255,255,255,0.14);
+	border-color: rgba(255,255,255,0.44);
+}
+
+/* adapt to day theme (darker surface to keep contrast) */
+body.theme-day .topbar-back-btn {
+	background: var(--btn-day-bg);
+	border: 1px solid var(--btn-day-border);
+	box-shadow: 0 12px 36px rgba(0,0,0,0.45);
+}
+
+/* ensure the floating back control hides on very small screens (optional)
+   so it doesn't collide with mobile UI — but still accessible from the page */
+@media (max-width: 520px) {
+	.topbar-back-btn {
+		display: inline-grid;
+		left: 12px;
+		top: calc(10px + 56px + 12px); /* bumped from +6px -> +12px to match JS change */
+		min-width: 44px;
+		height: 44px;
+		padding: 0 10px;
+		font-size: 0.9rem;
+	}
+}
+
+/* slightly reduce prominence at night (still visible) */
+body.theme-night .headline-panel {
+	opacity: 0.9;
+	background: rgba(0,0,0,0.42);
+}
+
+/* Subtitle (count) */
+#cat-subtitle {
+	margin: 0.35rem 0 0;
+	opacity: 0.95;
+	font-size: 1rem;
+}
+
+/* Story list container (unchanged design: entries are not boxed) */
+.story-list {
+	max-width: 1100px;
+	margin: 18px auto 0;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	text-align: left;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* Each story row: single horizontal flex band */
+.story-row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 16px;
+
+	/* Frosted glass effect */
+	background: rgba(42, 42, 42, 0.55);
+	backdrop-filter: blur(10px) saturate(160%);
+	-webkit-backdrop-filter: blur(10px) saturate(160%);
+
+	border-radius: 14px;
+	padding: 14px 18px;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+	transition: transform .12s ease, box-shadow .12s ease;
+	width: 100%;
+}
+
+/* NEW: flatten inner wrapper so children (title, blurb, button) are direct flex items */
+.story-meta {
+	display: contents;
+}
+
+/* subtle lift on hover */
+.story-row:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 18px rgba(0,0,0,0.55);
+}
+
+/* Thumbnail: fixed size, left side */
+.story-thumb {
+    flex: 0 0 auto;          /* let width fit content */
+    max-width: 160px;        /* still cap large images */
+    height: auto;            /* auto height for aspect ratio */
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.15);
+    display: block;
+    object-fit: contain;     /* fits inside without cropping */
+}
+
+/* Title: fixed-width column next to thumbnail */
+.story-title {
+	flex: 0 0 260px;    /* fixed column width */
+	font-size: 1.12rem;
+	font-weight: 600;
+	color: #fff;
+	margin: 0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Blurb: flexible column that expands to fill available space */
+.story-blurb {
+	flex: 1 1 auto;     /* grows/shrinks as needed */
+	min-width: 0;       /* important so ellipsis works inside flex */
+	color: #e0e0e0;
+	font-size: 0.96rem;
+	line-height: 1.4;
+	margin: 0;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* Read button: fixed width, pinned to the right */
+.story-row .read-btn {
+	flex: 0 0 120px;    /* fixed column width */
+	padding: 10px 16px;
+	border-radius: 10px;
+	background: rgba(68, 68, 68, 0.8);
+	color: #fff;
+	text-decoration: none;
+	transition: background .15s ease, transform .08s ease;
+	border: 2px solid rgba(52,52,52,0.55);
+	font-weight: 600;
+	text-align: center;
+	align-self: center;
+	white-space: nowrap;
+}
+.story-row .read-btn:hover { outline: 3px solid rgba(255,153,51,0.95); transform: translateY(-1px); }
+.story-row .read-btn:active { transform: translateY(0); }
+
+/* Pager */
+.pager {
+	margin: 20px auto 0;
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	justify-content: center;
+}
+.nav-btn {
+	background: #333;
+	color: #fff;
+	border: 1px solid #555;
+	border-radius: 8px;
+	padding: 8px 12px;
+	cursor: pointer;
+	transition: background .2s ease;
+}
+.nav-btn:hover:not(:disabled) { background: #444; }
+.nav-btn:disabled { opacity: .5; cursor: default; }
+.page-indicator { opacity: .9; }
+
+/* Loader / No-results styles */
+.loader, .no-results {
+	background: rgba(255,255,255,0.05);
+	border-radius: 12px;
+	padding: 24px;
+	text-align: center;
+	color: #ddd;
+	box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* Responsive: keep single-row behavior down to medium widths.
+   On smaller viewports stack vertically for readability & tappability. */
+@media (max-width: 900px) {
+	.story-thumb { flex: 0 0 140px; height: 80px; }
+	.story-title { flex: 0 0 180px; }
+	.story-row { gap: 12px; padding: 12px; }
+}
+
+@media (max-width: 560px) {
+	/* stack the card — thumb on top, then title & blurb, then button full-width */
+	.story-row {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 10px;
+		padding: 12px;
+	}
+	.story-thumb { width: 100%; height: 160px; flex: 0 0 auto; }
+	.story-title { flex: 0 0 auto; white-space: normal; }
+	.story-blurb { flex: 0 0 auto; -webkit-line-clamp: 5; }
+	.story-row .read-btn { width: 100%; flex: 0 0 auto; }
+}

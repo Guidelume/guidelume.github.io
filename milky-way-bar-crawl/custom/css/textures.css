@@ -1,0 +1,129 @@
+    :root{
+        --accent-r: 145; --accent-g: 90; --accent-b: 180; /* soft violet */
+        --accent: var(--accent-r),var(--accent-g),var(--accent-b);
+    }
+	
+			.mod-card {
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+			border: 1px solid rgba(255,255,255,0.12);
+			background:
+				linear-gradient(
+					180deg,
+					rgba(255,255,255,0.06),
+					rgba(255,255,255,0.02)
+				);
+			padding: 16px;
+			border-radius: 12px;
+		}
+		.mod-card {
+			transition: border-color 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.mod-card:hover {
+			border-color: rgba(var(--accent),0.6);
+			box-shadow: 0 0 18px rgba(var(--accent),0.15);
+		}
+
+		.mod-header {
+			display: flex;
+			flex-direction: column;
+			gap: 2px;
+		}
+
+		.mod-header h4 {
+			margin: 0;
+			font-size: 1.2rem;
+		}
+
+		.mod-header a {
+			color: #fff;
+			text-decoration: underline;
+			font-weight: 500;
+			transition: color 0.2s ease;
+		}
+
+		.mod-header a:hover {
+			color: rgb(var(--accent));
+		}
+
+		.mod-author {
+			font-size: 0.9rem;
+			opacity: 0.7;
+		}
+
+		.mod-description {
+			line-height: 1.5;
+		}
+
+		.mod-note {
+			font-family: 'Quicksand';
+			padding: 10px;
+			border-radius: 8px;
+			background: rgba(var(--accent),0.12);
+			border-left: 3px solid rgb(var(--accent));
+		}
+		
+		.mod-header a {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.35rem;
+		}
+		
+		.mod-header a svg {
+			width: 0.95em;
+			height: 0.95em;
+			flex-shrink: 0;
+			opacity: 0.75;
+			transition: opacity .2s ease, transform .2s ease;
+		}
+		
+		.mod-header a:hover svg {
+			opacity: 1;
+			transform: translateY(-1px);
+		}
+		
+		.mod-header a[target="_blank"]::after {
+			content: "";
+			display: inline-block;
+
+			width: 0.95em;
+			height: 0.95em;
+			margin-right: 0.05em;
+
+			background-color: currentColor;
+			mask: url("../img/guide/guide-external.svg") no-repeat center;
+			-webkit-mask: url("../img/guide/guide-external.svg") no-repeat center;
+			mask-size: contain;
+			-webkit-mask-size: contain;
+
+			opacity: .75;
+			transition: opacity .2s ease;
+		}
+
+		.mod-header a:hover::after {
+			opacity: 1;
+		}
+		
+		.texture-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 12px 0;
+		}
+
+		.texture-table th,
+		.texture-table td {
+			border: 1px solid rgba(255,255,255,.12);
+			padding: 8px 10px;
+			vertical-align: top;
+		}
+
+		.texture-table th {
+			text-align: left;
+			font-weight: 600;
+		}
+
+		.texture-table code {
+			white-space: nowrap;
+		}

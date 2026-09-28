@@ -1,0 +1,18 @@
+{
+  "version": 4,
+  "entries": [
+    {
+		"id": "portal-two-pc",
+		"title": "Portal 2",
+		"featured": true,
+		"added": "2026-07-18",
+		"type": "game",
+		"platform": "PC",
+		"format": "DVD",
+		"releaseDate": "2011-04-18",
+		"developer": "Valve",
+		"publisher": "Valve",
+		"tags": ["Childhood"]
+	}
+  ]
+}

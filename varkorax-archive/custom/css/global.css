@@ -1,0 +1,738 @@
+/* =========================
+   BASE RESET + TYPOGRAPHY
+   ========================= */
+* { box-sizing: border-box; }
+
+html, body { height: 100%; margin: 0; }
+
+/* -------------------------
+   Site-wide tokens & font stacks
+   ------------------------- */
+:root {
+	/* Font stacks - default */
+	--font-header: "Merriweather", Georgia, Cambria, "Times New Roman", Times, serif;
+	--font-body: "Crimson Text", Georgia, Cambria, "Times New Roman", Times, serif;
+	--font-flavor: "IM Fell English", Georgia, Cambria, "Times New Roman", Times, serif;
+
+	/* Accessible font stacks */
+	--font-header-accessible: "Libre Baskerville", Georgia, Cambria, "Times New Roman", Times, serif;
+	--font-body-accessible: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+
+	/* visual tokens */
+	--btn-frost-bg: rgba(255,255,255,0.14);
+	--btn-frost-border: rgba(255,255,255,0.35);
+	--btn-day-bg: rgba(40,40,40,0.92);
+	--btn-day-border: rgba(0,0,0,0.28);
+
+	/* separators: night/light variants */
+	--separator-night: rgba(255,255,255,0.30);
+	--separator-day: rgba(0,0,0,0.38);
+
+	/* orange tone */
+	--accent-orange: 255, 153, 51; /* use with rgba(var(--accent-orange), a) */
+
+	/* misc tokens */
+	--content-font-size: 18px;
+	--line-height: 1.75;
+	--radius: 18px;
+	--progress-color: orange;
+}
+
+/* -------------------------
+   Font-face declarations
+   ------------------------- */
+@font-face {
+	font-family: 'Quicksand';
+	src: url('../fonts/Quicksand-Regular.ttf') format('truetype');
+}
+@font-face {
+	font-family: "Merriweather";
+	src: url("../fonts/normal/Merriweather/Merriweather-VariableFont_opsz,wdth,wght.ttf") format("truetype");
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Crimson Text";
+	src: url("../fonts/normal/Crimson_Text/CrimsonText-Regular.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "IM Fell English";
+	src: url("../fonts/normal/IM_Fell_English/IMFellEnglish-Regular.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Libre Baskerville";
+	src: url("../fonts/accessible/Libre_Baskerville/LibreBaskerville-Regular.ttf") format("truetype");
+	font-weight: 400 700;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Lexend";
+	src: url("../fonts/accessible/Lexend/Lexend-VariableFont_wght.ttf") format("truetype");
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* keep Pixelify available for headings */
+@font-face {
+	font-family: "Pixelify Sans";
+	src: url("../fonts/normal/Pixelify_Sans/PixelifySans-VariableFont_wght.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* -------------------------
+   Base body styles
+   ------------------------- */
+body {
+	font-family: var(--font-body);
+	line-height: var(--line-height);
+	overflow: visible;
+	background-color: gray;
+	transition: opacity 0.5s ease, background 200ms ease;
+	/* default text color: white */
+	color: #ffffff;
+}
+
+/* when a modal is open, prevent background scroll via class */
+body.modal-open {
+	overflow: hidden;
+}
+
+/* accessibility font toggle */
+body.font-accessible {
+	--font-header: var(--font-header-accessible);
+	--font-body: var(--font-body-accessible);
+	font-family: var(--font-body);
+}
+
+/* pixelify helper */
+.pixelify-sans {
+	font-family: "Pixelify Sans", var(--font-body);
+}
+
+/* content layout (page-level) */
+.content {
+	padding: 140px 20px 40px 20px;
+	text-align: center;
+	transition: color 1s ease-in-out;
+	font-size: var(--content-font-size);
+
+	/* center and allow inline-block readable panel to hug text */
+	display: block;
+	position: relative;
+	z-index: 1;
+}
+
+/* small variant for modal content */
+.content.small { padding: 8px; text-align: left; }
+
+/* bare link (for popups) */
+.bare-link { color: inherit; text-decoration: underline; }
+
+/* =========================
+   READABILITY PANEL (reusable)
+   - now ALWAYS visible; reduces opacity a bit at night but never hides
+   - white text by default
+   ========================= */
+.readable-panel {
+	display: inline-block;
+	max-width: 75ch;
+	width: min(92%, 75ch);
+	padding: 1.25rem 1.5rem;
+	border-radius: 14px;
+	/* default: dark translucent surface but text is white */
+	background: rgba(0,0,0,0.56);
+	backdrop-filter: blur(10px) saturate(160%);
+	-webkit-backdrop-filter: blur(10px) saturate(160%);
+	box-shadow: 0 18px 46px rgba(0,0,0,0.45);
+	transition: opacity 260ms ease, transform 260ms ease, background 220ms ease;
+	opacity: 1;
+	color: #ffffff; /* default page text inside panel is white */
+}
+
+/* slightly reduce prominence at night (still visible) */
+body.theme-night .readable-panel {
+	opacity: 0.85;
+	background: rgba(0,0,0,0.42);
+}
+
+/* small screen adjustments */
+@media (max-width: 560px) {
+	.readable-panel { padding: 1rem; border-radius: 10px; }
+}
+
+/* allow other wrappers to reuse it */
+.prose .readable-panel,
+.chapter-header .readable-panel { width: 100%; }
+
+/* =========================
+   BACKGROUND LAYERS
+   ========================= */
+#background {
+	position: fixed;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	z-index: -1;
+}
+
+.bg-layer {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	background-size: cover;
+	background-position: center;
+	opacity: 0;
+	transition: opacity 1s ease-in-out;
+}
+.bg-layer.active { opacity: 1; }
+
+/* =========================
+   TOPBAR NAVIGATION
+   ========================= */
+#topbar {
+	position: fixed;
+	top: 20px;
+	left: 20px;
+	display: flex;
+	align-items: center;
+	gap: 12px; /* space between items and separators */
+	padding: 0;
+	background: transparent;
+	z-index: 1000;
+}
+
+/* vertical separator element for topbar */
+.topbar-sep {
+	width: 2px;
+	height: 44px;
+	border-radius: 2px;
+	background: var(--separator-night);
+	box-shadow: 0 2px 0 rgba(0,0,0,0.18);
+	pointer-events: none;
+	margin: 0 8px;
+}
+
+/* buttons */
+.topbar-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 64px;
+	height: 64px;
+	border-radius: 999px;
+	background: var(--btn-frost-bg);
+	border: 1px solid var(--btn-frost-border);
+	backdrop-filter: blur(12px) saturate(160%);
+	-webkit-backdrop-filter: blur(12px) saturate(160%);
+	box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+	transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+	cursor: pointer;
+	text-decoration: none;
+	-webkit-tap-highlight-color: transparent;
+	padding: 8px; /* ensure internal spacing so icon is centered */
+	/*font-family: var(--font-header);*/
+}
+
+.topbar-btn img { width: 32px; height: 32px; image-rendering: pixelated; display: block; margin: auto; }
+
+.topbar-btn:hover {
+	transform: translateY(-3px);
+	background: rgba(255,255,255,0.20);
+	border-color: rgba(255,255,255,0.48);
+	box-shadow: 0 14px 36px rgba(0,0,0,0.24);
+}
+
+/* disabled/current */
+.topbar-btn[disabled],
+.topbar-btn[aria-current="page"] {
+	opacity: 0.6;
+	transform: none;
+	cursor: default;
+	pointer-events: none;
+	border-color: rgba(255,255,255,0.12);
+	box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+/* =========================
+   INFObar (top-right)
+   ========================= */
+#infobar {
+	position: fixed;
+	top: 16px;
+	right: 16px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	z-index: 1001;
+	pointer-events: auto;
+}
+
+.infobar-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 64px;
+	height: 64px;
+	border-radius: 999px;
+	background: var(--btn-frost-bg);
+	border: 1px solid var(--btn-frost-border);
+	backdrop-filter: blur(12px) saturate(160%);
+	-webkit-backdrop-filter: blur(12px) saturate(160%);
+	box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+	transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+	cursor: pointer;
+	padding: 8px;
+	/*font-family: var(--font-header);*/
+}
+
+.infobar-btn img { width: 32px; height: 32px; image-rendering: pixelated; display: block; margin: auto; }
+
+.infobar-btn:hover { transform: translateY(-3px); background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.44); }
+
+.font-icon {
+	font-family: var(--font-header);
+	font-weight: 700;
+	font-size: 18px;
+	line-height: 1;
+	color: #ffffff;
+}
+
+/* separator for infobar already exists as .infobar-sep from previous file */
+.infobar-sep {
+	width: 2px;
+	height: 44px;
+	border-radius: 2px;
+	background: var(--separator-night);
+	box-shadow: 0 2px 0 rgba(0,0,0,0.25);
+	pointer-events: none;
+	margin-left: 6px;
+	margin-right: 6px;
+}
+
+/* tooltip */
+[data-tooltip]::before {
+	content: attr(data-tooltip);
+	position: absolute;
+	bottom: -42px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: rgba(0,0,0,0.82);
+	color: #fff;
+	font-size: 0.78rem;
+	padding: 6px 10px;
+	border-radius: 6px;
+	white-space: nowrap;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.16s ease;
+}
+
+.topbar-btn:hover[data-tooltip]::before,
+.infobar-btn:hover[data-tooltip]::before {
+	opacity: 1;
+}
+
+/* =========================
+   THEME OVERRIDES (day vs night)
+   ========================= */
+body.theme-day .topbar-btn,
+body.theme-day .infobar-btn {
+	background: var(--btn-day-bg);
+	border: 1px solid var(--btn-day-border);
+	box-shadow: 0 12px 36px rgba(0,0,0,0.45);
+}
+
+/* make separators starker in day mode */
+body.theme-day .topbar-sep,
+body.theme-day .infobar-sep {
+	background: var(--separator-day);
+}
+
+/* =========================
+   POPUPS (modal)
+   - keep modal text formatting normal (left aligned, regular line-height)
+   - inner content translucent so it doesn't overpower the scene
+   ========================= */
+.popup {
+	position: fixed;
+	display: none;
+	width: 720px;
+	max-width: calc(100% - 32px);
+	height: 560px;
+	max-height: calc(100vh - 48px);
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: rgba(0,0,0,0.56);
+	z-index: 1100;
+	border-radius: 18px;
+	padding: 12px;
+	overflow: visible;
+	box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+	transition: outline 220ms ease, box-shadow 220ms ease;
+	outline: 4px solid rgba(var(--accent-orange), 0.12);
+	backdrop-filter: blur(8px) saturate(140%);
+	-webkit-backdrop-filter: blur(8px) saturate(140%);
+}
+
+body.theme-day .popup {
+	outline: 4px solid rgba(var(--accent-orange), 0.40);
+	box-shadow: 0 30px 70px rgba(0,0,0,0.50), 0 0 48px rgba(var(--accent-orange), 0.18) inset;
+}
+
+@keyframes modal-in {
+	from { opacity: 0; transform: translate(-50%, -46%) scale(0.985); }
+	to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes modal-out {
+	from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+	to   { opacity: 0; transform: translate(-50%, -46%) scale(0.985); }
+}
+
+            /* Notification pulse visuals */
+            .pulse {
+                animation: notif-pulse 1500ms infinite ease-in-out;
+            }
+			
+			#notif-toggle { position: relative; }
+			
+            @keyframes notif-pulse {
+                0% {
+                    transform: translateZ(0) scale(1);
+                    filter: drop-shadow(0 0 0px rgba(74,144,226,0.0));
+                }
+                50% {
+                    transform: translateZ(0) scale(1.06);
+                    filter: drop-shadow(0 0 10px rgba(74,144,226,0.25));
+                }
+                100% {
+                    transform: translateZ(0) scale(1);
+                    filter: drop-shadow(0 0 0px rgba(74,144,226,0.0));
+                }
+            }
+
+            /* subtle badge so it reads at small sizes */
+            #notif-toggle.pulse::after {
+                content: "";
+                position: absolute;
+                top: 6px;
+                right: 6px;
+                width: 10px;
+                height: 10px;
+                border-radius: 999px;
+                background: rgba(74,144,226,0.95);
+                box-shadow: 0 0 6px rgba(74,144,226,0.45);
+                pointer-events: none;
+            }
+
+.popup.open {
+	display: block;
+	animation: modal-in 0.5s ease both;
+}
+.popup.closing {
+	animation: modal-out 0.5s ease both;
+}
+
+.popup-inner {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	align-items: stretch;
+	justify-content: flex-start;
+	position: relative;
+	overflow: hidden;
+}
+
+/* inner area slightly translucent and scrollable */
+.popup-content {
+	background: rgba(255,255,255,0.03);
+	border-radius: 12px;
+	padding: 12px;
+	overflow-y: auto;
+	flex: 1 1 auto;
+	backdrop-filter: blur(14px) saturate(160%);
+	-webkit-backdrop-filter: blur(14px) saturate(160%);
+	-webkit-overflow-scrolling: touch;
+	max-height: calc(100vh - 140px);
+}
+
+/* IMPORTANT: ensure modal .content is normal block flow and left-aligned */
+.popup .content {
+	display: block !important;
+	text-align: left !important;
+	line-height: 1.6 !important;
+	font-family: var(--font-body) !important;
+	color: #ffffff !important;
+}
+
+/* popup close button */
+.popup-close {
+	position: absolute;
+	right: 12px;
+	top: 12px;
+	width: 40px;
+	height: 40px;
+	border-radius: 12px;
+	display: grid;
+	place-items: center;
+	background: rgba(255,255,255,0.06);
+	border: 1px solid rgba(255,255,255,0.16);
+	color: #fff;
+	cursor: pointer;
+	z-index: 30;
+	transition: transform 120ms ease, background 120ms ease;
+}
+.popup-close:hover { transform: translateY(-2px); background: rgba(255,255,255,0.12); }
+
+.popup .popup-help {
+	margin: 0;
+	color: #fff;
+	text-align: center;
+	font-size: 0.95rem;
+	opacity: 0.95;
+	padding: 6px 8px 0 8px;
+}
+
+/* visually hidden focus target for accessibility */
+.visually-hidden {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden !important;
+	clip: rect(0 0 0 0) !important;
+	white-space: nowrap !important;
+	border: 0 !important;
+	background: transparent !important;
+}
+.popup-start { /* visually-hidden applied usually */ }
+.popup-start:focus {
+	position: relative !important;
+	width: auto !important;
+	height: auto !important;
+	margin: 0 !important;
+	overflow: visible !important;
+	clip: auto !important;
+	white-space: normal !important;
+	border: 0;
+	background: transparent;
+	color: inherit;
+	padding: 6px 10px;
+	border-radius: 8px;
+	box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+	outline: 3px solid rgba(100,150,255,0.85);
+	cursor: pointer;
+}
+
+/* =========================
+   SETTINGS BUTTONS (custom pill-style inside settings)
+   ========================= */
+.settings-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 12px;
+	align-items: center;
+}
+
+.settings-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	padding: 0.55rem 1rem;
+	border-radius: 999px;
+	border: 1px solid rgba(255,255,255,0.12);
+	background: rgba(255,255,255,0.04);
+	color: #fff;
+	font-family: var(--font-header);
+	font-size: 0.95rem;
+	cursor: pointer;
+	transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+	box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+}
+
+.settings-icon {
+	display: inline-grid;
+	place-items: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 7px;
+	background: rgba(255,255,255,0.03);
+	font-size: 14px;
+}
+
+.settings-btn:hover {
+	transform: translateY(-3px);
+	background: rgba(255,153,51,0.08);
+	border-color: rgba(255,153,51,0.35);
+	box-shadow: 0 10px 28px rgba(255,153,51,0.06);
+}
+.settings-btn:active {
+	transform: translateY(0);
+	background: rgba(255,153,51,0.12);
+	box-shadow: 0 6px 20px rgba(255,153,51,0.06);
+}
+
+@media (max-width: 560px) {
+	.settings-actions { flex-direction: column; align-items: stretch; }
+	.settings-btn { width: 100%; justify-content: center; }
+}
+
+/* highlight + active (current/disabled) orange outline */
+.topbar-btn:focus,
+.topbar-btn:hover,
+.infobar-btn:hover,
+.topbar-back-btn:hover,
+.corner-btn:hover,
+.control-btn:hover,
+.cozy-btn:hover,
+.story-btn:hover,
+.topbar-btn[disabled],
+.topbar-btn[aria-current="page"] {
+	outline: 3px solid rgba(var(--accent-orange), 0.95);
+	/*outline-offset: 2px;*/
+}
+
+/* =========================
+   TOASTS (top center)
+   ========================= */
+#toast-container {
+	position: fixed;
+	left: 50%;
+	top: 20px;
+	transform: translateX(-50%);
+	z-index: 1200;
+	pointer-events: none;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.toast {
+	background: rgba(0,0,0,0.78);
+	color: #fff;
+	padding: 8px 14px;
+	border-radius: 10px;
+	margin-top: 8px;
+	box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+	font-family: var(--font-body);
+	font-size: 0.95rem;
+	opacity: 0;
+	transform: translateY(8px) scale(0.995);
+	transition: opacity 220ms ease, transform 220ms ease;
+	pointer-events: auto;
+}
+.toast.show {
+	opacity: 1;
+	transform: translateY(0) scale(1);
+}
+.toast.hide {
+	opacity: 0;
+	transform: translateY(8px) scale(0.995);
+}
+
+/* =========================
+   Scrollbars
+   ========================= */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { box-shadow: inset 0 0 5px grey; border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(255,153,51,0.85); border-radius: 10px; }
+
+.popup-content::-webkit-scrollbar { width: 12px; }
+.popup-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 12px; }
+.popup-content::-webkit-scrollbar-thumb { background: rgba(255,153,51,0.95); border-radius: 12px; border: 2px solid rgba(0,0,0,0.12); }
+
+/* responsive */
+@media (max-width: 900px) {
+	.popup { width: 92%; height: 66vh; }
+	.topbar-btn, .infobar-btn { width: 56px; height: 56px; padding: 6px; }
+	.infobar-sep { height: 36px; }
+	.topbar-sep { height: 36px; }
+}
+
+@media (max-width: 560px) {
+	.popup { width: 94%; height: 72vh; left: 50%; transform: translate(-50%, -50%); }
+	#topbar { left: 10px; top: 10px; gap: 8px; }
+	#infobar { right: 12px; top: 10px; gap: 8px; }
+	.infobar-sep { display: none; }
+	.topbar-sep { display: none; }
+}
+
+/* prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+	.infobar-btn, .topbar-btn, .popup, .toast { transition: none; animation: none !important; }
+}
+
+/* small helpers */
+.sr-only {
+	position: absolute;
+	width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+	clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* Mature-overlay (fullscreen blur/dim) */
+#mature-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1090 !important; /* popup uses 1100, overlay beneath it */
+  display: none;
+  background: rgba(0,0,0,0.56);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+#mature-overlay.active {
+  display: block;
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/* Centre the content vertically for this modal only */
+#mature-modal .popup-inner {
+  justify-content: center; /* center vertically */
+  gap: 8px;
+  padding: 6px;
+}
+
+/* Actual rules (without spaces, to avoid accidental tokenization) */
+#mature-modal.popup {
+  width: 760px;
+  max-width: calc(100% - 32px);
+  height: auto;
+  max-height: calc(100vh - 72px);
+  padding: 12px;
+  z-index: 1110 !important;
+}
+
+/* Make inner content's top padding small so text appears higher */
+#mature-modal .popup-content { padding: 8px; }
+
+/* Make the buttons a reasonable size inside this modal */
+#mature-modal .settings-btn { min-width: 120px; }
+
+/* Small-screen adjustments */
+@media (max-width: 560px) {
+  #mature-modal.popup { height: 72vh; width: 94%; left: 50%; transform: translate(-50%, -50%); }
+  #mature-modal .popup-content { max-height: calc(72vh - 120px); padding: 10px; }
+}
+
+

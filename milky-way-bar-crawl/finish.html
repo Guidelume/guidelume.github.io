@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	
+	<title>MWBC | Finish</title>
+	<meta property="og:title" content="Milky Way Bar Crawl">
+	<meta property="og:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta property="og:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	<meta property="og:url" content="https://guidelume.github.io/milky-way-bar-crawl/finish.html">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Milky Way Bar Crawl">
+	<meta name="twitter:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta name="twitter:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	<link rel="shortcut icon" href="./custom/favicon.svg" />
+	
+	<link rel="stylesheet" href="../engine/css/fonts.css" />
+	<link rel="stylesheet" href="../engine/css/guide.css" />
+    <link rel="stylesheet" href="../engine/css/accessible-fonts.css" />
+</head>
+<body>
+
+	<!-- Background (single reliable layer) -->
+	<div class="bg-viewport" aria-hidden="true">
+		<div id="bgLayer" class="bg-layer" style="background-image:url('./custom/img/background/bg-galaxy-1.jpg');"></div>
+	</div>
+	<div class="bg-vignette" aria-hidden="true"></div>
+
+	<div class="layout" id="layoutRoot">
+
+		<!-- LEFT -->
+		<aside class="left-panel" id="leftPanel" role="navigation" aria-label="Chapters">
+
+			<div class="nav-section open" data-section="main">
+				<button class="nav-section-header" type="button" aria-expanded="true">
+					<span>Milky Way Bar Crawl</span>
+					<span class="nav-section-caret">▾</span>
+				</button>
+				
+				<ul class="chap-list">
+					<li class="chap-item" data-href="intro.html">
+						<a class="chap-link" href="intro.html">1. Introduction</a>
+					</li>
+
+					<li class="chap-item" data-href="setup.html">
+						<a class="chap-link" href="setup.html">2. Setup</a>
+					</li>
+
+					<li class="chap-item" data-href="me1.html">
+						<a class="chap-link" href="me1.html">3.1. LE1</a>
+					</li>
+
+					<li class="chap-item" data-href="me2.html">
+						<a class="chap-link" href="me2.html">3.2. LE2</a>
+					</li>
+
+					<li class="chap-item" data-href="me3.html">
+						<a class="chap-link" href="me3.html">3.3. LE3</a>
+					</li>
+
+					<li class="chap-item" data-href="finish.html">
+						<a class="chap-link" href="finish.html">4. Finish</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="after-hours">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>After Hours</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="extras.html">
+						<a class="chap-link" href="extras.html">5. Extras</a>
+					</li>
+
+					<li class="chap-item" data-href="textures.html">
+						<a class="chap-link" href="textures.html">6. Textures</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="appendices">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>Appendices</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="questions.html">
+						<a class="chap-link" href="questions.html">7. Common Questions</a>
+					</li>
+
+					<li class="chap-item" data-href="changelog.html">
+						<a class="chap-link" href="changelog.html">8. Changelog</a>
+					</li>
+
+					<li class="chap-item" data-href="credits.html">
+						<a class="chap-link" href="credits.html">9. Credits</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-updated" role="contentinfo">
+				Last Updated:<br>
+				August 2026 · v2.1
+			</div>
+			
+		</aside>
+
+		<!-- CENTER -->
+		<main class="center-col" role="main">
+			<div class="content-shell" id="contentShell">
+
+				<div class="title-box">
+					<div id="titleBackground" class="title-bg"></div>
+					<button id="home" class="btn text-standard" aria-label="Return to Start"><a href="../index-mwbc.html">Back to Start</a></button>
+					<h1 id="projectTitle">Milky Way Bar Crawl - Finish</h1>
+					<button id="fontToggle" class="btn text-standard" aria-label="Toggle accessible fonts" title="Font Toggle">Aa</button>
+				</div>
+				
+				<div class="content-progress" aria-hidden="true">
+						<div class="content-progress-bar"></div>
+				</div>
+				
+				<article class="content-box" id="contentBox" tabindex="0" aria-labelledby="stepTitle">
+					
+					<!-- Panel 1 -->
+					<section id="first-launch" class="panel open" data-index="1">
+						<header class="panel-header" role="button" aria-expanded="false">
+							<h3>Sanity Check</h3>
+							<div class="caret">▸</div>
+						</header>
+						
+						<div class="panel-body">
+							<p class="text-standard">
+								Before finishing or continuing the crawl, it’s worth doing a quick sanity check.
+							</p>
+							<ul class="text-standard">
+								<li>Start a <b>new game</b> and get acquainted with the Mod Settings menu.</li>
+								<li>
+									Play for at least <b>15–20 minutes</b>.<br>
+									For example:
+									<ul>
+										<li>LE1: Reach Saren’s introduction on Eden Prime.</li>
+										<li>LE2: Make it to Jacob on Lazarus Station.</li>
+										<li>LE3: Get to the beacon in the harbour.</li>
+									</ul>
+								</li>
+								<li>
+									Spend a bit of time in a busy area (e.g. Citadel) and keep an eye on:
+									<ul>
+										<li>Crashes or infinite loading screens,</li>
+										<li>Unusual performance dips.</li>
+									</ul>
+								</li>
+								<li>
+									If you spot something odd, check out <u><a href="questions.html">Common Questions</a></u> first, then the comments on the Nexus guide.<br>All else fails, reach out to me.
+								</li>
+							</ul>
+							<p class="text-standard">
+								If everything looks good, consider your setup locked in. From this point onward, any additional mods are house rules: you can absolutely add them, but be prepared to do a little troubleshooting if something doesn't play nice.
+							</p>
+						</div>
+					</section>
+					
+					<!-- Panel 2 -->
+					<section id="preamble" class="panel" data-index="2">
+						<header class="panel-header" role="button" aria-expanded="true">
+							<h3>Last Call</h3>
+							<div class="caret">▾</div>
+						</header>
+						
+						<div class="panel-body">
+							<p class="text-standard">
+								Your game(s) should now be fully modded and ready for launch.<br><br>
+								From here you’ve got two options:
+							</p>
+							<ul class="text-standard">
+								<li>Stop here and start playing</li>
+								<li>Stick around and mod your games even more.</li>
+							</ul>
+							<p class="text-standard">
+								Nothing beyond this point is required for a stable playthrough. Think of the remaining sections as another round for those wanting to go the extra mile.<br><br>
+								If this is where we part ways: <b>Thank you for going on the Milky Way Bar Crawl with me!</b><br>
+								<b>Remember</b>: The best mod list is the one that makes <b>you</b> excited to start another playthrough.<br><br>
+								<b>See you at the next stop, Commander.</b>
+							</p>
+						</div>
+					</section>
+					
+					<!-- Panel 3 -->
+					<section id="extras" class="panel" data-index="3">
+						<header class="panel-header" role="button" aria-expanded="false">
+							<h3>After Hours: Extras</h3>
+							<div class="caret">▸</div>
+						</header>
+						
+						<div class="panel-body">
+							<p class="text-standard">
+								If you’d like to add a bit more flavor, the <b>Extras</b> section covers small, optional additions:
+							</p>
+							<ul class="text-standard">
+								<li>Cosmetic tweaks and quality-of-life improvements,</li>
+								<li>A few community favorites that didn’t fit in the main route.</li>
+							</ul>
+							<p class="text-standard">
+								<b>Note:</b> I don’t always use these myself. They’re well-liked by the community, but you should always read each mod’s page carefully and install at your own discretion.<br><br>
+								When you’re ready, head over to the <a href="extras.html">Extras page</a> for details.
+							</p>
+						</div>
+					</section>
+					
+					<!-- Panel 4 -->
+					<section id="textures" class="panel" data-index="4">
+						<header class="panel-header" role="button" aria-expanded="false">
+							<h3>After Hours: Textures</h3>
+							<div class="caret">▸</div>
+						</header>
+						
+						<div class="panel-body">
+							<p class="text-standard">
+								Want to go the extra mile visually? The <b>Textures</b> section focuses on enhancing environmental, character, and object textures.
+							</p>
+							<div class="warning">
+								<div class="icon">!</div>
+								<p class="text-standard">
+									<b>Important:</b> Once you begin texture modding, you <b>cannot</b> safely install additional mods or updates without risking your setup.<br>
+									Make sure everything else is finished first - this is the true point of no return.
+								</p>
+							</div>
+							<br>
+							<p class="text-standard">
+								If that trade-off sounds fine, your system can handle it and you've got an extra hour or so, continue to the dedicated <a href="textures.html">Textures page</a> for step-by-step instructions.
+							</p>
+						</div>
+					</section>
+					
+				</article>
+				
+				<!-- Pager -->
+				<div class="pager-box pager" role="navigation" aria-label="Panel navigation">
+					<div class="pager-left">
+						<button class="btn text-standard" id="expandAllBtn" aria-label="Expand all panels">Expand All</button>
+						<button class="btn text-standard" id="closeAllBtn" aria-label="Close all panels">Close All</button>
+					</div>
+
+					<div class="pager-right">
+						<button class="btn text-standard" id="prevPageBtn" aria-label="Previous page">Prev Page</button>
+						<button class="btn text-standard" id="nextPageBtn" aria-label="Next page">Next Page</button>
+					</div>
+				</div>
+
+				<div class="bottom-strip" aria-hidden="true"></div>
+			</div>
+		</main>
+
+		<!-- RIGHT -->
+		<aside class="right-panel">
+			<div class="contents-panel" role="navigation" aria-label="Contents">
+				<h4>Chapters</h4>
+				<nav>
+					<ul id="contentsList" class="contents-list"></ul>
+				</nav>
+			</div>
+
+			<div class="made-by" role="contentinfo">
+				Made with <span class="heart">♥</span> by <span class="name"><a href="https://varkorax.github.io" target="_blank">Varkorax</a></span>
+			</div>
+		</aside>
+
+	</div>
+
+	<script src="../engine/js/guide.js" defer></script>
+    <script src="../engine/js/font-accessibility.js" defer></script>
+	
+
+</body>
+</html>

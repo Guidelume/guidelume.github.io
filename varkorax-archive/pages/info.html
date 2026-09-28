@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Encoding & Mobile Scaling -->
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<!-- Robots / Anti-AI -->
+		<meta name="robots" content="noai, noimageai, noindex, nofollow">
+		
+		<!-- Title & Favicon -->
+		<title>| Info</title>
+		<link rel="shortcut icon" type="image/x-icon" href="../custom/favicon.ico">
+		
+		<!-- Styles -->
+		<link rel="stylesheet" href="../custom/css/global.css">
+		
+		<style>
+			html, body {
+			  height: 100%;
+			  overflow-y: auto;
+			  background-color: rgba(0,0,0,0.1);
+			  backdrop-filter: blur(10px);
+			  -webkit-backdrop-filter: blur(10px);
+			}
+			.content {
+			  padding: 8px;
+			  text-align: left;
+			}
+			.content h2, p {
+				color: #ffffff;
+			}
+			a {
+				color: white;
+			}
+			/* scrollbar cosmetics (optional) */
+			::-webkit-scrollbar { width: 10px; }
+			::-webkit-scrollbar-track { box-shadow: inset 0 0 5px grey; border-radius: 10px; }
+			::-webkit-scrollbar-thumb { background: orange; border-radius: 10px; }
+		</style>
+	
+	</head>
+	
+	<body>
+		<div class="content small" style="font-family: 'Lexend'">
+			<h2><img src="../custom/img/glyph.svg" style="width: 32px; height:32px "/> Project Version 2.0 | July 2026</h2>
+			<hr style="width:75%; text-align:left; margin-left:0">
+			<p>
+			INFO:<br><br>
+			
+			This site was made without the use of generative AI. All code, stories, and content was written by me with the goal of setting up a place where
+			I could share some of my creative work.<br><br>
+			
+			This project is a personal, non-commercial endeavor.<br><br> If you'd like to get in touch, you can reach me through Bluesky, GitHub<br> or by sending an email to:<br><a style="color: white" href="mailto:skorax2391@googlemail.com">skorax2391@googlemail.com</a><br><br>
+			
+			Hosted via GitHub Pages<br><br>
+			
+			<i>Thank you for visiting my little corner of the Internet!</i><br><br>
+			
+			CREDITS:<br><br>
+			
+			<u>- Fonts -</u><br><br>
+			
+			All Fonts used on this site fall under the <a href="https://openfontlicense.org/open-font-license-official-text/" target="_blank">Open Font License</a><br><br>
+			
+			- <a href="https://www.lexend.com" target="_blank">Lexend</a><br>by Bonnie Shaver-Troup, Thomas Jockin, Santiago Orozco, Héctor Gómez and Superunion<br><br>
+			- <a href="https://fonts.google.com/specimen/Libre+Baskerville" target="_blank">Libre Baskerville</a><br>by Impallari Type<br><br>
+			
+			<u>- Images -</u><br><br>
+			
+			Backgrounds: <a href="https://www.bitday.me" target="_blank">8Bit Day</a><br>
+			by Danny Care<br><br>
+			Favicon and Navbar Icons: Drawn in Affinity<br><br>
+			
+			<u>- Story Thumbnails -</u><br><br>
+			
+			All images fall under the <a href="https://unsplash.com/license" target="_blank">Unsplash License</a><br><br>
+			
+			Forest Entrance: <a href="https://unsplash.com/photos/green-and-brown-trees-during-daytime-_3DI_vx2ygg" target="_blank">Link</a><br><br>
+			
+			</p>
+		</div>
+		
+		<script>
+			// Mirror the parent’s logic for text color (just for this iframe’s content).
+			function applyIframeTextColor() {
+			  const mode = localStorage.getItem('userMode'); // 'day' | 'night' | null
+			  const hour = new Date().getHours();
+			  const isNightByClock = (hour >= 22 || hour < 6);
+			  const night = mode === 'night' || (mode !== 'day' && isNightByClock);
+			  const color = night ? '#f0f0f0' : '#000000';
+			  document.querySelectorAll('.content').forEach(el => { el.style.color = color; });
+			}
+			
+			function setMode(mode) {
+			  if (mode) {
+				localStorage.setItem('userMode', mode);
+			  } else {
+				localStorage.removeItem('userMode');
+			  }
+			
+			  // Update this iframe immediately…
+			  applyIframeTextColor();
+			
+			  // …and the parent will update itself automatically via the `storage` listener.
+			  // (Optionally also call it directly for belt & braces)
+			  if (window.parent && typeof window.parent.setBackgroundAndText === 'function') {
+				window.parent.setBackgroundAndText();
+			  }
+			}
+			
+			// If the parent changes mode (e.g., from another iframe), reflect it here.
+			window.addEventListener('storage', (e) => {
+			  if (e.key === 'userMode') applyIframeTextColor();
+			});
+			
+			// Initial paint
+			applyIframeTextColor();
+		</script>
+	</body>
+</html>

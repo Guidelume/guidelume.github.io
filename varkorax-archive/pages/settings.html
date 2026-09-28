@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noai, noimageai, noindex, nofollow" />
+		
+		<title>| Settings</title>
+		
+		<link rel="shortcut icon" type="image/x-icon" href="../custom/favicon.ico" />
+		<link rel="stylesheet" href="../custom/css/global.css" />
+		
+		<style>
+			html, body {
+			  height: 100%;
+			  overflow-y: auto;
+			  background-color: rgba(0,0,0,0.1);
+			  backdrop-filter: blur(10px);
+			  -webkit-backdrop-filter: blur(10px);
+			}
+			.content {
+			  padding: 8px;
+			  text-align: left;
+			}
+			.content h2, p {
+				color: #ffffff;
+			}
+			/* scrollbar cosmetics (optional) */
+			::-webkit-scrollbar { width: 10px; }
+			::-webkit-scrollbar-track { box-shadow: inset 0 0 5px grey; border-radius: 10px; }
+			::-webkit-scrollbar-thumb { background: orange; border-radius: 10px; }
+		</style>
+	</head>
+	
+	<body>
+		<div class="content small"  style="font-family: 'Lexend'">
+			<h2><img src="../custom/img/glyph.svg" style="width: 32px; height:32px "/> User Settings</h2>
+			<hr style="width:50%; text-align:left; margin-left:0">
+			
+			<p><strong>Display mode</strong></p>
+			<p>By default the background will cycle every two hours on the hour to simulate the time of day.
+			If you wish you can alter this behavior to always daytime or always nighttime.</p>
+			
+			<div class="settings-actions">
+				<button type="button" class="control-btn settings-btn" onclick="setMode('day')">
+					<span class="settings-icon" aria-hidden="true">☀</span>
+					<span class="settings-text">Always Day</span>
+				</button>
+				
+				<button type="button" class="control-btn settings-btn" onclick="setMode('night')">
+					<span class="settings-icon" aria-hidden="true">🌙</span>
+					<span class="settings-text">Always Night</span>
+				</button>
+				
+				<button type="button" class="control-btn settings-btn" onclick="setMode(null)">
+					<span class="settings-icon" aria-hidden="true">⤾</span>
+					<span class="settings-text">Auto (Default)</span>
+				</button>
+			</div>
+			
+			<!-- Accessibility: Accessible fonts toggle
+			<p><strong>Accessibility</strong></p>
+			<p>If you find the default fonts hard to read you can switch to a more accessible set.<br>
+			(See the info popup for more details)</p>
+
+			<div class="settings-actions">
+				<button id="settings-font-toggle" type="button" class="control-btn settings-btn" aria-pressed="false">
+					<span class="settings-icon" aria-hidden="true">Aa</span>
+					<span class="settings-text">Accessible fonts: Off</span>
+				</button>
+			</div> -->
+			
+			<p>/////////////</p>
+			
+			<p><strong>Dev - Wipe localStorage</strong></p>
+			<p>Instead of cookies I save things to a browsers localStorage.<br>
+			For testing purposes here is a button that can delete all of them.<br>
+			(You need to reload the page for it to take effect)</p>
+			
+			<div class="settings-actions">
+				<button type="button" class="control-btn settings-btn" onclick="localStorage.clear()">
+					<span class="settings-icon" aria-hidden="true">X</span>
+					<span class="settings-text">Delete</span>
+				</button>
+			</div>
+		</div>
+		
+		<script>
+			// Mirror the parent’s logic for text color (just for this iframe’s content).
+			function applyIframeTextColor() {
+			  const mode = localStorage.getItem('userMode'); // 'day' | 'night' | null
+			  const hour = new Date().getHours();
+			  const isNightByClock = (hour >= 22 || hour < 6);
+			  const night = mode === 'night' || (mode !== 'day' && isNightByClock);
+			  const color = night ? '#f0f0f0' : '#000000';
+			  document.querySelectorAll('.content').forEach(el => { el.style.color = color; });
+			}
+			
+			function setMode(mode) {
+			  if (mode) {
+				localStorage.setItem('userMode', mode);
+			  } else {
+				localStorage.removeItem('userMode');
+			  }
+			
+			  // Update this iframe immediately…
+			  applyIframeTextColor();
+			
+			  // …and the parent will update itself automatically via the `storage` listener.
+			  // (Optionally also call it directly for belt & braces)
+			  if (window.parent && typeof window.parent.setBackgroundAndText === 'function') {
+				window.parent.setBackgroundAndText();
+			  }
+			}
+			
+			function remMode() {
+				localStorage.removeItem('userMode');
+			}
+			
+			// If the parent changes mode (e.g., from another iframe), reflect it here.
+			window.addEventListener('storage', (e) => {
+			  if (e.key === 'userMode') applyIframeTextColor();
+			});
+			
+			// Initial paint
+			applyIframeTextColor();
+		</script>
+		<script>
+		  // existing scripts above remain — append this
+		  // Sync the accessible fonts toggle (localStorage key: "fontAccessible")
+		  (function () {
+			const btn = document.getElementById('settings-font-toggle');
+
+			function readState() {
+			  try {
+				return localStorage.getItem('fontAccessible') === 'true';
+			  } catch (e) { return false; }
+			}
+
+			function applyStateToUI(enabled) {
+			  if (!btn) return;
+			  btn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+			  btn.querySelector('.settings-text').textContent = 'Accessible fonts: ' + (enabled ? 'On' : 'Off');
+			}
+
+			function applyStateToParent(enabled) {
+			  try {
+				// parent will update via storage listener, but we can also immediately set class
+				if (window.parent && window.parent.document && window.parent.document.body) {
+				  if (enabled) window.parent.document.body.classList.add('font-accessible');
+				  else window.parent.document.body.classList.remove('font-accessible');
+				}
+				// announce & toast in parent if available
+				try { window.parent.announce(enabled ? 'Accessible fonts enabled' : 'Accessible fonts disabled'); } catch (e) {}
+				try { window.parent.showToast(enabled ? 'Accessible fonts enabled' : 'Accessible fonts disabled', 1600); } catch (e) {}
+			  } catch (err) { /* ignore cross-context errors */ }
+			}
+
+			function setStorageEnabled(enabled) {
+			  try {
+				localStorage.setItem('fontAccessible', enabled ? 'true' : 'false');
+			  } catch (e) { /* ignore storage errors */ }
+			}
+
+			// click toggles
+			if (btn) {
+			  btn.addEventListener('click', (e) => {
+				e.preventDefault();
+				const current = readState();
+				const next = !current;
+				setStorageEnabled(next);
+				applyStateToUI(next);
+				applyStateToParent(next);
+			  });
+			}
+
+			// react to storage changes (e.g. another tab)
+			window.addEventListener('storage', (e) => {
+			  if (e.key === 'fontAccessible') {
+				const enabled = readState();
+				applyStateToUI(enabled);
+			  }
+			  if (e.key === 'userMode') {
+				// keep your existing behavior for userMode
+				applyIframeTextColor();
+			  }
+			});
+
+			// initial paint
+			applyStateToUI(readState());
+		  })();
+		</script>
+	</body>
+</html>

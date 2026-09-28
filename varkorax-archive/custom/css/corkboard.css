@@ -1,0 +1,369 @@
+/* =========================
+	custom: corkboard.css (override + fixes)
+	--- Updated: Rebranding as Corkboard
+========================= */
+:root {
+	--outer-bg: rgba(0,0,0,0.62);
+	--box-bg: rgba(0,0,0,0.30);
+	--blade-bg: rgba(255,255,255,0.02);
+	--blade-border: rgba(255,255,255,0.06);
+	--outer-radius: 22px;
+
+	/* sizing tweaks */
+	--outer-max-width: 1600px;
+	--blade-min-height: 96px;
+	--board-padding: 28px;
+
+	/* Category colors (accent only) */
+	--cat-thought: #3B82F6;   /* Blue */
+	--cat-bookmark: #F59E0B;  /* Amber */
+	--cat-update: #10B981;    /* Green */
+
+	/* control visuals */
+	--btn-frost-bg: rgba(255,255,255,0.06);
+	--btn-frost-border: rgba(255,255,255,0.10);
+	--btn-hover-elevate: translateY(-3px);
+}
+
+/* category -> effective color variable on blade via cascade */
+.blade.thought  { --cat-color: var(--cat-thought); }
+.blade.bookmark { --cat-color: var(--cat-bookmark); }
+.blade.update   { --cat-color: var(--cat-update); }
+
+/* IMPORTANT: override readable-panel width constraints when used with outer-board
+   The outer-board element previously carried the readable-panel class which
+   constrains max-width; here I force it to occupy the wider area. */
+.readable-panel.outer-board,
+.outer-board.readable-panel {
+	display: block !important;
+	width: min(98%, var(--outer-max-width)) !important;
+	max-width: none !important;
+	padding: var(--board-padding) !important;
+	margin: 22px auto 42px auto !important;
+}
+
+/* Outer full-width board under the Blog panel */
+.outer-board {
+	width: min(98%, var(--outer-max-width));
+	margin: 28px auto 42px auto;
+	padding: var(--board-padding);
+	background: var(--outer-bg);
+	border-radius: var(--outer-radius);
+	color: #fff;
+	display: block;
+	box-shadow: 0 36px 100px rgba(0,0,0,0.60);
+	/* ensure it visually separates from other readable panels */
+}
+
+/* ensure header sits nicely and gives space */
+.outer-board .outer-inner {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+.outer-board .board-header {
+	display: flex;
+	gap: 12px;
+	align-items: baseline;
+	justify-content: space-between;
+}
+.outer-board .board-header h2 { margin: 0; font-size: 1.6rem; }
+.outer-board .board-header p { margin: 0; opacity: 0.95; font-size: 0.95rem; }
+
+/* board actions (mark all read + total counter) */
+.board-actions {
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+}
+.board-actions .small { opacity: 0.9; font-size: 0.95rem; }
+
+/* big boxes container - three columns with generous gutters */
+.boxes.big {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 26px;
+	align-items: start;
+}
+
+/* each large board box */
+.board-box.large {
+	background: var(--box-bg);
+	border-radius: 18px;
+	padding: 20px;
+	/* larger so each category gets room to breathe */
+	min-height: 560px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	border: 1px solid rgba(255,255,255,0.04);
+	overflow: visible;
+}
+
+/* heading: category-level counter */
+.board-box.large h3 {
+	margin: 0 0 6px 0;
+	text-align: left;
+	font-size: 1.05rem;
+}
+.board-box.large h3 .cat-counter {
+	font-size: 0.82rem;
+	opacity: 0.9;
+	margin-left: 10px;
+	color: rgba(255,255,255,0.85);
+	font-weight: 600;
+}
+
+/* blade list - stack blades vertically; JS limits to 3 per category */
+.blade-list {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	overflow: visible;
+	padding-right: 6px;
+}
+
+/* individual blade */
+.blade {
+	background: var(--blade-bg);
+	border: 1px solid var(--blade-border);
+	border-radius: 14px;
+	padding: 18px;
+	box-shadow: 0 10px 26px rgba(0,0,0,0.34);
+	min-height: var(--blade-min-height);
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	overflow: hidden;
+	position: relative;
+
+	/* subtle category accent: left stripe (low-opacity) */
+	border-left: 6px solid rgba(255,255,255,0.03);
+	transition: transform 180ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+
+/* set left stripe to the category color (low opacity) */
+.blade { /* base fallback */
+	--cat-color: rgba(255,255,255,0.10);
+}
+.blade.thought  { border-left-color: rgba(59,130,246,0.22); } /* #3B82F6 */
+.blade.bookmark { border-left-color: rgba(245,158,11,0.22); } /* #F59E0B */
+.blade.update   { border-left-color: rgba(16,185,129,0.22); }  /* #10B981 */
+
+/* meta row */
+.blade .meta {
+	font-size: 0.88rem;
+	opacity: 0.95;
+	margin-bottom: 10px;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	justify-content: flex-start;
+}
+.blade .meta time { font-variant-numeric: tabular-nums; }
+
+/* content container; this will hold full HTML but visually clamp to 3 lines */
+.blade .blade-content {
+	font-size: 1rem;
+	line-height: 1.5;
+	text-align: left;
+	overflow: visible;
+	position: relative;
+}
+
+/* the text area that we clamp/fade */
+.blade .blade-text {
+	/* preview: clamp to ~3 lines */
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	max-height: calc(1.5em * 3 + 6px); /* approx: line-height * lines + padding */
+	transition: max-height 360ms cubic-bezier(.2,.9,.2,1), opacity 280ms ease;
+	opacity: 1;
+}
+
+/* when expanded, allow content to grow (we animate with JS too) */
+.blade.expanded .blade-text {
+	-webkit-line-clamp: unset;
+	display: block;
+}
+
+/* images inside content */
+.blade .blade-content img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+	margin-top: 10px;
+	border-radius: 8px;
+}
+
+/* bookmark link styling */
+.blade.bookmark .blade-content a {
+	text-decoration: underline;
+	color: inherit;
+}
+
+/* subtle hover to indicate interactability */
+.blade:hover {
+	transform: translateY(-4px);
+	transition: transform 180ms ease;
+}
+
+/* Expand/collapse button (rounded, frosted look, category outline) */
+.blade .expand-btn {
+	margin-top: 12px;
+	align-self: flex-start;
+	border-radius: 999px;
+	padding: 8px 12px;
+	font-weight: 600;
+	font-size: 0.92rem;
+	background: rgba(255,255,255,0.04);
+	border: 1px solid rgba(255,255,255,0.08);
+	backdrop-filter: blur(8px) saturate(140%);
+	-webkit-backdrop-filter: blur(8px) saturate(140%);
+	cursor: pointer;
+	transition: background 120ms ease, border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+	box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+}
+
+/* hover feedback for expand button (slight lift + brighter bg) */
+.blade .expand-btn:hover {
+	transform: translateY(-3px);
+	background: rgba(255,255,255,0.08);
+	box-shadow: 0 10px 22px rgba(0,0,0,0.34);
+}
+
+/* category outline on the expand button */
+.blade.thought  .expand-btn { border-color: rgba(59,130,246,0.30); color: var(--cat-thought); }
+.blade.bookmark .expand-btn { border-color: rgba(245,158,11,0.30); color: var(--cat-bookmark); }
+.blade.update   .expand-btn { border-color: rgba(16,185,129,0.30); color: var(--cat-update); }
+
+/* Expanded state visual — remove accent shadow and make left stripe more visible */
+.blade.expanded {
+	border-left-color: var(--cat-color);
+	box-shadow: 0 14px 36px rgba(0,0,0,0.46);
+}
+
+/* Read/unread states
+   - Switched from the endless box shadow memory hog to a more subtle breathing animation
+*/
+@keyframes pulse-accent {
+	0%, 100% { transform: scale(1); opacity: 1; }
+	50% { transform: scale(1.02); opacity: 0.8; }
+}
+.blade.unread {
+	animation: pulse-accent 1.6s ease-in-out infinite;
+	border-left-color: color-mix(in srgb, var(--cat-color) 34%, rgba(255,255,255,0.02));
+}
+
+/* stop pulsing when read/expanded */
+.blade.read,
+.blade.expanded {
+	animation: none !important;
+}
+
+/* When user opens the blade, fade the subtle highlight */
+.blade.read { opacity: 0.997; }
+
+/* settings / action button style and hover (used for Mark all read + archive link) */
+.settings-btn {
+	display: inline-block;
+	background: rgba(255,255,255,0.03);
+	border: 1px solid rgba(255,255,255,0.08);
+	padding: 8px 12px;
+	border-radius: 10px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: transform 140ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+.settings-btn:hover {
+	transform: translateY(-3px);
+	background: rgba(255,255,255,0.08);
+	box-shadow: 0 10px 22px rgba(0,0,0,0.28);
+}
+
+/* archive button centered */
+.outer-actions {
+	display: flex;
+	justify-content: center;
+	padding-top: 10px;
+}
+
+/* Back floating button panel (smaller frosted round control)
+   Positioned programmatically directly under the current topbar button */
+.topbar-back-btn {
+	position: fixed; /* JS will set exact left/top so we keep position fixed */
+	min-width: 48px;
+	height: 48px;
+	padding: 0 14px; /* allow text while keeping same pill feel */
+	border-radius: 999px;
+	display: inline-grid;
+	place-items: center;
+	background: var(--btn-frost-bg);
+	border: 1px solid var(--btn-frost-border);
+	backdrop-filter: blur(12px) saturate(160%);
+	-webkit-backdrop-filter: blur(12px) saturate(160%);
+	box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+	transition: transform 0.14s ease, background 0.12s ease, border-color 0.12s ease, left 120ms ease, top 120ms ease;
+	z-index: 1202;
+	text-decoration: none;
+	color: #ffffff;
+	font-weight: 600;
+	font-size: 0.95rem;
+	white-space: nowrap;
+	line-height: 1;
+}
+
+/* keep compatibility if an SVG ever remains in markup */
+.topbar-back-btn svg { display: block; width: 18px; height: 18px; }
+
+/* small adjustment for the text inside the control */
+.topbar-back-btn .back-text {
+	display: inline-block;
+	padding: 0; /* padding handled by the anchor itself */
+	vertical-align: middle;
+}
+
+/* hover/active behavior preserved */
+.topbar-back-btn:hover {
+	transform: translateY(-3px);
+	background: rgba(255,255,255,0.14);
+	border-color: rgba(255,255,255,0.44);
+}
+
+/* adapt to day theme (darker surface to keep contrast) */
+body.theme-day .topbar-back-btn {
+	background: var(--btn-day-bg);
+	border: 1px solid var(--btn-day-border);
+	box-shadow: 0 12px 36px rgba(0,0,0,0.45);
+}
+
+/* ensure the floating back control hides on very small screens (optional)
+   so it doesn't collide with mobile UI — still accessible from the page */
+@media (max-width: 520px) {
+	.topbar-back-btn {
+		display: inline-grid;
+		left: 12px;
+		top: calc(10px + 56px + 12px); /* bumped from +6px -> +12px to match JS change */
+		min-width: 44px;
+		height: 44px;
+		padding: 0 10px;
+		font-size: 0.9rem;
+	}
+}
+
+/* small screens: stack boxes into one column and reduce sizes */
+@media (max-width: 1200px) {
+	.boxes.big { grid-template-columns: 1fr; }
+	.board-box.large { min-height: 420px; }
+	.outer-board { width: 96%; padding: 20px; }
+}
+
+/* accessibility: reduce motion on hover if user prefers */
+@media (prefers-reduced-motion: reduce) {
+	.blade:hover { transform: none; transition: none; }
+	.blade .blade-text { transition: none; }
+	.blade.unread { animation: none; }
+	.settings-btn:hover, .expand-btn:hover { transform: none; }
+}

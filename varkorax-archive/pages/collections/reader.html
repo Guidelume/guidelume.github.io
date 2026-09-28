@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noai, noimageai, noindex, nofollow" />
+		
+		<title>| Reader V3</title>
+		<link rel="shortcut icon" type="image/x-icon" href="../../custom/favicon.svg" />
+		
+		<!-- Site-wide CSS -->
+		<link rel="stylesheet" href="../../custom/css/global.css" />
+		<link rel="stylesheet" href="../../custom/css/reader.css" />
+
+		<!-- Local (stories page) theme & button tuning, scoped to #reader and a body flag 
+		Who is gonna read any of this anyway? Yeah, you. Weirdo -->
+		<style>
+			/* TEXT COLOR RULES FOR THE READER (explicit mapping) */
+			#reader.theme-default,
+			#reader.theme-dark {
+				color: #ffffff !important; /* default + dark => white text */
+			}
+			#reader.theme-light {
+				color: #111111 !important; /* light => black text */
+			}
+			#reader .content,
+			#reader .chapter-header {
+				color: inherit !important;
+			}
+			
+			.popup-inner h1,
+			.popup-inner h2,
+			.popup-inner p,
+			.popup-inner button,
+			.popup-inner label {
+				color: #ffffff !important;
+			}
+			
+			/* BUTTON DAY/NIGHT helper classes (only used when no global theme is present) */
+			body.stories-btn-day:not(.theme-day):not(.theme-night) .control-btn,
+			body.stories-btn-day:not(.theme-day):not(.theme-night) .btn-base,
+			body.stories-btn-day:not(.theme-day):not(.theme-night) .cozy-btn,
+			body.stories-btn-day:not(.theme-day):not(.theme-night) .infobar-btn,
+			body.stories-btn-day:not(.theme-day):not(.theme-night) .topbar-btn,
+			body.stories-btn-day:not(.theme-day):not(.theme-night) .popup-close,
+			body.stories-btn-day:not(.theme-day):not(.theme-night) #player-collapse,
+			body.stories-btn-day:not(.theme-day):not(.theme-night) #player-controls button {
+				background: rgba(40, 40, 40, 0.92) !important;
+				border-color: rgba(0, 0, 0, 0.28) !important;
+				color: #ffffff !important;
+				backdrop-filter: none !important;
+				-webkit-backdrop-filter: none !important;
+				box-shadow: 0 8px 20px rgba(0,0,0,0.3) !important;
+			}
+			body.stories-btn-night:not(.theme-day):not(.theme-night) .control-btn,
+			body.stories-btn-night:not(.theme-day):not(.theme-night) .btn-base,
+			body.stories-btn-night:not(.theme-day):not(.theme-night) .cozy-btn,
+			body.stories-btn-night:not(.theme-day):not(.theme-night) .infobar-btn,
+			body.stories-btn-night:not(.theme-day):not(.theme-night) .topbar-btn,
+			body.stories-btn-night:not(.theme-day):not(.theme-night) .popup-close,
+			body.stories-btn-night:not(.theme-day):not(.theme-night) #player-collapse,
+			body.stories-btn-night:not(.theme-day):not(.theme-night) #player-controls button {
+				background: var(--btn-bg) !important;
+				border-color: var(--btn-border) !important;
+				color: var(--btn-text) !important;
+				backdrop-filter: blur(12px) saturate(160%) !important;
+				-webkit-backdrop-filter: blur(12px) saturate(160%) !important;
+				box-shadow: var(--shadow-soft) !important;
+			}
+			
+			.control-btn.is-active,
+			.btn-base.is-active,
+			body.theme-day .control-btn.is-active,
+			body.theme-night .control-btn.is-active,
+			body.stories-btn-day .control-btn.is-active,
+			body.stories-btn-night .control-btn.is-active,
+			body.theme-day .btn-base.is-active,
+			body.theme-night .btn-base.is-active,
+			body.stories-btn-day .btn-base.is-active,
+			body.stories-btn-night .btn-base.is-active {
+				/* visible orange ring + subtle drop shadow */
+				box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.95) !important,
+							0 10px 30px rgba(0,0,0,0.25) !important;
+				border-color: rgba(255, 165, 0, 1) !important;
+				/* extra outline fallback for any user agents that suppress box-shadow */
+				outline: 3px solid rgba(255, 165, 0, 0.95) !important;
+				color: #ffffff !important;
+			}
+			
+			/* control button color by theme so active/outline visuals have proper contrast */
+			body.theme-day .control-btn,
+			body.theme-day .btn-base { color: #111111 !important; }
+			body.theme-night .control-btn,
+			body.theme-night .btn-base { color: #ffffff !important; }
+			
+			/* active control button contrast override */
+			body.theme-day .control-btn.is-active,
+			body.theme-day .btn-base.is-active { color: #111111 !important; }
+			body.theme-night .control-btn.is-active,
+			body.theme-night .btn-base.is-active { color: #ffffff !important; }
+			
+			/* =
+		   Footer
+		   = */
+
+		.footer-wrapper {
+			position: fixed;
+
+			right: 64px;
+			bottom: 0;
+
+			display: flex;
+			justify-content: flex-end;
+			align-items: flex-end;
+
+			width: auto;
+			height: 128px;
+
+			overflow: hidden;
+
+			pointer-events: none;
+
+			z-index: 4;
+
+			font-family: "Lexend", sans-serif;
+		}
+
+		.footer-box {
+			display: inline-block;
+
+			padding: 8px 12px;
+
+			border: 1px solid rgba(255,255,255,0.06);
+			border-radius: 12px 12px 0 0;
+
+			background: rgba(7,12,20,0.36);
+
+			backdrop-filter: blur(6px) saturate(110%);
+			-webkit-backdrop-filter: blur(6px) saturate(110%);
+
+			box-shadow: 0 8px 22px rgba(0,0,0,0.45);
+
+			color: #fff;
+			font-size: 0.92em;
+			white-space: nowrap;
+
+			pointer-events: auto;
+
+			transition: transform 320ms ease;
+		}
+
+		.footer-heart,
+		.footer-name {
+			display: inline-block;
+
+			color: #ff984a;
+
+			transform-origin: center;
+			will-change: transform, color;
+
+			animation: footerPulse 1.6s ease-in-out infinite;
+		}
+
+		.footer-name {
+			margin-left: 6px;
+			animation-duration: 1.9s;
+		}
+		
+		@keyframes footerPulse {
+			0% {
+				transform: scale(1);
+				color: #ff9a4a;
+			}
+
+			45% {
+				transform: scale(1.04);
+				color: #ff7a2e;
+			}
+
+			100% {
+				transform: scale(1);
+				color: #ff9a4a;
+			}
+		}
+
+		/* =
+		   Animations
+		   = */
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(18px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+		
+		.entry-meta{
+
+			display:grid;
+			grid-template-columns:150px minmax(320px,1fr) 220px;
+			gap:2rem;
+
+			align-items:start;
+
+			margin-bottom:2rem;
+		}
+
+		.entry-thumb img{
+
+			width:100%;
+			display:block;
+
+			border-radius:10px;
+
+			box-shadow:0 6px 14px rgba(0,0,0,.35);
+		}
+
+		.entry-summary{
+
+			display:flex;
+			flex-direction:column;
+			gap:1rem;
+		}
+
+		.entry-info{
+
+			display:flex;
+			flex-direction:column;
+			gap:.5rem;
+		}
+
+		.meta-row{
+
+			display:grid;
+
+			grid-template-columns:
+				90px
+				1fr
+				max-content;
+
+			align-items:center;
+
+			column-gap:.5rem;
+		}
+
+		.meta-label{
+
+			opacity:.75;
+			font-weight:600;
+		}
+
+		.meta-dots{
+
+			height:1px;
+
+			border-bottom:1px dotted rgba(255,255,255,.25);
+		}
+
+		.meta-value{
+
+			font-weight:700;
+
+			white-space:nowrap;
+		}
+
+		.tag-list{
+
+			display:flex;
+
+			flex-wrap:wrap;
+
+			gap:.4rem;
+		}
+
+		.tag{
+
+			padding:.25rem .7rem;
+
+			border-radius:999px;
+
+			border:1px solid rgba(255,255,255,.15);
+
+			background:rgba(255,255,255,.05);
+
+			font-size:.85rem;
+		}
+
+		.archive-details{
+
+			margin-top:.5rem;
+		}
+
+		.archive-details summary{
+
+			cursor:pointer;
+
+			font-weight:600;
+		}
+
+		.entry-index{
+
+			align-self:start;
+
+			padding-left:1.5rem;
+
+			border-left:1px solid rgba(255,255,255,.15);
+		}
+
+		.entry-index summary{
+
+			cursor:pointer;
+
+			font-weight:600;
+
+			margin-bottom:.75rem;
+		}
+
+		#entry-index-links{
+
+			display:flex;
+
+			flex-direction:column;
+
+			gap:.35rem;
+
+			margin-top:.75rem;
+		}
+
+		#entry-index-links a{
+
+			text-decoration:none;
+
+			color:inherit;
+
+			opacity:.75;
+		}
+
+		#entry-index-links a:hover{
+
+			opacity:1;
+		}
+		
+		#entry-divider {
+			
+			border-top: 2px solid white;
+		}
+		</style>
+	</head>
+	
+	<body>
+		<!-- Scenic background -->
+		<div id="background" aria-hidden="true">
+			<div class="bg-layer" id="bg1"></div>
+			<div class="bg-layer" id="bg2"></div>
+		</div>
+		
+		<!-- Return Button -->
+		<a class="corner-btn btn-base left" href="#" aria-label="Back" data-tooltip="Back" id="back-btn">
+			<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<polyline points="15 18 9 12 15 6"></polyline>
+			</svg>
+		</a>
+		
+		<!-- Archive Reader -->
+		<div class="frame-wrap">
+			<main id="reader-main">
+				<!-- Now loads from router since I changed too much between the two versions 
+				Story: reader.html?type=stories&story=forest-entrance
+				Basement: reader.html?type=entry&id=template-pc
+				-->
+			</main>
+			
+			<!-- Left side controls -->
+			<nav class="side-controls side-controls-left" aria-label="Font and Accessibility">
+				<button id="btn-accessible" class="control-btn" title="Accessible fonts" aria-label="Accessible fonts" aria-pressed="false" data-tooltip="Accessible fonts" type="button">
+					<span class="text">Aa</span>
+				</button>
+				<button id="btn-font-inc" class="control-btn" title="Increase text" aria-label="Increase text size" data-tooltip="Increase text" type="button">
+					<span class="text">A+</span>
+				</button>
+				<button id="btn-font-dec" class="control-btn" title="Decrease text" aria-label="Decrease text size" data-tooltip="Decrease text" type="button">
+					<span class="text">A−</span>
+				</button>
+			</nav>
+			
+			<!-- Right side controls -->
+			<nav class="side-controls side-controls-right" aria-label="Theme and Alignment">
+				<div class="control-stack" aria-label="Themes">
+					<button id="btn-default" class="control-btn" title="Default frosted" aria-label="Default frosted" aria-pressed="false" data-tooltip="Default theme" type="button">
+						<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M12 3l2.2 5.6L20 11l-5.8 2.4L12 19l-2.2-5.6L4 11l5.8-2.4L12 3z" />
+						</svg>
+					</button>
+					<button id="btn-day" class="control-btn" title="Day theme" aria-label="Day theme" aria-pressed="false" data-tooltip="Day theme" type="button">
+						<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<circle cx="12" cy="12" r="4"></circle>
+							<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+						</svg>
+					</button>
+					<button id="btn-night" class="control-btn" title="Night theme" aria-label="Night theme" aria-pressed="false" data-tooltip="Night theme" type="button">
+						<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+						</svg>
+					</button>
+				</div>
+
+				<div class="control-stack" aria-label="Text alignment">
+					<button id="btn-align-left" class="control-btn" title="Align left" aria-label="Align left" aria-pressed="false" data-tooltip="Align left" type="button">
+						<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<line x1="4" y1="6" x2="20" y2="6"></line>
+							<line x1="4" y1="10" x2="14" y2="10"></line>
+							<line x1="4" y1="14" x2="18" y2="14"></line>
+							<line x1="4" y1="18" x2="12" y2="18"></line>
+						</svg>
+					</button>
+					<button id="btn-align-center" class="control-btn" title="Align center" aria-label="Align center" aria-pressed="false" data-tooltip="Align center" type="button">
+						<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<line x1="6" y1="6" x2="18" y2="6"></line>
+							<line x1="4" y1="10" x2="20" y2="10"></line>
+							<line x1="7" y1="14" x2="17" y2="14"></line>
+							<line x1="8" y1="18" x2="16" y2="18"></line>
+						</svg>
+					</button>
+					<button id="btn-align-right" class="control-btn" title="Align right" aria-label="Align right" aria-pressed="false" data-tooltip="Align right" type="button">
+						<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<line x1="4" y1="6" x2="20" y2="6"></line>
+							<line x1="10" y1="10" x2="20" y2="10"></line>
+							<line x1="6" y1="14" x2="20" y2="14"></line>
+							<line x1="12" y1="18" x2="20" y2="18"></line>
+						</svg>
+					</button>
+				</div>
+			</nav>
+			
+		</div>
+		
+		<!-- Infobar (top-right) -->
+        <nav id="infobar" aria-label="Site utilities">
+            <button
+                id="info-toggle"
+                class="infobar-btn"
+                aria-expanded="false"
+                aria-controls="info-popup"
+                data-tooltip="Info"
+                >
+                <img data-src="./custom/img/bottom-info.png" alt="Info" id="info-icon" />
+            </button>
+			
+        </nav>
+		
+		<!-- INFO POPUP (iframe) -->
+		<div id="info-popup" class="popup" role="dialog" aria-hidden="true" aria-label="Info panel" aria-modal="true">
+			<div class="popup-inner">
+				<button class="popup-start visually-hidden" aria-label="Start of info dialog">Start info</button>
+				<button class="popup-close" aria-label="Close info panel">✕</button>
+
+				<div class="popup-content">
+					<iframe
+						src="../info.html"
+						title="Info"
+						style="display:block; width:100%; height:100%; min-height:320px; border:0;"
+						allow="clipboard-read; clipboard-write; geolocation; microphone; camera; autoplay"
+						loading="lazy"
+					></iframe>
+
+					<noscript>
+						<div class="content small">
+							<p>JavaScript is required to load the info panel. <a class="bare-link" href="../info.html">Open info</a></p>
+						</div>
+					</noscript>
+				</div>
+
+				<p class="popup-help">To close, click outside the window or press Escape.</p>
+			</div>
+		</div>
+		
+		<!-- Footer Footer Footer Footlong -->
+		<div class="footer-wrapper" aria-hidden="false">
+			<div class="footer-box" role="contentinfo">
+				Made with <span class="footer-heart">♥</span> by<span class="footer-name"><a href="https://www.youtube.com/watch?v=Q2vA4Ue4Ths" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">Varkorax</a></span>
+			</div>
+		</div>
+		
+		<!-- Global JS -->
+		<script src="../../custom/js/global.js" defer></script>
+		
+		<!-- Markdown parser + DOMPurify -->
+		<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+		
+		<!-- Router Logic 
+		Bear with me but in the interim of unifying the two readers it instead loads a Small
+		router file which then loads entry.js or stories.js -->
+		<script src="../../custom/js/router.js" defer></script>
+		
+		<!-- Local wiring: improved back button + button day/night that respects global override -->
+		<script>
+		(function() {
+				const backBtn = document.getElementById('back-btn');
+				const urlParams = new URLSearchParams(window.location.search);
+				const genre = urlParams.get('genre'); // could be null or empty
+				const fallbackURL = `../landing_collections.html`;
+				const referrer = document.referrer;
+
+				// Security: Use referrer if it’s from this site, otherwise fallback
+				backBtn.href = (referrer && referrer.includes(window.location.hostname)) ? referrer : fallbackURL;
+			})();
+			
+			document.addEventListener('DOMContentLoaded', () => {
+				const btnDefault = document.getElementById('btn-default');
+				const btnDay = document.getElementById('btn-day');
+				const btnNight = document.getElementById('btn-night');
+				const reader = document.getElementById('reader');
+				const body = document.body;
+
+				/* ---------- ACTIVE STATE HIGHLIGHT (restored logic) ---------- */
+				function updateButtonStates(active) {
+					[btnDefault, btnDay, btnNight].forEach(btn => {
+						if (!btn) return;
+						btn.classList.remove('is-active');
+						btn.setAttribute('aria-pressed', 'false');
+					});
+					if (active === 'day' && btnDay) {
+						btnDay.classList.add('is-active');
+						btnDay.setAttribute('aria-pressed', 'true');
+					} else if (active === 'night' && btnNight) {
+						btnNight.classList.add('is-active');
+						btnNight.setAttribute('aria-pressed', 'true');
+					} else if (active === null && btnDefault) {
+						btnDefault.classList.add('is-active');
+						btnDefault.setAttribute('aria-pressed', 'true');
+					}
+				}
+
+				/* ---------- READER THEME (local to #reader only) ---------- */
+				function applyReaderTheme(mode) {
+					if (!reader) return;
+
+					// reader container classes (visual only)
+					reader.classList.remove('theme-default', 'theme-light', 'theme-dark');
+					if (mode === 'day') reader.classList.add('theme-light');
+					else if (mode === 'night') reader.classList.add('theme-dark');
+					else reader.classList.add('theme-default');
+
+					// Mirror to body.theme-* so stories.js and the theme-text CSS pick up the right color
+					document.body.classList.remove('theme-day', 'theme-night');
+					if (mode === 'day') document.body.classList.add('theme-day');
+					else if (mode === 'night') document.body.classList.add('theme-night');
+
+					// Update local button visuals
+					updateButtonStates(mode);
+
+					// Let stories.js know about the change so it can centralise state & update outlines.
+					try {
+						window.dispatchEvent(new CustomEvent('stories:theme-changed', { detail: { mode } }));
+					} catch (_) {}
+				}
+
+				function setReaderTheme(mode) {
+					// Use sessionStorage so it is local to the tab/session and does not affect other pages/tabs
+					if (mode === 'day' || mode === 'night') {
+						sessionStorage.setItem('storiesReaderMode', mode);
+					} else {
+						sessionStorage.removeItem('storiesReaderMode');
+					}
+					applyReaderTheme(mode);
+				}
+
+				// Wire theme buttons (local only)
+				if (btnDay) btnDay.addEventListener('click', (e) => { e.preventDefault(); setReaderTheme('day'); });
+				if (btnNight) btnNight.addEventListener('click', (e) => { e.preventDefault(); setReaderTheme('night'); });
+				if (btnDefault) btnDefault.addEventListener('click', (e) => { e.preventDefault(); setReaderTheme(null); });
+
+				// Initial reader theme
+				const savedReader = sessionStorage.getItem('storiesReaderMode');
+				applyReaderTheme((savedReader === 'day' || savedReader === 'night') ? savedReader : null);
+
+				/* ---------- BUTTON LEGIBILITY: respect global override, else time-of-day ---------- */
+
+				let isApplying = false;
+
+				function computeDayNightFromClock() {
+					const h = new Date().getHours();
+					return (h >= 6 && h < 22) ? 'day' : 'night';
+				}
+
+				function ensureStoriesClassPresence(desiredMode) {
+					if (!desiredMode) return;
+					const desiredClass = (desiredMode === 'day') ? 'stories-btn-day' : 'stories-btn-night';
+					if (body.classList.contains(desiredClass)) return;
+					body.classList.remove('stories-btn-day', 'stories-btn-night');
+					body.classList.add(desiredClass);
+				}
+
+				function removeStoriesClassesIfPresent() {
+					if (body.classList.contains('stories-btn-day') || body.classList.contains('stories-btn-night')) {
+						body.classList.remove('stories-btn-day', 'stories-btn-night');
+					}
+				}
+
+				function reapplyActiveState() {
+					// Reapply the active button outline based on sessionStorage (reader mode)
+					const s = sessionStorage.getItem('storiesReaderMode');
+					const val = (s === 'day' || s === 'night') ? s : null;
+					// Small DOM microtask delay to ensure any style changes have been applied first
+					requestAnimationFrame(() => {
+						updateButtonStates(val);
+					});
+				}
+
+				function reapplyActiveState() {
+					// Prefer any global theme set on <body> first (stories.js may set these).
+					// If none present, fall back to the per-page sessionStorage value.
+					const hasGlobalTheme = body.classList.contains('theme-day') || body.classList.contains('theme-night');
+					let val = null;
+					if (hasGlobalTheme) {
+						val = body.classList.contains('theme-day') ? 'day' : 'night';
+					} else {
+						const s = sessionStorage.getItem('storiesReaderMode');
+						val = (s === 'day' || s === 'night') ? s : null;
+					}
+					// small DOM microtask delay to ensure any style changes have been applied first
+					requestAnimationFrame(() => {
+						updateButtonStates(val);
+					});
+				}
+
+				function syncButtonLegibility() {
+					if (isApplying) return;
+					isApplying = true;
+					try {
+						const hasGlobalTheme = body.classList.contains('theme-day') || body.classList.contains('theme-night');
+						if (hasGlobalTheme) {
+							// If the global theme is present, remove local 'stories-btn-*' decorating classes
+							// so the global styles take precedence.
+							removeStoriesClassesIfPresent();
+						} else {
+							let userMode = null;
+							try { userMode = localStorage.getItem('userMode'); } catch (e) { userMode = null; }
+							const mode = (userMode === 'day' || userMode === 'night') ? userMode : computeDayNightFromClock();
+							ensureStoriesClassPresence(mode);
+						}
+					} finally {
+						isApplying = false;
+						// After changing legibility classes, ensure active button visuals are in sync
+						reapplyActiveState();
+					}
+				}
+
+				// Update when localStorage 'userMode' changes in other tabs
+				window.addEventListener('storage', (ev) => {
+					if (ev.key === 'userMode') syncButtonLegibility();
+				});
+
+				// Observe body.class changes
+				const bodyObserver = new MutationObserver((mutations) => {
+					for (const m of mutations) {
+						if (m.type === 'attributes' && m.attributeName === 'class') {
+							syncButtonLegibility();
+							break;
+						}
+					}
+				});
+				bodyObserver.observe(body, { attributes: true, attributeFilter: ['class'] });
+
+				// schedule clock-edge updates if needed
+				function scheduleNextClockEdge() {
+					let userMode = null;
+					try { userMode = localStorage.getItem('userMode'); } catch (e) { userMode = null; }
+					const hasGlobalTheme = body.classList.contains('theme-day') || body.classList.contains('theme-night');
+					if (userMode === 'day' || userMode === 'night' || hasGlobalTheme) return;
+
+					const now = new Date();
+					const msUntilNextHour = (60 - now.getMinutes()) * 60 * 1000 - now.getSeconds() * 1000 - now.getMilliseconds();
+					setTimeout(() => {
+						syncButtonLegibility();
+						scheduleNextClockEdge();
+					}, Math.max(250, msUntilNextHour + 50));
+				}
+				scheduleNextClockEdge();
+
+				// Also run reapplyActiveState after the whole window load to catch late scripts
+				window.addEventListener('load', () => {
+					// small delay to allow any global script to finish its paint
+					setTimeout(reapplyActiveState, 60);
+				});
+			});
+		</script>
+	</body>
+</html>

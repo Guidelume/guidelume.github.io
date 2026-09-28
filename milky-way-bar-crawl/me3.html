@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <title>MWBC | LE3</title>
+	<meta property="og:title" content="Milky Way Bar Crawl">
+	<meta property="og:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta property="og:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+	<meta property="og:url" content="https://guidelume.github.io/milky-way-bar-crawl/me3.html">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Milky Way Bar Crawl">
+	<meta name="twitter:description" content="A guide for modding Mass Effect Legendary Edition.">
+	<meta name="twitter:image" content="https://guidelume.github.io/engine/preview-mwbc.png">
+    <link rel="shortcut icon" href="./custom/favicon.svg" />
+	
+	<link rel="stylesheet" href="../engine/css/fonts.css" />
+    <link rel="stylesheet" href="../engine/css/guide.css" />
+    <link rel="stylesheet" href="../engine/css/accessible-fonts.css" />
+    <!-- ME3 (muted red) -->
+	<link rel="stylesheet" href="./custom/css/me3.css" />
+</head>
+<body>
+
+    <!-- Background (single reliable layer) -->
+    <div class="bg-viewport" aria-hidden="true">
+        <div id="bgLayer" class="bg-layer" style="background-image:url('./custom/img/background/bg-me3.webp');"></div>
+    </div>
+    <div class="bg-vignette" aria-hidden="true"></div>
+
+    <div class="layout" id="layoutRoot">
+
+        <!-- LEFT -->
+		<aside class="left-panel" id="leftPanel" role="navigation" aria-label="Chapters">
+
+			<div class="nav-section open" data-section="main">
+				<button class="nav-section-header" type="button" aria-expanded="true">
+					<span>Milky Way Bar Crawl</span>
+					<span class="nav-section-caret">▾</span>
+				</button>
+				
+				<ul class="chap-list">
+					<li class="chap-item" data-href="intro.html">
+						<a class="chap-link" href="intro.html">1. Introduction</a>
+					</li>
+
+					<li class="chap-item" data-href="setup.html">
+						<a class="chap-link" href="setup.html">2. Setup</a>
+					</li>
+
+					<li class="chap-item" data-href="me1.html">
+						<a class="chap-link" href="me1.html">3.1. LE1</a>
+					</li>
+
+					<li class="chap-item" data-href="me2.html">
+						<a class="chap-link" href="me2.html">3.2. LE2</a>
+					</li>
+
+					<li class="chap-item" data-href="me3.html">
+						<a class="chap-link" href="me3.html">3.3. LE3</a>
+					</li>
+
+					<li class="chap-item" data-href="finish.html">
+						<a class="chap-link" href="finish.html">4. Finish</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="after-hours">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>After Hours</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="extras.html">
+						<a class="chap-link" href="extras.html">5. Extras</a>
+					</li>
+
+					<li class="chap-item" data-href="textures.html">
+						<a class="chap-link" href="textures.html">6. Textures</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-section" data-section="appendices">
+				<button class="nav-section-header" type="button" aria-expanded="false">
+					<span>Appendices</span>
+					<span class="nav-section-caret">▸</span>
+				</button>
+
+				<ul class="chap-list">
+					<li class="chap-item" data-href="questions.html">
+						<a class="chap-link" href="questions.html">7. Common Questions</a>
+					</li>
+
+					<li class="chap-item" data-href="changelog.html">
+						<a class="chap-link" href="changelog.html">8. Changelog</a>
+					</li>
+
+					<li class="chap-item" data-href="credits.html">
+						<a class="chap-link" href="credits.html">9. Credits</a>
+					</li>
+				</ul>
+			</div>
+			
+			<div class="nav-updated" role="contentinfo">
+				Last Updated:<br>
+				August 2026 · v2.1
+			</div>
+			
+		</aside>
+
+        <!-- CENTER -->
+        <main class="center-col" role="main">
+            <div class="content-shell" id="contentShell">
+
+                <div class="title-box">
+                    <div id="titleBackground" class="title-bg"></div>
+					<button id="home" class="btn text-standard" aria-label="Return to Start"><a href="../index-mwbc.html">Back to Start</a></button>
+                    <h1 id="projectTitle">Milky Way Bar Crawl - LE3</h1>
+                    <button id="fontToggle" class="btn text-standard" aria-label="Toggle accessible fonts" title="Font Toggle">Aa</button>
+                </div>
+				
+				<div class="content-progress" aria-hidden="true">
+					<div class="content-progress-bar"></div>
+				</div>
+				
+                <article class="content-box" id="contentBox" tabindex="0" aria-labelledby="stepTitle">
+					
+					<section id="preamble" class="panel open" data-index="0">
+						<header class="panel-header" role="button" aria-expanded="true">
+							<h3>The Final Round</h3>
+							<div class="caret">▾</div>
+						</header>
+
+						<div class="panel-body">
+							<p class="text-standard">
+								The final stretch is upon us! <b>Mass Effect 3</b>, where everything comes together.  
+								Time to patch the cracks, polish the glassware, and make sure the night ends on a satisfying note.
+							</p>
+							<p class="text-standard">
+								One more for the road; Let’s finish strong.
+							</p>
+						</div>
+					</section>
+
+                    <!-- Batch Section -->
+                    <section id="batch" class="panel" data-index="1">
+                        <header class="panel-header" role="button" aria-expanded="true">
+                            <h3>Batch</h3>
+                            <div class="caret">▾</div>
+                        </header>
+
+                        <div class="panel-body">
+                            <p class="text-standard">
+                                A curated night around the galaxy awaits!<br>
+                                We end the night back at the Citadel, where the club Purgatory holds a secret for all who enjoy a good ending:
+                            </p>
+							
+							<p class="text-standard">
+								<b>Purgatory on the Rocks:</b> Dark, burning, and bittersweet - one last drink at the edge of all things.<br><br>
+								<em>Download it directly here (by clicking on the image):</em><br>
+								
+								<a href="./custom/files/Purgatory on the Rocks (Milky Way Bar Crawl07-2026).biq2" download>
+									<img src="./custom/img/guide-purgatory-2.webp" 
+										 alt="Purgatory on the Rocks Batch File" 
+										 title="Click Me!" 
+										 class="download-thumb" loading="lazy" decoding="async">
+								</a>
+								<br>
+								
+								<em>or from the Nexus page:</em><br>
+								<b><u><a href="https://nexusmods.com/masseffectlegendaryedition/mods/3348" target="_blank">Click Me!</a></u></b><br><br>
+							</p>
+							
+							<hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							
+                            <div id="batch-starting" class="anchor" data-parent="preamble">
+								<h4>Installation</h4>
+								<p class="text-standard">
+									Who say the journey can't be just as enjoyable as the destination? Here’s the secret to a good bar crawl:
+								</p>
+								
+								<ol class="text-standard">
+									<li>Open <b>M3</b>.</li>
+									<li>Select <b>Mod Management → Batch Mod Installer</b>.</li>
+									<li>
+										Load the batch file:<br>
+										<ul>
+											<li>If you downloaded the list through M3, it will appear automatically.</li>
+											<li>If you downloaded it manually, place the file into: 
+											<code>(Your M3 folder)/mods/BatchModQueues</code><br>
+											Then reopen the Batch Mod Installer.</li>
+										</ul>
+									</li><br>
+									<li>
+										Download every mod <b>through the Batch Mod Installer</b> whenever possible. This ensures you get the correct versions of everything.<br> In cases where it is not possible to go through the Installer, simply download and import manually.<br>
+										<em><b>Depending on your Nexus membership and file sizes, this may take a little while. Please be patient with your aging barman (28).</b></em>
+									</li>
+									<li>Once everything has finished downloading, click <b>Install this group</b>.</li>
+									<li>When asked if you want to use previously saved options, click Yes.</li>
+									<li>Wait until everything is installed, then launch the game once to make sure everything is working.</li>
+									<li><b>Congratulations!</b> You've survived the easy part. Before you start playing, head on over to Finish.</li>
+								</ol>
+							</div>
+							
+							<br>
+							<div class="caution">
+								<div class="icon">*</div>
+								<p class="text-standard">
+									After installation is complete the Expanded Galaxy Mod Settings utility will open itself.<br>
+									Navigate to the <b>Mission Timings</b> tab and for the <b>Citadel DLC</b> switch to <b>Disable DLC (or CEM Full)</b>.<br>
+									You need to do this since the list includes Citadel Epilogue Mod (CEM), which turns that DLC into an Epilogue for the game.<br>
+									If you do not change this you'll be able to start the DLC like normal, which defeats the purpose of CEM a bit.
+								</p>
+							</div>
+                        </div>
+                    </section>
+
+                    <!-- Manual Section -->
+					<section id="manual" class="panel" data-index="2">
+						<header class="panel-header" role="button" aria-expanded="true">
+							<h3>Manual</h3>
+							<div class="caret">▾</div>
+						</header>
+
+						<div class="panel-body">
+							<p class="text-standard">
+								<b>A colorful selection awaits the adventurous soul.</b><br>
+								We end the night back at the Citadel in club Purgatory, where the dark beats and colorful drinks promise a satisfying end to the night.
+							</p>
+
+							<div id="manual-mod-note" class="anchor" data-parent="manual">
+								<h4>Patches / Compatibility</h4>
+								<p class="text-standard">
+									If you were to install the mods listed below from top to bottom, all relevant patches should appear when needed.<br>
+									Remember that you are shaping your own flavor of drink here however, so be sure to always read thoroughly through each mod's Nexus page.
+								</p>
+							</div>
+							
+							<br>
+                            <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br>
+							
+							<div id="unofficial-patch" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/13" target="_blank">
+											LE3 Community Patch
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/KkJiro" target="_blank">Kinkojiro</a> and the LE3 Community Patch Team
+									</div>
+								</div>
+								
+								<div class="mod-description text-standard">
+									If you are only ever going to install a single mod, pick this one.<br>
+									Bugfix mods are always a bit unglamorous by nature, but the work the community has put into these ever since the ME3Recalibrated days is beyond astonishing.
+								</div>
+								
+								<div class="mod-note">
+									<b>Note:</b> This mod is foundational and required by basically every other mod on this list.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="myriad-pro-begone" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1070" target="_blank">
+											Myriad Pro Begone
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Audemus" target="_blank">Audemus</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Replaces the font used throughout the game with something more fitting for the setting.
+								</div>
+
+								<div class="mod-note">
+									<b>Note:</b> The file you download has a version for every game plus the Launcher. You may import everything if you want or just choose the LE3 version.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="jour-enh" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1508" target="_blank">
+											Journal Enhanced
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/55tumbl" target="_blank">55tumbl</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Various QoL enhancements for the journal, such as showing when a mission cannot be done yet or is ready to be turned in.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="perm-cic" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/868" target="_blank">
+											Permanent CIC Hologram
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Herobrine24" target="_blank">Herobrine24</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Makes the holograms in the CIC persistent regardless of where you are.
+								</div>
+
+								<div class="mod-note">
+									<b>Note:</b> The file contains both the LE2 and LE3 version. You can import both or just the LE3 version.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="fish-fish" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/386" target="_blank">
+											F.I.S.H.
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/beccatoria" target="_blank">beccatoria</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Traynor will now feed your fish without needing to romance her. Kelly will also return your fish to you regardless of whether you flirted with her during LE2.<br>
+									Funnily enough there is a fish feeder in the game you can buy, but it's stupid expensive and doesn't unlock for a while if memory serves.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="diana-over" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1136" target="_blank">
+											Diana Allers Overhaul
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/MentalHygiene" target="_blank">MentalHygiene</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Visual overhaul for Allers, plus a few new outfit choices for her.
+								</div>
+
+								<div class="mod-note">
+									<b>Note:</b> If you plan on following the Textures section later this mod is a <b>soft requirement</b>.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="emily-wong" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1223" target="_blank">
+											Fate of Emily Wong LE3
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/matallic" target="_blank">matallic</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Emily Wong was killed off in a promotional Twitter gimmick account storyline in the leadup to ME3. This mod adds those tweets as an Email you get from Allers.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="ree-gar" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1129" target="_blank">
+											Reegar Lives
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/wrenchwench" target="_blank">wrenchwench</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Kal'Reegar gets killed off in a news article you receive after Thessia. This mod alters the news story so he survives.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="eas-pull" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1598" target="_blank">
+											Apartment Additions
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/LLinden" target="_blank">LLinden</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Adds a lot of new decorations for you to purchase for your Citadel DLC apartment.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="pin-ap" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1588" target="_blank">
+											Pinnacle Station Apartment
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Scottina123" target="_blank">Scottina123</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Lets you visit your apartment on Intai'sei. You... did remember to play Pinnacle Station right?
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="data-pad" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2790" target="_blank">
+											Datapad App Messages Expanded
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Cirosan" target="_blank">Cirosan</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									When ME3 came out they released a tie-in smartphone app in which characters could send you messages as you played. This mod restores and expands these messages and adds them as Emails.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="en-smo" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1691" target="_blank">
+											Remove Enemy Smoke Grenades
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Herobrine24" target="_blank">Herobrine24</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Removes the ability of enemies to use smoke grenades.
+								</div>
+
+								<div class="mod-note">
+									<b>Note:</b> This is a personal annoyance of mine. You may wish to skip this one.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="no-pen" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1156" target="_blank">
+											No Movement Penalty During Rannoch Boss Fight
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Herobrine24" target="_blank">Herobrine24</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Removes the targeting speed penalty when fighting the Reaper on Rannoch that seems to trip up many people.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="get-con" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1565" target="_blank">
+											Infinite Ammo In Geth Consensus
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Cirosan" target="_blank">Cirosan</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Removes the recharge time for the virtual gun during the mission in the Geth Consensus.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="ori-m" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/430" target="_blank">
+											Oriana Looks Like Miranda's Twin
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Marcus22Khaar" target="_blank">Marcus22Khaar</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Changes Oriana's face into Miranda's so they actually look like twins.<br>
+									It'll forever remain a mystery why no one at Bioware thought to do this.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="uni-kal" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1175" target="_blank">
+											Unique Kahlee Sanders
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Marcus22Khaar" target="_blank">Marcus22Khaar</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Gives Kahlee Sanders a unique appearance based on her how she is described in the books.
+								</div>
+
+								<div class="mod-note">
+									<b>Note:</b> This mod includes a texture file to update Kahlee's War Asset image. If you plan to texture mod your game, save the file for later.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="kas-umi" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1484" target="_blank">
+											Kasumi Eye Tweak
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/CawCrowche" target="_blank">CawCrowche</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Edits Kasumi's eyes to be actually visible.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="dre-rem" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1630" target="_blank">
+											Dreams Remade
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Pauju" target="_blank">Pauju</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Completely overhauls the dream sequences, making them a lot more impactful and personal to your Shepard's story.<br>
+									One of my all time favorite mods for LE3 I think.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="eg-mm" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1824" target="_blank">
+											Expanded Universe - Mod Menu
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: Tydeous (currently maintained by <a href="https://www.nexusmods.com/profile/deadspear1" target="_blank">deadspear1</a>)
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Adds a menu at the start of the game which allows players to select which Extended Universe material they've viewed to prevent spoilers in some mods.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="eg-m" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/422" target="_blank">
+											Expanded Galaxy Mod
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/KkJiro" target="_blank">Kinkojiro</a> and the EGM Team
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									A massive overhaul and expansion of the Galactic War part of the game.<br>
+									I cannot possibly convey in a few sentences how much this mod adds to the experience, so definitely check out the Nexus page.
+								</div>
+
+								<div class="mod-note">
+									<b>Note:</b> EGM has its own configuration utility which will open once the mod is installed. Take a moment to familiarize yourself with it.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="sho-no" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/803" target="_blank">
+											Shorter Notifications
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/WiredTexan" target="_blank">WiredTexan</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Shortens the time notification popups stay on screen.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="egm-omega" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1597" target="_blank">
+											Omega Hub
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: Tydeous (currently maintained by <a href="https://www.nexusmods.com/profile/deadspear1" target="_blank">deadspear1</a>) and the Elcor Hamlet Appreciation Society
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Lets you visit Omega as a Hub again after you complete the DLC.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="egm-mir" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1350" target="_blank">
+											Miranda Mod
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/KkJiro" target="_blank">Kinkojiro</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Post-Horizon Miranda will become a full Squadmate again.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="n7-gift" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1956" target="_blank">
+											N7 - A Spectre's Gift
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/KkJiro" target="_blank">Kinkojiro</a> and the Ark Mod Team
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Adds a small, but very well made quest tying LE3 to Andromeda.<br>
+									Seriously, it is impressive what they manage to do here.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="cit-ep" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1018" target="_blank">
+											Citadel Epilogue Mod
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Autoola" target="_blank">Autoola</a>, Deager, Audemus and Scottina123
+									</div>
+								</div>
+								
+								<div class="mod-description text-standard">
+									Lets you play the Citadel DLC as the epilogue of the game. Any mentions of the War or Reapers have been edited out and credits will roll after the party.
+								</div>
+								
+								<div class="mod-note">
+									<b>Note 1:</b> I recommend picking CEM Full.<br>
+								</div>
+								
+								<div class="mod-note">
+									<b>Note 2:</b> If you are using Expanded Galaxy Mod you <b>need</b> to open its configuration utility and disable the Citadel DLC. Otherwise you will receive the Email to start the DLC as usual.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="au-hap" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/323" target="_blank">
+											Audemus' Happy Ending Mod
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Audemus" target="_blank">Audemus</a>, Scottina123 and KoshVader
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Changes the ending to a more hopeful one, provided you didn't screw up somewhere.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="arm-exp" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1269" target="_blank">
+											Armax Expansion Mod
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: Tydeous (currently maintained by <a href="https://www.nexusmods.com/profile/deadspear1" target="_blank">deadspear1</a>)
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Expands the Armax Arena Combat Simulator added by the Citadel DLC with new enemies and more.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="har-ov" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/711" target="_blank">
+											Harbinger Overhaul Mod
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: Tydeous and Mellin (currently maintained by <a href="https://www.nexusmods.com/profile/deadspear1" target="_blank">deadspear1</a>)
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Changes the appearance of the first Reaper you see during the Prologue to that of Harbinger.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="le3-div" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1174" target="_blank">
+											LE3 Diversification Project
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: Tydeous (currently maintained by <a href="https://www.nexusmods.com/profile/deadspear1" target="_blank">deadspear1</a>) and the Elcor Hamlet Appreciation Society
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									A complete overhaul of the game with the goal of making the world feel more lived in.<br>
+									This is, I think, my favorite mod for the game. It would be genuinely impossible to summarize just how much this mod does, so definitely check out the Nexus page.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="lia-mo" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1713" target="_blank">
+											Liara Mourns The Dead
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/beccatoria" target="_blank">beccatoria</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Restores a small, reflective scene with Liara post-coup that got cut.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="egm-spec" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/15" target="_blank">
+											Spectre Expansion Mod
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: Tydeous (currently maintained by <a href="https://www.nexusmods.com/profile/deadspear1" target="_blank">deadspear1</a>)
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									A complete overhaul and expansion of the Spectre aspect of the game.<br>
+									Learn more about how the war is affecting every corner of the Galaxy and make some hard choices which influence your War Assets.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="rea-ro" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/833" target="_blank">
+											Reaper Retrofits
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: Tydeous (currently maintained by <a href="https://www.nexusmods.com/profile/deadspear1" target="_blank">deadspear1</a>)
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Overhauls and diversifies the Reaper faction with new enemies.<br>
+									The result is more visual variety and a few new combat situations which really lean into the horror of the Reapers.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="tak-ea" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/16" target="_blank">
+											Take Earth Back
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: Tydeous (currently maintained by <a href="https://www.nexusmods.com/profile/deadspear1" target="_blank">deadspear1</a>)
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									A complete overhaul of the final mission, making it much more appropriate for the trilogy's climax.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="lev-ia" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2445" target="_blank">
+											Leviathan Retrofits
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: Tydeous (currently maintained by <a href="https://www.nexusmods.com/profile/deadspear1" target="_blank">deadspear1</a>) and the Elcor Hamlet Appreciation Society
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Overhauls and diversifies the enemies you face during the Leviathan DLC by adding Collectors from the multiplayer mode that was lost in the LE.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="get-ro" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/847" target="_blank">
+											Geth Retrofits
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: Tydeous (currently maintained by <a href="https://www.nexusmods.com/profile/deadspear1" target="_blank">deadspear1</a>)
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Overhauls and diversifies the Geth faction with new enemies.<br>
+									The result is more visual variety and a few new combat situations which really lean into the sheer breadth of the Geth army.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="cer-ro" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/709" target="_blank">
+											Cerberus Retrofits
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: Tydeous (currently maintained by <a href="https://www.nexusmods.com/profile/deadspear1" target="_blank">deadspear1</a>)
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Overhauls and diversifies Cerberus with new enemies.<br>
+									The result is more visual variety and a ton of new combat encounters against named enemy commanders and new enemy types, making Cerberus a lot more fun to fight.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="rew-kai" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1038" target="_blank">
+											Reworked Kai Leng
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Pauju" target="_blank">Pauju</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Overhauls Kai Leng by removing most of his dialogue and putting a helmet on him.<br>
+									Sounds flippant, I know, but it genuinely works. Strip away his nonsensical dialogue, hide his face, and he suddenly feels a whole lot more like the dangerous Cerberus operative the game keeps insisting he is.<br>
+									Optionally, the mod also switches out Kai Leng with a Phantom during the Citadel Coup, which makes for a nice introduction to a new enemy type.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="cat-ro" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2410" target="_blank">
+											CAT6 Retrofits
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: Tydeous (currently maintained by <a href="https://www.nexusmods.com/profile/deadspear1" target="_blank">deadspear1</a>) and the Elcor Hamlet Appreciation Society
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Overhauls and diversifies the CAT6 faction from the Citadel DLC.<br>
+									The result is more visual variety and new combat encounters against named enemy commanders and new enemy types, making them more fun to fight.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="uni-udina" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2716" target="_blank">
+											Unique Udina Face Restored LE3
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Marcus22Khaar" target="_blank">Marcus22Khaar</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Restores a unique, unused look for Udina that was later recycled for Bryson from the Leviathan DLC.<br>
+									Takes a little getting used to, but it fits his character pretty well.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="sub-tle" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/3257" target="_blank">
+											Subtle Ammo Icons
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/halfadder" target="_blank">halfadder</a>
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Less flashy ammo icons for all ammo types.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="le3-op" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/19" target="_blank">
+											LE3 Opening Remaster
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Mellin" target="_blank">Mellin</a> and Audemus
+									</div>
+								</div>
+
+								<div class="mod-description text-standard">
+									Restores the slightly longer opening that came with the demo of the original release and upscales it to 4K60fps.
+								</div>
+							</div>
+							
+							<br>
+                            <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							<br> -->
+							
+							<div id="me-videos" class="mod-card anchor" data-parent="manual">
+								<div class="mod-header">
+									<h4>
+										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/3" target="_blank">
+											A Lot Of Videos
+										</a>
+									</h4>
+									<div class="mod-author">
+										By: <a href="https://www.nexusmods.com/profile/Audemus" target="_blank">Audemus</a> and ALOV Team
+									</div>
+								</div>
+								
+								<div class="mod-description text-standard">
+									Upscales every pre-rendered scene in the trilogy to 4K 60FPS.<br>
+									A monumental effort involving scene-by-scene restortation, artifact cleanup, modern Bink 2 encoding, and even recreating some cinematics in-engine.
+								</div>
+								<!-- <div class="mod-description text-standard">
+									Upscales every pre-rendered video in the trilogy to 4K 60 FPS, greatly improving visual quality while preserving the originals.<br>
+									The work done here is really impressive, across both OT and LE.
+								</div> -->
+								
+								<div class="mod-note">
+									<b>Note:</b> At 18GB, this is by far the biggest mod on the list and will take a very long time to download. If possible, consider a month of Nexus Premium or use the provided torrent.
+								</div>
+							</div>
+							
+							<br>
+							<hr style="color:#fff;width:99%;text-align:left;margin-left:0">
+							
+							<div id="manual-mod-patches" class="anchor" data-parent="manual">
+								<h4>Lights Out</h4>
+								<p class="text-standard">
+									Congratulations on finishing the last stop on our journey across the galaxy.<br>
+									Your drink empty and your game ready, whether you continue with me to After Hours in search of exotic flavors, or if you call it quits here, I hope you have enjoyed your time thus far.<br>
+									If you decide to end the night here be sure to visit the "Finish" page before departing.
+								</p>
+							</div>
+						</div>
+					</section>
+					
+					<section id="whatthewhy" class="panel" data-index="3">
+						<header class="panel-header" role="button" aria-expanded="true">
+							<h3>Bonus: Explaining Choices</h3>
+							<div class="caret">▾</div>
+						</header>
+						
+						<div class="panel-body">
+							<p class="text-standard">
+								Some visitors have asked me, "Barman, why did you choose X? Why not Y?"<br>
+								While I won't bore you with justifying every single decision, there are a few big ones where I'll indulge you.
+							</p>
+							
+							<br><br>
+							
+							<div id="no-one-is-ever-gonna-read-these-right" class="mod-card anchor" data-parent="whatthewhy">
+								<div class="mod-header">
+									<h4>
+										<i>LE3 Diversification Project</i> over <i>Project Variety</i>
+									</h4>
+								</div>
+								
+								<div class="mod-description text-standard">
+									Both mods do broadly the same thing: they expand the universe of LE3. So why did I choose LE3DP?<br><br>
+									
+									The short version is that I prefer its implementation. Some of the additions in Project Variety don't feel quite as polished or well-integrated to me, and I'm not particularly interested in its cosmetic additions, such as all the extra outfits.<br><br>
+									
+									More importantly, perhaps, LE3DP better fits what I'm trying to accomplish with this guide. Despite the sheer amount of content it adds, I find it tends to feel more like Vanilla+ (or at least closer to that philosophy) than PV does. That is admittedly a very subjective assessment, and I'm sure someone else could play both and come away with the exact opposite impression.<br><br>
+									
+									In summary, this isn't really a case of "LE3DP good, PV bad." Project Variety is a really fun beast of a mod. I simply prefer what LE3DP does, and I think it fits the overall direction of this guide better.
+								</div>
+							</div>
+						</div>
+					</section>
+					
+                </article>
+
+                <!-- Pager -->
+                <div class="pager-box pager" role="navigation" aria-label="Panel navigation">
+                    <div class="pager-left">
+                        <button class="btn text-standard" id="expandAllBtn" aria-label="Expand all panels">Expand All</button>
+                        <button class="btn text-standard" id="closeAllBtn" aria-label="Close all panels">Close All</button>
+                    </div>
+
+                    <div class="pager-right">
+                        <button class="btn text-standard" id="prevPageBtn" aria-label="Previous page">Prev Page</button>
+                        <button class="btn text-standard" id="nextPageBtn" aria-label="Next page">Next Page</button>
+                    </div>
+                </div>
+
+                <div class="bottom-strip" aria-hidden="true"></div>
+            </div>
+        </main>
+
+        <!-- RIGHT -->
+        <aside class="right-panel">
+            <div class="contents-panel" role="navigation" aria-label="Contents">
+                <h4>Chapters</h4>
+                <nav>
+                    <ul id="contentsList" class="contents-list"></ul>
+                </nav>
+            </div>
+
+            <div class="made-by" role="contentinfo">
+                Made with <span class="heart">♥</span> by <span class="name"><a href="https://varkorax.github.io" target="_blank">Varkorax</a></span>
+            </div>
+        </aside>
+
+    </div>
+
+    <script src="../engine/js/guide.js" defer></script>
+    <script src="../engine/js/font-accessibility.js" defer></script>
+    
+
+</body>
+</html>

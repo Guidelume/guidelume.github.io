@@ -1,0 +1,20 @@
+@font-face {
+	font-family: 'ZenDots';
+	src: url('../fonts/ZenDots-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'Quicksand';
+	src: url('../fonts/Quicksand-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'Lexend';
+	src: url('../fonts/accessible/Lexend-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'Libre Baskerville';
+	src: url('../fonts/accessible/LibreBaskerville-Regular.ttf') format('truetype');
+}
+
