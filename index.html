@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-onboarding-stage="intro">
 <!--
-	Index.html V5 - A complete rewrite that hopefully futureproofs this a little
+	Index.html V6
 -->
 <head>
     <meta charset="UTF-8">
@@ -46,24 +46,35 @@
             // Keep the first-run desktop hidden if saved state cannot be read.
         }
     </script>
-    <script src="./engine/js/global.js" defer></script>
+    <script src="./engine/js/global.js" type="module"></script>
 </head>
 <body>
     <div id="crt">
+        <div class="environment-effects" aria-hidden="true">
+        </div>
+        <header class="setup-header">
+            <img
+                class="guidelume-logo"
+                src="./engine/img/guidelume-logo.png"
+                alt="Guidelume"
+            >
+            <p class="tagline">
+                - Breaking through the gloom, a solitary light guides your path -
+            </p>
+        </header>
         <main class="setup-page pixel-sharp">
-            <header class="setup-header">
-                <img
-                    class="guidelume-logo"
-                    src="./engine/img/guidelume-logo.png"
-                    alt="Guidelume"
-                >
-                <p class="tagline">
-                    Breaking through the gloom, a solitary beam of light.
-                </p>
-            </header>
-            <!-- Desktop icon -->
-            <!-- Memory Attempt RC5
-                 Everything seems to work so far -->
+            <!-- To-Do: Rework the Reset button in the Start Menu so it just resets things to their default
+						and doesn't send people back to the setup screen. That is Guidelume Setups's job 
+					
+						The chapters on the right side of MWBC should be collapsible as well.
+						
+						The archive needs a bit of love once I am done here. Not much of an archive
+						with nothing in it
+						
+						Mad idea but at some point I'd like virtual folders
+			-->
+			
+			<!-- Desktop icons. Relative positions for x and y -->
             <div
                 class="desktop-icon"
                 role="button"
@@ -71,8 +82,8 @@
                 data-icon="setup"
                 data-open-window="setup"
                 data-memory="desktop-icon-setup"
-                data-x="0.25"
-                data-y="0.25"
+                data-x="0.08"
+                data-y="0.18"
             >
                 <img
                     src="./engine/dagaz.svg"
@@ -88,11 +99,11 @@
                 tabindex="0"
                 data-icon="readme"
                 data-open-window="readme"
-                data-x="0.25"
-                data-y="0.44"
+                data-x="0.08"
+                data-y="0.58"
             >
                 <img
-                    src="./engine/dagaz.svg"
+                    src="./engine/img/environment/doc_text.svg"
                     alt=""
                 >
                 <span>README</span>
@@ -103,11 +114,47 @@
                 tabindex="0"
                 data-icon="mwbc"
                 data-open-window="mwbc"
-                data-x="0.25"
-                data-y="0.64"
+                data-x="0.85"
+                data-y="0.18"
             >
-                <img src="./engine/dagaz.svg" alt="">
+                <img src="./milky-way-bar-crawl/custom/favicon.svg" alt="">
                 <span>Milky Way Bar Crawl</span>
+            </div>
+            <div
+                class="desktop-icon"
+                role="button"
+                tabindex="0"
+                data-icon="environmental-controls"
+                data-open-window="environmental-controls"
+                data-x="0.15"
+                data-y="0.30"
+            >
+                <img src="./engine/img/environment/doc_env.svg" alt="">
+                <span>Environmental Controls</span>
+            </div>
+            <div
+                class="desktop-icon"
+                role="button"
+                tabindex="0"
+                data-icon="varkorax-archive"
+                data-open-window="varkorax-archive"
+                data-x="0.85"
+                data-y="0.58"
+            >
+                <img src="./engine/favicon.svg" alt="">
+                <span>Varkorax Archive</span>
+            </div>
+            <div
+                class="desktop-icon"
+                role="button"
+                tabindex="0"
+                data-icon="changelog"
+                data-open-window="changelog"
+                data-x="0.15"
+                data-y="0.70"
+            >
+                <img src="./engine/img/environment/doc_text.svg" alt="">
+                <span>CHANGELOG</span>
             </div>
             <nav
                 class="taskbar taskbar-bottom"
@@ -169,7 +216,7 @@
                 hidden
                 aria-labelledby="setup-title"
             >
-                <div class="setup-titlebar window-drag-handle">
+                <div class="setup-titlebar">
                     <div class="titlebar-left">
                         <img
                             class="title-icon"
@@ -263,6 +310,29 @@
             </section>
             <section
                 class="setup-window"
+                data-window="changelog"
+                data-window-width="max(760px, 55vw)"
+                data-window-height="560px"
+                hidden
+                aria-labelledby="changelog-title"
+            >
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left">
+                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                        <span id="changelog-title">CHANGELOG</span>
+                    </div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="changelog" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="changelog" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="changelog" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content readme-content changelog-content" data-markdown-src="./engine/changelog.md" aria-live="polite">
+                    <p>Loading changelog…</p>
+                </div>
+            </section>
+            <section
+                class="setup-window"
                 data-window="reset-confirmation"
                 data-window-width="420px"
                 data-window-height="280px"
@@ -305,6 +375,29 @@
                 </div>
                 <div class="setup-content demo-content">
                     <iframe data-src="./index-mwbc.html" title="Milky Way Bar Crawl" loading="lazy"></iframe>
+                </div>
+            </section>
+            <section
+                class="setup-window"
+                data-window="varkorax-archive"
+                data-fixed-maximized="true"
+                data-window-width="760px"
+                data-window-height="560px"
+                hidden
+                aria-labelledby="varkorax-archive-title"
+            >
+                <div class="setup-titlebar">
+                    <div class="titlebar-left">
+                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                        <span id="varkorax-archive-title">Varkorax Archive</span>
+                    </div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="varkorax-archive" aria-label="Minimize window">−</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="varkorax-archive" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content demo-content">
+                    <iframe data-src="./varkorax-archive/index.html" title="Varkorax Archive" loading="lazy"></iframe>
                 </div>
             </section>
             <section
@@ -594,7 +687,160 @@
                         <span>Reduced motion</span>
                     </label>
                     <p class="accessibility-note">When enabled, window opening and closing animations are turned off.</p>
-				</div>
+                </div>
+            </section>
+            <section
+                class="setup-window"
+                data-window="environmental-controls"
+                data-window-width="720px"
+                data-window-height="660px"
+                hidden
+                aria-labelledby="environmental-controls-title"
+            >
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left">
+                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                        <span id="environmental-controls-title">Environmental Controls</span>
+                    </div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="environmental-controls" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="environmental-controls" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="environmental-controls" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content environmental-content">
+                    <div class="environmental-sections">
+                        <h1>Environmental Controls (Pre-Alpha)</h1>
+                        <p>Choose the layers you want around your desktop. Select Apply at the bottom to save and show your choices. Environmental layers sit over your chosen background and do not change your interface theme.</p>
+
+                        <section class="environment-section" aria-labelledby="environment-weather-title">
+                            <div class="environment-section-heading">
+                                <h2 id="environment-weather-title">Weather</h2>
+                                <label class="environment-option environment-section-toggle">
+                                    <input type="checkbox" data-environment-section="weather">
+                                    <span>Enable weather</span>
+                                </label>
+                            </div>
+                            <div class="environment-option-grid">
+                                <label class="environment-option">
+                                    <input type="checkbox" id="rainToggle" data-weather-effect="rain">
+                                    <span>Rain</span>
+                                </label>
+                            </div>
+                            <fieldset class="environment-intensity-group">
+                                <legend>Intensity</legend>
+                                <div class="environment-option-grid environment-intensity-options">
+                                    <label class="environment-option">
+                                        <input type="radio" name="environmentIntensity" value="low">
+                                        <span>Low</span>
+                                    </label>
+                                    <label class="environment-option">
+                                        <input type="radio" name="environmentIntensity" value="balanced" checked>
+                                        <span>Medium</span>
+                                    </label>
+                                    <label class="environment-option">
+                                        <input type="radio" name="environmentIntensity" value="high">
+                                        <span>High</span>
+                                    </label>
+                                </div>
+                            </fieldset>
+                            <div class="environment-rotation">
+                                <label class="environment-option">
+                                    <input type="checkbox" id="environmentRotation">
+                                    <span>Rotate selected weather, including clear weather</span>
+                                </label>
+                                <label class="environment-select-row environment-rotation-interval" for="environmentRotationInterval">
+                                    <span>Change every</span>
+                                    <select id="environmentRotationInterval">
+                                        <option value="30m">30 minutes</option>
+                                        <option value="1h" selected>1 hour</option>
+                                        <option value="3h">3 hours</option>
+                                        <option value="6h">6 hours</option>
+                                        <option value="12h">12 hours</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </section>
+
+                        <section class="environment-section" aria-labelledby="environment-presets-title">
+                            <div class="environment-section-heading">
+                                <h2 id="environment-presets-title">Environment Presets</h2>
+                                <label class="environment-option environment-section-toggle">
+                                    <input type="checkbox" data-environment-section="presets">
+                                    <span>Enable presets</span>
+                                </label>
+                            </div>
+                            <label class="environment-select-row" for="environmentPreset">
+                                <span>Current Environment</span>
+                                <select id="environmentPreset">
+                                    <option value="">Desktop Default</option>
+                                    <option value="rainy-evening">Rainy Evening</option>
+                                </select>
+                            </label>
+                            <label class="environment-option environment-suboption">
+                                <input type="checkbox" id="environmentAmbientAnimation" checked>
+                                <span>Ambient animation</span>
+                            </label>
+                        </section>
+
+                        <section class="environment-section" aria-labelledby="seasonal-decorations-title">
+                            <div class="environment-section-heading">
+                                <h2 id="seasonal-decorations-title">Seasonal Decorations</h2>
+                                <label class="environment-option environment-section-toggle">
+                                    <input type="checkbox" data-environment-section="decorations">
+                                    <span>Enable decorations</span>
+                                </label>
+                            </div>
+                            <div class="environment-option-grid">
+                                <label class="environment-option">
+                                    <input type="checkbox" data-decoration="pumpkin">
+                                    <span>Pumpkin</span>
+                                </label>
+                                <label class="environment-option">
+                                    <input type="checkbox" data-decoration="cobwebs">
+                                    <span>Cobwebs</span>
+                                </label>
+                                <label class="environment-option">
+                                    <input type="checkbox" data-decoration="leaves">
+                                    <span>Leaves</span>
+                                </label>
+                                <label class="environment-option">
+                                    <input type="checkbox" data-decoration="test">
+                                    <span>Test (Dagaz)</span>
+                                </label>
+                            </div>
+                            <p class="environment-coming-soon">Pumpkin, cobweb, and leaf decorations will be available later.</p>
+                        </section>
+
+                        <section class="environment-section" aria-labelledby="seasonal-themes-title">
+                            <div class="environment-section-heading">
+                                <h2 id="seasonal-themes-title">Seasonal Themes</h2>
+                                <label class="environment-option environment-section-toggle">
+                                    <input type="checkbox" data-environment-section="themes">
+                                    <span>Enable seasonal themes</span>
+                                </label>
+                            </div>
+                            <div class="environment-event-list">
+                                <div class="environment-event">
+                                    <span>Halloween 🎃</span>
+                                    <label class="environment-option">
+                                        <input type="checkbox" data-seasonal-theme="halloween">
+                                        <span>Activate</span>
+                                    </label>
+                                </div>
+                                <div class="environment-event">
+                                    <span>Christmas ❄</span>
+                                    <label class="environment-option">
+                                        <input type="checkbox" data-seasonal-theme="christmas">
+                                        <span>Activate</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <p class="environment-coming-soon">Seasonal themes are not available yet.</p>
+                        </section>
+                    </div>
+                    <button type="button" class="setup-button environmental-apply" id="applyEnvironment">Apply</button>
+                </div>
             </section>
         </main>
         <div

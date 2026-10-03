@@ -361,6 +361,13 @@ img {
  */
 
 .setup-header {
+    position: absolute;
+    z-index: 9;
+    top: 50%;
+    left: 50%;
+    width: max-content;
+    max-width: calc(100vw - 32px);
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -376,7 +383,7 @@ img {
     display: block;
     width:
         min(
-            360px,
+            330px,
             72vw
         );
     height: auto;
@@ -393,7 +400,7 @@ img {
         0;
     color: var(--text-primary);
     font-family: var(--body-font);
-    font-size: calc(18px * var(--text-size-scale));
+    font-size: calc(17px * var(--text-size-scale));
     font-weight: 400;
     line-height: 1.4;
 }
@@ -1472,19 +1479,21 @@ html[data-experience="reader"] .window-drag-handle:active {
      */
 
     .setup-header {
-        margin-bottom: 22px;
+        top: 70px;
+        margin-bottom: 0;
+        transform: translateX(-50%);
     }
 
     .guidelume-logo {
         width:
             min(
-                300px,
+                280px,
                 80vw
             );
     }
 
     .tagline {
-        font-size: calc(16px * var(--text-size-scale));
+        font-size: calc(15px * var(--text-size-scale));
     }
 
     /*
@@ -1571,4 +1580,332 @@ html[data-experience="reader"] .window-drag-handle:active {
         width: 100%;
     }
 
+}
+
+/* Environmental effects sit over the backdrop and under the desktop UI. */
+.environment-effects {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.environment-particle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    pointer-events: none;
+}
+
+.environment-backdrop,
+.environment-lighting {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.environment-backdrop {
+    z-index: 0;
+}
+
+.environment-atmosphere {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.environment-particle {
+    z-index: 1;
+}
+
+.environment-lighting {
+    z-index: 2;
+}
+
+.environment-decoration {
+    position: absolute;
+    z-index: 3;
+    max-width: min(30vw, 320px);
+    height: auto;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.environment-decoration--opposite-taskbar {
+    left: auto;
+    right: 24px;
+    transform: none;
+}
+
+.environment-particle-rain {
+    width: 2px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, transparent, rgba(167, 190, 207, 0.78));
+    box-shadow: 0 0 2px rgba(167, 190, 207, 0.36);
+}
+
+.environment-particle-splash {
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(180, 201, 216, 0.72), transparent 72%);
+    box-shadow:
+        -4px -1px 0 -1px rgba(167, 190, 207, 0.52),
+        4px -2px 0 -1px rgba(167, 190, 207, 0.44);
+}
+
+.environment-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.environmental-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.environment-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.environment-section-heading h2 {
+    margin: 0;
+}
+
+.environment-section-toggle {
+    flex: 0 0 auto;
+}
+
+.environment-content h2,
+.environment-intensity-group legend {
+    margin: 0 0 10px;
+    color: var(--accent-light);
+    font-size: calc(20px * var(--text-size-scale));
+    font-weight: 700;
+}
+
+.environment-content p {
+    margin: 0;
+}
+
+.environment-settings-row,
+.environment-select-row,
+.environment-event {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.environment-select-row {
+    justify-content: flex-start;
+}
+
+.environment-select-row > span {
+    min-width: 180px;
+}
+
+.environment-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.environment-option input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-strong);
+}
+
+.environment-option input:disabled + span,
+.environment-select-row select:disabled {
+    opacity: 0.48;
+}
+
+.environment-section {
+    margin: 0;
+    padding: 0 0 16px;
+    border: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent-strong), transparent 65%);
+}
+
+.environment-option-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px 16px;
+}
+
+.environment-suboptions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 14px 0 0 22px;
+    padding-left: 14px;
+    border-left: 2px solid color-mix(in srgb, var(--accent-strong), transparent 45%);
+}
+
+.environment-subheading {
+    color: var(--text-secondary);
+    font-size: calc(15px * var(--text-size-scale));
+}
+
+.environment-intensity-group {
+    min-width: 0;
+    margin: 18px 0 0;
+    padding-top: 0;
+    border: 0;
+}
+
+.environment-intensity-group legend {
+    padding: 0;
+}
+
+.environment-intensity-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.environment-select-row select {
+    min-width: 180px;
+    padding: 7px 10px;
+    border: 2px solid var(--frame-dark);
+    background: #111217;
+    color: var(--text-primary);
+    font: inherit;
+    accent-color: var(--accent-strong);
+}
+
+.environment-rotation-interval {
+    margin-top: 10px;
+}
+
+.environment-suboption {
+    margin-top: 14px;
+}
+
+.environment-rotation {
+    margin-top: 18px;
+}
+
+.environment-coming-soon {
+    margin-top: 8px !important;
+    color: var(--text-secondary);
+    font-size: calc(14px * var(--text-size-scale));
+}
+
+.environment-event-list {
+    display: grid;
+    gap: 10px;
+}
+
+.environment-event .secondary-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.environmental-apply {
+    margin-top: auto;
+    flex: 0 0 auto;
+}
+
+#environmentStatus {
+    width: 19px;
+    height: 19px;
+}
+
+.environment-backdrop--rainy-evening {
+    background: linear-gradient(
+        180deg,
+        rgba(36, 41, 49, 0.3),
+        rgba(27, 31, 39, 0.13) 48%,
+        rgba(17, 20, 26, 0.28)
+    );
+}
+
+.environment-atmosphere--cloud-bank {
+    top: -5%;
+    left: -8%;
+    width: 116%;
+    height: 34%;
+    opacity: 0.76;
+    filter: blur(13px);
+    background:
+        radial-gradient(ellipse at 14% 68%, rgba(65, 71, 80, 0.54) 0 13%, transparent 48%),
+        radial-gradient(ellipse at 48% 50%, rgba(57, 63, 72, 0.55) 0 18%, transparent 58%),
+        radial-gradient(ellipse at 83% 70%, rgba(67, 72, 81, 0.48) 0 14%, transparent 48%),
+        linear-gradient(180deg, rgba(41, 46, 55, 0.65), rgba(36, 41, 49, 0.22) 68%, transparent);
+}
+
+.environment-atmosphere--ground-plane {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 22%;
+    border-top: 1px solid rgba(147, 162, 177, 0.14);
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(91, 103, 116, 0.16), transparent 65%),
+        linear-gradient(180deg, rgba(31, 35, 42, 0.52), rgba(16, 19, 24, 0.72));
+}
+
+.environment-effects.is-ambient-animated .environment-atmosphere--cloud-bank {
+    animation: cloudBankDrift 36s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+.environment-effects[data-intensity="low"] .environment-atmosphere--cloud-bank {
+    opacity: 0.58;
+}
+
+.environment-effects[data-intensity="high"] .environment-atmosphere--cloud-bank {
+    opacity: 0.86;
+}
+
+@keyframes cloudBankDrift {
+    from { transform: translate3d(-10px, 0, 0); }
+    to { transform: translate3d(18px, 4px, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .environment-atmosphere--cloud-bank {
+        animation: none !important;
+    }
+}
+
+@media (max-width: 700px) {
+    .environment-select-row,
+    .environment-settings-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .environment-select-row > span {
+        min-width: 0;
+    }
+
+    .environment-suboptions {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .environment-event {
+        align-items: flex-start;
+    }
+}
+
+/* Selects and controls inherit the active interface accent. */
+.environment-intensity {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
 }

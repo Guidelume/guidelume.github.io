@@ -118,7 +118,7 @@
             target.replaceChildren();
             renderMarkdown(target, markdown);
         } catch {
-            target.textContent = "The README could not be loaded right now.";
+            target.textContent = "This document could not be loaded right now.";
         }
     });
 })();
