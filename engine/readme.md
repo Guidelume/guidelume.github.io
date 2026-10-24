@@ -1,59 +1,35 @@
-# Welcome to Guidelume (Version 1.51 | September 29th 2026)
+# Welcome to Guidelume
 
-Guidelume is a collection of interactive field guides and archives, presented through a small digital workspace designed to feel like opening a personal archive terminal.
+Guidelume brings its guides and archives together on one interactive desktop. You can open a guide right away; Setup is optional, and you can close or minimize it whenever you like.
 
----
+## Finding your way around
 
-## Getting Started
+- Open **Milky Way Bar Crawl** or **Varkorax Archive** from the desktop.
+- Open **Mods** for small standalone projects. **The Witcher 3** entry introduces **One for the Road** and includes its download.
+- Open **Readme** for this introduction, or visit **Documents** for the Changelog, **Progress-Report-01**, and Credits.
+- Use **Setup** to choose a local display name and avatar on your first visit. Finishing Setup reveals the rest of the desktop, but does not change how the guides work.
+- Find desktop utilities in **System**, including Widgets, Environmental Controls, and the Terminal. **System → Unfinished** contains Looking Glass, The Warden's Field Guide, and the Sound Mixer placeholder.
 
-(If you came here from Nexus: Hello! You are currently in Reader Mode)
+The Start menu has accessibility controls, CRT and logo toggles, and your local profile. Select your profile there whenever you want to change your name or avatar. These details stay in this browser; they are not an account.
 
-Guidelume can be experienced in two ways:
+Your desktop icons, windows, and widget positions are saved on this device. Arrange the desktop by dragging icons and window title bars. You can also minimize or maximize windows, and use **Settings** to change the theme, background, or taskbar position.
 
-### Reader Mode
+## Widgets
 
-A focused reading experience.
+Open **Widgets** to add an analogue clock, a locale-aware calendar, or Sticky Notes. Drag widgets by their headers, or focus a header and use the arrow keys. Pin a Sticky Note to keep it above ordinary windows; each note saves its pinned state, text, color, and position. Calendar holidays are small decorative notes for a handful of dates, rather than a complete public-holiday calendar.
 
-Reader Mode keeps the interface simple and places the focus on the guides themselves. Some desktop customization features are disabled to keep the experience distraction-free.
+The **Widgets** category in **Backup & Restore** includes widget settings and note contents. Restoring that category replaces the widgets and notes currently on your desktop.
 
-### Interactive Mode
+## Taskbar and accessibility
 
-The full Guidelume environment.
+Right-click a taskbar item, or press and hold it, to pin or unpin it, change the order of pinned windows, or close a window. Maximized windows can also hide the taskbar from their title-bar options.
 
-Interactive Mode allows you to customize your workspace, adjust the appearance, and enable additional environmental features.
+Accessibility controls are always available from the Start menu. They include text and desktop-icon scaling, reduced motion, and other reading-comfort settings. Individual guides may have additional controls for their own content.
 
-You can change your preferences at any time through Setup or Settings.
+The Terminal is a small fictional console with a read-only text tree. Try `help`, `whoami`, `dir`, `cd tributes`, or a text filename. Its command history and current folder reset when you reload the page.
 
----
+## About this project
 
-## Workspace
+Guidelume is a personal project by Varkorax, focused on atmospheric, accessible guides and references. The Changelog tracks named updates, while Credits lists acknowledgements and licensing details.
 
-The Guidelume desktop contains your available guides and utilities.
-
-Fancy way of saying the icons all do something and are draggable, same as the windows.
-
-Some features may only be available while using Interactive Mode.
-
----
-
-## Accessibility
-
-Guidelume aims to provide a comfortable reading experience where possible.
-
-Accessibility options are available regardless of experience mode and may include options such as:
-
-* Text scaling
-* Reduced motion preferences
-* Other reading comfort options
-
-Individual guides may provide additional accessibility controls tailored to their own content.
-
----
-
-## About
-
-Guidelume is a personal project focused on creating atmospheric, accessible guides and references.
-
-Build with exasperation.
-
-Thank you for visiting.
+Built with exasperation and free and open-source software. Thanks for stopping by.

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "collections": [
+    {
+      "id": "through-the-glass",
+      "title": "Through the glass",
+      "entries": [
+        {
+          "id": "big-buck-bunny",
+          "title": "Big Buck Bunny - Blender Open Movie",
+          "provider": "youtube",
+          "url": "https://www.youtube.com/watch?v=aqz-KE-bpKQ"
+        },
+        {
+          "id": "sintel",
+          "title": "Sintel - Blender Open Movie",
+          "provider": "youtube",
+          "url": "https://www.youtube.com/watch?v=eRsGyueVLvQ"
+        }
+      ]
+    }
+  ]
+}

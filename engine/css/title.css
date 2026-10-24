@@ -186,8 +186,9 @@ nav {
 /* Title */
 
 .title-logo {
-    width: 524px;
-    height: 391px;
+    width: min(524px, 76vw);
+    height: auto;
+    max-height: 56vh;
     object-fit: contain;
 }
 
@@ -772,8 +773,65 @@ h2 {
     }
 
     .jump-button {
-        width: 40px;
-        height: 30px;
+        width: 44px;
+        height: 44px;
+    }
+}
+
+@media (max-width: 700px) {
+    html,
+    body {
+        height: auto;
+        min-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .center-stage {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: 100%;
+        min-height: 100vh;
+        min-height: 100svh;
+        justify-content: center;
+        padding: max(88px, calc(env(safe-area-inset-top) + 72px)) max(12px, env(safe-area-inset-right)) max(112px, calc(env(safe-area-inset-bottom) + 88px)) max(12px, env(safe-area-inset-left));
+        transform: none;
+    }
+
+    .title-logo {
+        width: min(90vw, 524px);
+        max-height: 34svh;
+    }
+
+    .site-header {
+        top: max(8px, env(safe-area-inset-top));
+        left: max(8px, env(safe-area-inset-left));
+        right: max(8px, env(safe-area-inset-right));
+    }
+
+    .guide-switcher a {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .enter-button,
+    .video-button,
+    .jump-button,
+    .ea-note-trigger {
+        min-height: 44px;
+    }
+
+    .footer-wrapper {
+        right: max(8px, env(safe-area-inset-right));
+        bottom: env(safe-area-inset-bottom);
+    }
+
+    .footer-box {
+        max-width: calc(100vw - 16px - env(safe-area-inset-left) - env(safe-area-inset-right));
+        white-space: normal;
+        text-align: center;
     }
 }
 
@@ -782,8 +840,8 @@ h2 {
 /* ------------- Footer: moved to bottom-right ------------- */
 .footer-wrapper {
     position: fixed;
-    bottom: 0;
-    right: 32px;
+    bottom: env(safe-area-inset-bottom);
+    right: max(12px, env(safe-area-inset-right));
 
     width: auto;
     height: 128px;

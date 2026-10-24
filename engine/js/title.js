@@ -1,3 +1,5 @@
+void import(new URL("./resource-lifecycle.js", document.currentScript.src).href).catch(() => {});
+
         function enterGuide() {
             window.location.href = "./milky-way-bar-crawl/intro.html";
         }

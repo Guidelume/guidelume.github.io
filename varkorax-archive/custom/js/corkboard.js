@@ -6,13 +6,20 @@
 	   ========================= */
 
 	// config
-	const DATA_PATH = 'corkboard/data.json';
+	const DATA_PATH = new URL('../../pages/corkboard/data.json', document.currentScript?.src || window.location.href).href;
 	const PER_CATEGORY = 3; // show latest N blades per category. 3 seemes like a good number for now
 
 	// state
 	let MASTER = [];
 	const _timeouts = new Set();
 	const _boundHandlers = [];
+	const contentRequests = new Map();
+	const contentQueue = [];
+	const MAX_CONTENT_REQUESTS = 3;
+	let activeContentRequests = 0;
+	let generation = 0;
+	let contentController = new AbortController();
+	let previewObserver;
 
 	// helpers -----------------------------------------------------------
 	function el(tag, attrs) {
@@ -31,6 +38,14 @@
 		return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	}
 
+	function sanitizeContentHtml(html) {
+		if (window.DOMPurify && typeof window.DOMPurify.sanitize === 'function') {
+			return window.DOMPurify.sanitize(html);
+		}
+		// mdToHtml already escapes the source when DOMPurify is unavailable.
+		return String(html || '');
+	}
+
 	function mdToHtml(txt) {
 		if (typeof txt !== 'string') return '';
 		// strip front matter if present
@@ -41,9 +56,10 @@
 				txt = nextLine !== -1 ? txt.slice(nextLine + 1) : txt.slice(fmEnd + 4);
 			}
 		}
-		if (window.marked) {
+		if (window.marked && window.DOMPurify && typeof window.DOMPurify.sanitize === 'function') {
 			try {
-				return (typeof window.marked.parse === 'function') ? window.marked.parse(txt) : window.marked(txt);
+				const html = (typeof window.marked.parse === 'function') ? window.marked.parse(txt) : window.marked(txt);
+				return window.DOMPurify.sanitize(html);
 			} catch (e) {
 				/* fallthrough */
 			}
@@ -140,41 +156,19 @@
 		return 'item-' + (item.date ? item.date.replace(/\W+/g, '_') : Math.random().toString(36).slice(2,9));
 	}
 
-	// Robust MD path resolution: produce candidate URLs and try them in order
+	// Resolve entry paths from the shared JSON file for both Corkboard views.
 	function resolveMdCandidates(md) {
 		if (!md) return [];
-		// absolute HTTP(S) or protocol-relative or absolute path -> try as-is
-		if (/^https?:\/\//i.test(md) || md.startsWith('//') || md.startsWith('/')) return [md];
-
-		// base folder from DATA_PATH (e.g. 'corkboard/data.json' -> 'corkboard/')
-		const base = DATA_PATH.replace(/\/[^\/]*$/, '/');
-
-		const candidates = [];
-		// try as-provided
-		candidates.push(md);
-
-		// if md starts with './', try relative to DATA_PATH folder
-		if (md.indexOf('./') === 0) candidates.push(base + md.slice(2));
-		else candidates.push(base + md);
-
-		// if md looks like it begins with 'corkboard/' (common in some JSON), try ../corkboard/...
-		if (md.indexOf('corkboard/') === 0) candidates.push('../' + md);
-
-		// try prefixed with './' as fallback
-		candidates.push('./' + md);
-
-		// dedupe while preserving order
-		const seen = new Set();
-		return candidates.filter(c => {
-			if (!c) return false;
-			if (seen.has(c)) return false;
-			seen.add(c);
-			return true;
-		});
+		try {
+			const normalizedPath = md.replace(/^(?:\.\/)?corkboard\//, './');
+			return [new URL(normalizedPath, DATA_PATH).href];
+		} catch (_) {
+			return [];
+		}
 	}
 
 	// Attempt to fetch md from multiple candidate paths, return fetched text for first OK response
-	function fetchMdResolved(md) {
+	function fetchMdResolved(md, signal) {
 		const candidates = resolveMdCandidates(md);
 		if (!candidates.length) return Promise.reject(new Error('No md path'));
 		// try sequentially
@@ -182,13 +176,16 @@
 		function tryNext() {
 			if (i >= candidates.length) return Promise.reject(new Error('All candidates failed for ' + md));
 			const p = candidates[i++];
-			return fetch(p).then(r => {
+			return fetch(p, { signal }).then(r => {
 				if (!r.ok) {
 					// try next
 					return tryNext();
 				}
 				return r.text();
-			}).catch(() => tryNext());
+			}).catch(error => {
+				if (signal.aborted) throw error;
+				return tryNext();
+			});
 		}
 		return tryNext();
 	}
@@ -221,9 +218,8 @@
 		// content placeholder (show preview if _html available)
 		const content = el('div', { 'class': 'blade-content' });
 		const text = el('div', { 'class': 'blade-text' });
-		if (item._html) text.innerHTML = item._html;
-		else if (item.content) text.innerHTML = mdToHtml(item.content);
-		else text.innerHTML = '<p><em>Content will load when expanded</em></p>';
+		if (item._html) text.innerHTML = sanitizeContentHtml(item._html);
+		else text.innerHTML = '<p><em>Loading preview…</em></p>';
 		content.appendChild(text);
 
 		// expand/load button
@@ -233,7 +229,7 @@
 		content.appendChild(expandBtn);
 		wrapper.appendChild(content);
 
-		// read/expanded state from storage (we won't auto-open here; restore after append)
+		// read/expanded state from storage
 		try {
 			const readKey = 'corkboard.read.' + id;
 			const expandedKey = 'corkboard.expanded.' + id;
@@ -246,28 +242,61 @@
 		return wrapper;
 	}
 
-	// content loader (cached in MASTER._html) using resolved MD fetch helper
-	function loadContentForItem(item) {
-		// returns Promise that resolves when item._html is ready
-		if (!item) return Promise.resolve(false);
-		if (item._html) return Promise.resolve(true);
-		// inline content preferred
-		if (item.content) {
-			try { item._html = mdToHtml(item.content); } catch (e) { item._html = escapeHtml(item.content || ''); }
-			return Promise.resolve(true);
-		}
-		if (item.md) {
-			return fetchMdResolved(item.md).then(txt => {
-				try { item._html = mdToHtml(txt); } catch (e) { item._html = escapeHtml(txt); }
-				return true;
-			}).catch(err => {
-				console.warn('Failed to load md for', item.md, err);
-				item._html = '<p><em>Content unavailable</em></p>';
-				return true;
+	function drainContentQueue() {
+		while (activeContentRequests < MAX_CONTENT_REQUESTS && contentQueue.length) {
+			const job = contentQueue.shift();
+			activeContentRequests++;
+			job.run().then(job.resolve).finally(() => {
+				activeContentRequests--;
+				drainContentQueue();
 			});
 		}
-		item._html = '<p><em>No content</em></p>';
-		return Promise.resolve(true);
+	}
+
+	// Cache pending requests as well as completed HTML, including preview/open races.
+	function loadContentForItem(item) {
+		if (!item) return Promise.resolve(false);
+		if (item._html) return Promise.resolve(true);
+		if (contentRequests.has(item)) return contentRequests.get(item);
+		const version = generation;
+		const signal = contentController.signal;
+		const request = new Promise(resolve => {
+			contentQueue.push({ resolve, run: async () => {
+				try {
+					const text = item.content || (item.md ? await fetchMdResolved(item.md, signal) : '');
+					if (version !== generation || signal.aborted) return false;
+					item._html = text ? mdToHtml(text) : '<p><em>No content</em></p>';
+				} catch (error) {
+					if (version !== generation || signal.aborted) return false;
+					console.warn('Failed to load md for', item.md, error);
+					item._html = '<p><em>Content unavailable</em></p>';
+				}
+				return true;
+			} });
+		});
+		contentRequests.set(item, request);
+		void request.then(() => {
+			if (contentRequests.get(item) === request) contentRequests.delete(item);
+		});
+		drainContentQueue();
+		return request;
+	}
+
+	async function loadBladeContent(wrapper, item, expand = false, restore = false) {
+		const version = generation;
+		if (expand) wrapper.dataset.opening = '1';
+		const loaded = await loadContentForItem(item);
+		if (!loaded || version !== generation || !wrapper.isConnected) return;
+		if (!wrapper.dataset.contentReady) {
+			wrapper.querySelector('.blade-text').innerHTML = sanitizeContentHtml(item._html);
+			wrapper.dataset.contentReady = '1';
+			wrapper.querySelector('.expand-btn').textContent = 'Expand';
+		}
+		if (expand) {
+			delete wrapper.dataset.opening;
+			openBladeNode(wrapper, restore);
+			updateCounters();
+		}
 	}
 
 	// animate open/collapse (timeouts tracked so we can clear)
@@ -320,12 +349,14 @@
 
 	// place blades into lists ------------------------------------------------
 	function placeBlades(master) {
+		previewObserver?.disconnect();
+		const version = generation;
 		const lists = document.querySelectorAll('.blade-list');
 		lists.forEach(list => {
 			const cat = list.getAttribute('data-category');
 			let items = master.filter(x => categoryMatches(x.category, cat));
 			items = limitAndSort(items);
-			// explicit DOM cleanup: remove children by node (encourages GC)
+			// explicit DOM cleanup
 			while (list.firstChild) list.removeChild(list.firstChild);
 
 			items.forEach(it => {
@@ -335,13 +366,31 @@
 		});
 		// restore expanded blades (after DOM inserted)
 		requestAnimationFrame(() => {
+			if (version !== generation) return;
 			const toOpen = document.querySelectorAll('.blade[data-restore-expanded="1"]');
 			toOpen.forEach(b => {
 				delete b.dataset.restoreExpanded;
 				const id = b.dataset.id;
 				const masterItem = MASTER.find(x => stableIdForItem(x) === id);
-				loadContentForItem(masterItem).then(() => openBladeNode(b, true));
+				void loadBladeContent(b, masterItem, true, true);
 			});
+			const loadPreview = blade => {
+				const item = MASTER.find(entry => stableIdForItem(entry) === blade.dataset.id);
+				void loadBladeContent(blade, item);
+			};
+			if ('IntersectionObserver' in window) {
+				previewObserver = new IntersectionObserver(entries => {
+					if (version !== generation) return;
+					for (const entry of entries) {
+						if (!entry.isIntersecting) continue;
+						previewObserver.unobserve(entry.target);
+						loadPreview(entry.target);
+					}
+				}, { rootMargin: '200px' });
+				document.querySelectorAll('.blade-list .blade').forEach(blade => previewObserver.observe(blade));
+			} else {
+				document.querySelectorAll('.blade-list .blade').forEach(loadPreview);
+			}
 		});
 		updateCounters();
 	}
@@ -397,53 +446,29 @@
 
 	// data load --------------------------------------------------------------
 	function fetchJSON() {
-		return fetch(DATA_PATH).then(r => {
+		return fetch(DATA_PATH, { signal: contentController.signal }).then(r => {
 			if (!r.ok) throw new Error('Failed to fetch ' + DATA_PATH + ' (' + r.status + ')');
 			return r.json();
 		});
 	}
 
 	function hydrate() {
+		const version = generation;
 		return fetchJSON().then(data => {
+			if (version !== generation) return;
 			if (!Array.isArray(data)) data = [];
-			// map & fetch all md in parallel (so local _html present)
-			const promises = data.map(item => {
+			MASTER = data.map(item => {
 				item.category = item.category || '';
 				item.id = (typeof item.id !== 'undefined') ? item.id : '';
 				item.md = item.md || '';
 				item.date = item.date || '';
 				item.title = item.title || '';
 				item.content = item.content || null;
-				// fetch md if provided (normalize early using fetchMdResolved)
-				if (item.md) {
-					return fetchMdResolved(item.md).then(txt => {
-						try { item._html = mdToHtml(txt); } catch (e) { item._html = escapeHtml(txt); }
-						return item;
-					}).catch(err => {
-						console.warn('Failed to load md:', item.md, err);
-						if (item.content) {
-							try { item._html = mdToHtml(item.content); } catch (e) { item._html = escapeHtml(item.content || ''); }
-						} else {
-							item._html = '<p><em>Content unavailable</em></p>';
-						}
-						return item;
-					});
-				}
-				// inline content convert
-				if (item.content) {
-					try { item._html = mdToHtml(item.content); } catch (e) { item._html = escapeHtml(item.content || ''); }
-				} else {
-					item._html = '<p><em>No content</em></p>';
-				}
-				return Promise.resolve(item);
-			});
-
-			return Promise.all(promises).then(all => {
-				// store normalized master (not global)
-				MASTER = all.slice().sort(itemComparator);
-				placeBlades(MASTER);
-			});
+				return item;
+			}).sort(itemComparator);
+			placeBlades(MASTER);
 		}).catch(err => {
+			if (version !== generation) return;
 			console.error('Failed to load corkboard data', err);
 		});
 	}
@@ -454,36 +479,16 @@
 		const delegatedClick = function (e) {
 			const blade = e.target.closest('.blade');
 			if (!blade) return;
+			if (blade.dataset.opening) return;
 			// let links behave normally
-			if (e.target.tagName === 'A' && e.target.href) return;
-
-			// handle expand-btn
-			const btn = e.target.closest('.expand-btn');
-			if (btn) {
-				const id = blade.dataset.id;
-				const item = MASTER.find(x => stableIdForItem(x) === id);
-				if (!item) return;
-				// if not loaded, load then open
-				if (!item._html) {
-					loadContentForItem(item).then(() => openBladeNode(blade, false));
-				} else {
-					if (blade.classList.contains('expanded')) collapseBladeNode(blade);
-					else openBladeNode(blade, false);
-				}
-				updateCounters();
-				return;
-			}
+			if (e.target.closest('a[href]')) return;
 
 			// click footprint on blade toggles (load if needed)
 			const id = blade.dataset.id;
 			const item = MASTER.find(x => stableIdForItem(x) === id);
 			if (!item) return;
-			if (!item._html) {
-				loadContentForItem(item).then(() => openBladeNode(blade, false));
-			} else {
-				if (blade.classList.contains('expanded')) collapseBladeNode(blade);
-				else openBladeNode(blade, false);
-			}
+			if (blade.classList.contains('expanded')) collapseBladeNode(blade);
+			else void loadBladeContent(blade, item, true);
 			updateCounters();
 		};
 
@@ -513,6 +518,12 @@
 
 	// cleanup ---------------------------------------------------------------
 	function pageCleanup() {
+		generation++;
+		previewObserver?.disconnect();
+		contentController.abort();
+		contentController = new AbortController();
+		contentQueue.splice(0).forEach(job => job.resolve(false));
+		contentRequests.clear();
 		// remove blade nodes to help GC
 		const lists = document.querySelectorAll('.blade-list');
 		lists.forEach(list => {
@@ -543,6 +554,8 @@
 		wireControls();
 		hydrate();
 	});
+	window.addEventListener('pagehide', pageCleanup);
+	window.addEventListener('pageshow', event => { if (event.persisted) hydrate(); });
 
 	// debug API
 	window.corkboard_DEBUG = {

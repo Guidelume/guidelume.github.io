@@ -1,0 +1,530 @@
+/* TWFG identity over Guidelume's established reading layout and proportions. */
+:root {
+    color-scheme: dark;
+    --accent-r: 197;
+    --accent-g: 178;
+    --accent-b: 139;
+    --accent-fore: #181c20;
+    --surface-rgb: 27, 25, 23;
+    --header-rgb: 51, 45, 36;
+    --glass-bg: rgba(var(--surface-rgb), 0.93);
+    --reading-bg: rgba(var(--surface-rgb), 0.78);
+    --scene-overlay: rgba(8, 13, 20, 0.2);
+    --glass-border: rgba(212, 197, 165, 0.2);
+    --muted: #b7b1a7;
+    --bg-fallback: #15191d;
+    --ink: #ede4d1;
+}
+
+:root[data-reading-theme="slate"] {
+    --surface-rgb: 15, 25, 34;
+    --header-rgb: 37, 47, 54;
+    --accent-r: 172;
+    --accent-g: 198;
+    --accent-b: 211;
+    --ink: #e5e9e7;
+}
+
+body {
+    background: var(--bg-fallback);
+    color: var(--ink);
+}
+
+.bg-layer {
+    background-image: linear-gradient(var(--scene-overlay), var(--scene-overlay)), url("../img/backgrounds/dao1.jpg");
+}
+
+/* One shared tonal treatment; do not stack the engine's strong vignette over it. */
+.bg-vignette {
+    background: none;
+}
+
+.layout {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+.center-col, .content-shell {
+    min-width: 0;
+    min-height: 0;
+}
+
+.left-panel, .title-box, .content-box, .pager-box, .contents-panel, .made-by {
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+    border-radius: 4px;
+}
+
+.title-box {
+    display: grid;
+    grid-template-columns: minmax(108px, 1fr) minmax(0, auto) minmax(108px, 1fr);
+    flex: 0 0 auto;
+    gap: 12px;
+    height: auto;
+    min-height: var(--title-h);
+    padding: 12px 18px;
+}
+
+.title-box #home, .title-box #fontToggle {
+    position: static;
+    inset: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    border: 1px solid var(--glass-border);
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-ui);
+    opacity: 1;
+    transform: none;
+}
+
+.title-box #home {
+    grid-column: 1;
+    justify-self: start;
+    font-size: 0.95rem;
+}
+
+.title-box h1 {
+    grid-column: 2;
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.5rem;
+    line-height: 1.15;
+    white-space: normal;
+}
+
+.title-box #fontToggle {
+    grid-column: 3;
+    justify-self: end;
+    width: 44px;
+    font-size: 1.1rem;
+}
+
+#fontToggle[hidden], [data-standalone-preferences][hidden], [data-host-preferences-note][hidden] {
+    display: none !important;
+}
+
+.content-progress {
+    flex: 0 0 3px;
+}
+
+.content-box {
+    background: var(--reading-bg);
+    padding: 18px;
+    border-radius: 0;
+    overflow-wrap: anywhere;
+}
+
+.content-box p, .content-box li {
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    text-shadow: none;
+}
+
+.content-box p {
+    margin: 0 0 12px;
+}
+
+.content-box h2 {
+    color: var(--ink);
+    font-size: 1.4rem;
+}
+
+.panel {
+    border-color: var(--glass-border);
+    border-radius: 3px;
+    background: transparent;
+    box-shadow: none;
+}
+
+.panel-header {
+    min-height: 48px;
+    padding: 12px 14px;
+    background: rgba(var(--header-rgb), 0.38);
+}
+
+.panel.open {
+    border-color: rgba(var(--accent), 0.3);
+}
+
+.panel.open .panel-header {
+    background: rgba(var(--header-rgb), 0.6);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.panel-header h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.panel.open .panel-body {
+    padding: 12px 14px 18px;
+}
+
+/* Over the 78% article, this produces a 91.2% effective content surface. */
+.panel-body {
+    background: rgba(var(--surface-rgb), 0.6);
+}
+
+.anchor h3 {
+    margin: 14px 0 6px;
+    color: var(--ink);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.caret {
+    color: #c5b28b;
+}
+
+.content-box a:not(.branch-link):not(.btn) {
+    color: #d7c59d;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.nav-section-header {
+    color: #ded3b9;
+    font-size: 1.1rem;
+}
+
+.chap-item > .chap-link {
+    display: block;
+    padding-block: 9px;
+    font-family: var(--font-ui);
+    font-size: 1rem;
+}
+
+.chap-item.branch .chap-link {
+    padding-left: 26px;
+}
+
+.chap-item.branch-parent > .chap-link {
+    border-left: 2px solid rgba(var(--accent), 0.5);
+}
+
+.optional-label {
+    display: block;
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+.chap-item.active .optional-label {
+    color: inherit;
+}
+
+.left-panel .nav-updated {
+    padding-top: 16px;
+    border-top: 1px solid var(--glass-border);
+    color: var(--muted);
+    font: 0.9rem/1.5 var(--font-ui);
+    background: transparent;
+    box-shadow: none;
+}
+
+.scaffold-note {
+    margin: 0 0 18px;
+    padding: 10px 14px;
+    border-left: 2px solid #a59069;
+    background: rgba(197, 178, 139, 0.07);
+}
+
+.scaffold-note p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.chapter-kicker {
+    color: #c5b28b !important;
+    font: 0.85rem var(--font-ui) !important;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.chapter-lead {
+    margin: 12px 0 18px;
+}
+
+.branch-choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 18px 0 22px;
+}
+
+.branch-link {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 20px;
+    border: 1px solid rgba(var(--accent), 0.35);
+    border-radius: 3px;
+    background: rgba(197, 178, 139, 0.035);
+}
+
+.branch-link:hover, .branch-link:focus-visible {
+    border-color: rgb(var(--accent));
+    background: rgba(var(--accent), 0.1);
+}
+
+.branch-link .route-number {
+    color: #c5b28b;
+    font: 0.85rem var(--font-ui);
+    letter-spacing: 0.1em;
+}
+
+.branch-link strong {
+    color: var(--ink);
+    font: 600 1.5rem var(--font-heading);
+}
+
+.branch-link .route-description {
+    color: var(--ink);
+    font: 400 1rem/1.5 var(--font-body);
+}
+
+.branch-link .route-action {
+    margin-top: auto;
+    padding-top: 12px;
+    color: #d7c59d;
+    font: 1rem var(--font-ui);
+}
+
+.coming-soon {
+    display: inline-block;
+    padding: 5px 12px;
+    border: 1px solid var(--glass-border);
+    color: #d7c59d;
+    font: 0.95rem var(--font-ui);
+}
+
+.right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.right-panel .contents-panel {
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: none;
+}
+
+.contents-panel h2, .reader-controls h2 {
+    margin: 0 0 12px;
+    color: var(--ink);
+    font: 600 1.2rem var(--font-heading);
+}
+
+.contents-link, .contents-sublist a {
+    font-family: var(--font-ui);
+    font-size: 1rem;
+}
+
+.reader-controls {
+    flex: 0 0 auto;
+    padding: 14px;
+    border: 1px solid var(--glass-border);
+    border-radius: 4px;
+    background: var(--glass-bg);
+}
+
+.reader-controls label {
+    display: block;
+    margin: 12px 0 4px;
+    color: var(--ink);
+    font: 0.95rem var(--font-ui);
+}
+
+.reader-controls select {
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+    padding: 5px 8px;
+    border: 1px solid #6d716e;
+    border-radius: 3px;
+    background: #1b242b;
+    color: #ede4d1;
+    font: 0.95rem var(--font-ui);
+}
+
+.reader-controls p {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font: 0.9rem/1.45 var(--font-ui);
+}
+
+.made-by {
+    flex-shrink: 0;
+    color: var(--muted);
+    font-family: var(--font-ui);
+}
+
+.made-by .name, .made-by .heart {
+    color: #d0bb91;
+    animation: none;
+}
+
+.pager {
+    flex: 0 0 auto;
+    gap: 8px;
+    height: auto;
+    min-height: var(--pager-h);
+    flex-wrap: wrap;
+}
+
+.btn {
+    min-height: 42px;
+    border-color: rgba(var(--accent), 0.35);
+    border-radius: 3px;
+    background: rgba(var(--accent), 0.12);
+    color: var(--ink);
+    font-family: var(--font-ui);
+}
+
+.btn:hover:not(:disabled) {
+    background: rgba(var(--accent), 0.22);
+}
+
+.pager .btn {
+    font-family: var(--font-ui);
+    font-size: 0.95rem;
+}
+
+.btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.sample-details {
+    margin: 16px 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--glass-border);
+}
+
+.sample-details summary {
+    min-height: 44px;
+    padding-block: 8px;
+    font: 1rem var(--font-ui);
+    cursor: pointer;
+}
+
+:focus-visible {
+    outline: 2px solid #d7c59d;
+    outline-offset: 3px;
+}
+
+/* Retain the shared 260px sidebars, 14px gutters, and intermediate breakpoints. */
+@media (min-width: 1413px) {
+    .layout {
+        grid-template-columns: var(--left-w) minmax(0, 1fr) var(--right-w);
+    }
+}
+
+@media (min-width: 1001px) {
+    html, body {
+        height: 100%;
+        overflow: hidden;
+    }
+    .layout {
+        height: 100dvh;
+    }
+    .left-panel, .right-panel, .center-col, .content-shell {
+        height: 100%;
+        min-height: 0;
+        max-height: none;
+    }
+    .content-box {
+        flex: 1 1 0;
+        min-height: 0;
+        max-height: none;
+        overflow-y: auto;
+    }
+}
+
+/* The shared guide stacks its columns below 1001px. */
+@media (min-width: 701px) and (max-width: 1000px) {
+    .layout {
+        height: auto;
+        min-height: 100dvh;
+    }
+    .right-panel {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(180px, 240px);
+        grid-template-rows: minmax(0, 1fr);
+    }
+    .reader-controls {
+        overflow-y: auto;
+    }
+    .made-by {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .layout {
+        padding-bottom: calc(9rem + env(safe-area-inset-bottom));
+    }
+
+    .left-panel {
+        background: var(--glass-bg);
+    }
+    .left-panel > nav {
+        display: flex;
+        gap: 12px;
+    }
+    .left-panel .nav-section.open .chap-list, .left-panel .nav-section:not(.open) .chap-list {
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+        width: max-content;
+    }
+    .left-panel .chap-item.branch .chap-link {
+        padding-left: 12px;
+    }
+    .left-panel .optional-label {
+        display: none;
+    }
+    .title-box {
+        grid-template-columns: minmax(78px, 1fr) minmax(0, 2fr) minmax(44px, 1fr);
+        gap: 6px;
+        min-height: 72px;
+        padding: 10px;
+    }
+    .title-box h1 {
+        font-size: 1.3rem;
+    }
+    .title-box #home {
+        font-size: 0.8rem;
+    }
+    .content-box {
+        max-height: none;
+        padding: 14px;
+    }
+    .right-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .right-panel .contents-panel {
+        flex: none;
+    }
+    .mobile-contents-disclosure {
+        flex: none;
+    }
+    .branch-choices {
+        grid-template-columns: 1fr;
+    }
+    .pager {
+        background: var(--glass-bg);
+    }
+}

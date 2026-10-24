@@ -1,0 +1,128 @@
+@font-face {
+    font-family: 'Cinzel Decorative';
+    src: url('../fonts/CinzelDecorative-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cinzel Decorative';
+    src: url('../fonts/CinzelDecorative-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cormorant Garamond';
+    src: url('../fonts/CormorantGaramond-VariableFont_wght.ttf') format('truetype');
+    font-weight: 300 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cormorant Garamond';
+    src: url('../fonts/CormorantGaramond-Italic-VariableFont_wght.ttf') format('truetype');
+    font-weight: 300 700;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'EB Garamond';
+    src: url('../fonts/EBGaramond-VariableFont_wght.ttf') format('truetype');
+    font-weight: 400 800;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'EB Garamond';
+    src: url('../fonts/EBGaramond-Italic-VariableFont_wght.ttf') format('truetype');
+    font-weight: 400 800;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IM Fell English';
+    src: url('../fonts/IMFellEnglish-Regular.ttf') format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IM Fell English';
+    src: url('../fonts/IMFellEnglish-Italic.ttf') format('truetype');
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lexend';
+    src: url('../../../../engine/fonts/accessible/Lexend-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Libre Baskerville';
+    src: url('../../../../engine/fonts/accessible/LibreBaskerville-Regular.ttf') format('truetype');
+    font-display: swap;
+}
+
+:root {
+    --font-publication: 'Cinzel Decorative', Georgia, serif;
+    --font-heading: 'Cormorant Garamond', Georgia, serif;
+    --font-ui: 'EB Garamond', Georgia, serif;
+    --font-body: 'IM Fell English', Georgia, serif;
+    --reading-scale: 1;
+    font-size: calc(16px * var(--reading-scale));
+}
+
+code,
+pre,
+kbd,
+samp,
+:root[data-guide="twfg-volume-1"][data-accessible-fonts="true"] body :is(code, pre, kbd, samp) {
+    font-family: ui-monospace, Consolas, 'Courier New', monospace !important;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+.skip-link {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 100;
+    padding: 12px 18px;
+    background: #eee1c6;
+    color: #181b1d;
+    transform: translateY(-150%);
+}
+
+.skip-link:focus {
+    transform: none;
+}
+
+/* Both standalone system preferences and Guidelume's accessibility override apply. */
+:root[data-reduced-motion="true"] *, :root[data-reduced-motion="true"] *::before, :root[data-reduced-motion="true"] *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0s !important;
+        animation: none !important;
+    }
+}

@@ -1,9 +1,14 @@
 const params = new URLSearchParams(location.search);
 const type = params.get("type");
 
-const script = document.createElement("script");
-script.src = `../../custom/js/filter-${type}.js`;
-document.head.appendChild(script);
+const supportedTypes = new Set(["entry", "stories", "projects"]);
+if (supportedTypes.has(type)) {
+	const script = document.createElement("script");
+	script.src = `../../custom/js/filter-${type}.js`;
+	document.head.appendChild(script);
+} else {
+	console.warn("Unsupported archive filter type.");
+}
 
 if (type === "entry") {
 	document.querySelector("#filter-head").innerHTML = `

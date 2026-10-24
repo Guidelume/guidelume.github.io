@@ -1,0 +1,6 @@
+/* The supplied note artwork uses transparent white lettering. */
+html, body {
+    color-scheme: dark;
+    background: #171d23;
+    color: #ede4d1;
+}

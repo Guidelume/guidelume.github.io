@@ -1,5 +1,5 @@
-export function initWindowInteractions({ windows, memory, queueSave, closeStartMenu, windowManager }) {
-    const { getWindowMemory, getWindow, openWindow, closeWindow, minimizeWindow, setMaximized, focusWindow, applyWindowSize, restoreWindowPosition, updateTaskbar } = windowManager;
+export function initWindowInteractions({ windows, queueSave, closeStartMenu, windowManager }) {
+    const { getWindowMemory, getWindow, openWindow, closeWindow, setMaximized, focusWindow, updateTaskbar, constrainWindowPosition } = windowManager;
     /*
      * Open / close buttons
      */
@@ -17,7 +17,10 @@ export function initWindowInteractions({ windows, memory, queueSave, closeStartM
                         height: button.dataset.windowHeight
                     });
                     if (button.dataset.scrollTop === "true" && targetWindow) {
-                        targetWindow.querySelector(".setup-content")?.scrollTo({ top: 0 });
+                        window.requestAnimationFrame(() => {
+                            const content = targetWindow.querySelector(".setup-content");
+                            if (!targetWindow.hidden && content) content.scrollTop = 0;
+                        });
                     }
                     if (button.dataset.closeStartMenu === "true") {
                         closeStartMenu();
@@ -39,33 +42,27 @@ export function initWindowInteractions({ windows, memory, queueSave, closeStartM
     /*
      * Window dragging
      */
+    let activeDrag = null;
     windows.forEach(windowEl => {
         const titlebar = windowEl.querySelector(".window-drag-handle");
         if (!titlebar) {
             return;
         }
-        let dragging = false;
-        let offsetX = 0;
-        let offsetY = 0;
         titlebar.addEventListener(
-            "mousedown",
+            "pointerdown",
             event => {
-                if (event.button !== 0 || event.target.closest("button")) {
+                if (activeDrag || !event.isPrimary || event.button !== 0 || event.target.closest("button, input, label, [data-no-window-drag]")) {
                     return;
                 }
-                if (memory.settings.experience === "reader") {
-                    return;
-                }
+                windowEl.dataset.windowDragging = "true";
+                focusWindow(windowEl);
                 const rect = windowEl.getBoundingClientRect();
+                let offsetX = event.clientX - rect.left;
+                let offsetY = event.clientY - rect.top;
 
                 if (windowEl.classList.contains("is-maximized")) {
-                    const state = getWindowMemory(windowEl.dataset.window);
                     const dragRatio = (event.clientX - rect.left) / rect.width;
-                    state.maximized = false;
-                    windowEl.classList.remove("is-maximized");
-                    applyWindowSize(windowEl);
-                    windowEl.querySelector("[data-maximize-window]")?.setAttribute("aria-pressed", "false");
-                    restoreWindowPosition(windowEl);
+                    setMaximized(windowEl, false);
                     const restoredRect = windowEl.getBoundingClientRect();
                     offsetX = restoredRect.width * dragRatio;
                     offsetY = event.clientY - rect.top;
@@ -77,46 +74,50 @@ export function initWindowInteractions({ windows, memory, queueSave, closeStartM
                     windowEl.style.left = `${rect.left}px`;
                     windowEl.style.top = `${rect.top}px`;
                     windowEl.style.translate = "none";
-                    offsetX = event.clientX - rect.left;
-                    offsetY = event.clientY - rect.top;
                 }
 
                 /*
                  * Convert centered window
                  * into normal positioned window
                  */
-                dragging = true;
+                activeDrag = {
+                    windowEl,
+                    pointerId: event.pointerId,
+                    offsetX,
+                    offsetY
+                };
+                titlebar.setPointerCapture?.(event.pointerId);
                 document.body.style.userSelect = "none";
                 event.preventDefault();
             }
         );
-        window.addEventListener(
-            "mousemove",
-            event => {
-                if (!dragging) return;
-                windowEl.style.left = `${event.clientX - offsetX}px`;
-                windowEl.style.top = `${event.clientY - offsetY}px`;
-            }
-        );
-        window.addEventListener(
-            "mouseup",
-            () => {
-                if (!dragging) return;
+    });
 
-                dragging = false;
-                document.body.style.userSelect = "";
+    window.addEventListener("pointermove", event => {
+        if (!activeDrag || event.pointerId !== activeDrag.pointerId) return;
+        activeDrag.windowEl.style.left = `${event.clientX - activeDrag.offsetX}px`;
+        activeDrag.windowEl.style.top = `${event.clientY - activeDrag.offsetY}px`;
+    });
 
-                const rect = windowEl.getBoundingClientRect();
-                const id = windowEl.dataset.window;
-                const windowMemory = getWindowMemory(id);
-                windowMemory.x =
-                    (rect.left + rect.width / 2) / window.innerWidth;
-                windowMemory.y =
-                    (rect.top + rect.height / 2) / window.innerHeight;
-                queueSave();
-                updateTaskbar();
-            }
-        );
+    const finishDragging = event => {
+        if (!activeDrag || event.pointerId !== activeDrag.pointerId) return;
+        const { windowEl } = activeDrag;
+        activeDrag = null;
+        delete windowEl.dataset.windowDragging;
+        document.body.style.userSelect = "";
+
+        constrainWindowPosition(windowEl);
+        const rect = windowEl.getBoundingClientRect();
+        const windowMemory = getWindowMemory(windowEl.dataset.window);
+        windowMemory.x = (rect.left + rect.width / 2) / window.innerWidth;
+        windowMemory.y = (rect.top + rect.height / 2) / window.innerHeight;
+        queueSave();
+        updateTaskbar();
+    };
+    window.addEventListener("pointerup", finishDragging);
+    window.addEventListener("pointercancel", finishDragging);
+    windows.forEach(windowEl => {
+        windowEl.querySelector(".window-drag-handle")?.addEventListener("lostpointercapture", finishDragging);
     });
 
 

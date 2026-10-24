@@ -427,14 +427,14 @@
 			align-items: center;
 			justify-content: center;
 
-			border: 1px solid var(--btn-frost-border);
+			border: 1px solid var(--surface-border);
 			border-radius: 999px;
-			background: var(--btn-frost-bg);
+			background: var(--surface-bg);
 
-			backdrop-filter: blur(12px) saturate(160%);
-			-webkit-backdrop-filter: blur(12px) saturate(160%);
+			backdrop-filter: var(--surface-backdrop);
+			-webkit-backdrop-filter: var(--surface-backdrop);
 
-			box-shadow: 0 10px 30px rgba(0,0,0,.22);
+			box-shadow: var(--surface-shadow);
 
 			cursor: pointer;
 
@@ -460,8 +460,8 @@
 
 		#backToTop:hover {
 			transform: translateX(0) translateY(-3px);
-			background: rgba(255,255,255,.20);
-			border-color: rgba(255,255,255,.48);
+			background: var(--surface-hover-bg);
+			border-color: var(--surface-hover-border);
 		}
 
 		#backToTop img {
@@ -638,6 +638,8 @@
 			
 		}
         </style>
+	<link rel="stylesheet" href="../../../engine/css/accessible-fonts.css" />
+	<script src="../../../engine/js/font-accessibility.js" defer></script>
 </head>
 
 <body>
@@ -655,7 +657,7 @@
 				aria-label="Home"
 				disabled
 			>
-                <img data-src="./custom/img/side-home.png" alt="Home" />
+				<img data-src="custom/img/side-home.png" alt="Home" />
             </button>
 			
 			<div class="topbar-sep" aria-hidden="true"></div>
@@ -690,7 +692,7 @@
 				aria-label="MWBC"
 				disabled
 			>
-                <img src="../../custom/img/logo-bare-flat.png" style="width: 128px; image-rendering: auto" alt="MWBC" />
+				<img data-src="custom/img/logo-bare-flat.png" style="width: 128px; image-rendering: auto" alt="MWBC" />
             </button>
 			
 		</nav>
@@ -812,10 +814,10 @@
                 id="settings-toggle"
                 class="infobar-btn"
                 aria-expanded="false"
-                aria-controls="settings-popup"
-                data-tooltip="Settings"
+                aria-controls="time-of-day-menu"
+                data-tooltip="Time of day"
                 >
-                <img data-src="./custom/img/bottom-gear.png" alt="Settings" id="settings-icon" />
+                <img data-src="./custom/img/bottom-gear.png" alt="Time of day" id="settings-icon" />
             </button>
 			
 			<div class="infobar-sep" style="height: 20px" aria-hidden="true"></div>
@@ -841,63 +843,14 @@
                 aria-controls="social-popup"
                 data-tooltip="Socials"
                 ><a href="https://bsky.app/profile/varkorax.bsky.social">
-                <img src="../../custom/img/socials.svg" alt="Socials" id="notif-icon" />
+				<img data-src="custom/img/socials.svg" alt="Socials" id="notif-icon" />
 				</a>
             </button>
 			
         </nav>
 		
-		<!-- NOTIFICATIONS POPUP (inlined) -->
-		<div id="notif-popup" class="popup" role="dialog" aria-hidden="true" aria-label="Notifications panel" aria-modal="true">
-			<div class="popup-inner">
-				<button class="popup-start visually-hidden" aria-label="Start of notifications dialog">Start notifications</button>
-				<button class="popup-close" aria-label="Close notifications panel">✕</button>
-
-				<div class="popup-content">
-					<!-- IFRAME: notifications page -->
-					<iframe
-						src="../notifications.html"
-						title="Notifications"
-						style="display:block; width:100%; height:100%; min-height:320px; border:0;"
-						allow="clipboard-read; clipboard-write; geolocation; microphone; camera; autoplay"
-						></iframe>
-
-					<noscript>
-						<div class="content small">
-							<p>JavaScript is required to load the notifications panel. <a class="bare-link" href="./pages/notifications.html">Open notifications</a></p>
-						</div>
-					</noscript>
-				</div>
-
-				<p class="popup-help">To close, click outside the window or press Escape.</p>
-			</div>
-		</div>
-
 	<!-- SETTINGS POPUP (inlined) -->
-	<div id="settings-popup" class="popup" role="dialog" aria-hidden="true" aria-label="Settings panel" aria-modal="true">
-		<div class="popup-inner">
-			<button class="popup-start visually-hidden" aria-label="Start of settings dialog">Start settings</button>
-			<button class="popup-close" aria-label="Close settings panel">✕</button>
-
-			<div class="popup-content">
-				<!-- IFRAME: settings page -->
-				<iframe
-					src="../settings.html"
-					title="Settings"
-					style="display:block; width:100%; height:100%; min-height:320px; border:0;"
-					allow="clipboard-read; clipboard-write; geolocation; microphone; camera; autoplay"
-					></iframe>
-
-				<noscript>
-					<div class="content small">
-						<p>JavaScript is required to load the settings panel. <a class="bare-link" href="./pages/settings.html">Open settings</a></p>
-					</div>
-				</noscript>
-			</div>
-
-			<p class="popup-help">To close, click outside the window or press Escape.</p>
-		</div>
-	</div>
+	
 
 	<!-- INFO POPUP (inlined) -->
 	<div id="info-popup" class="popup" role="dialog" aria-hidden="true" aria-label="Info panel" aria-modal="true">
@@ -975,9 +928,9 @@
 		</script>
 	
 	<!-- marked for markdown -->
-	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/marked@18.0.5/lib/marked.umd.js" integrity="sha512-eYhVvgK6+HzGzZYdrMauPoXufKz0jNWSvBEj2yWkM5My9btV3cwRWylUnLDrhGM9HWpRKMaQvV251rUPt9Yo9g==" crossorigin="anonymous"></script>
 	<!-- Adding DOMPurify -->
-	<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.10/dist/purify.min.js" integrity="sha512-zV0+P1qGCdp57soPEGVEr6xoBBPouKeHMhr5IB979T6DExjQdHZBJcjItIyn+BkeFU5xl/8cCW5ZwBUHM0ThOQ==" crossorigin="anonymous"></script>
 	
 	<!-- What is this????? 
 	-->
@@ -988,7 +941,7 @@
 		/* --------------------
 		   Config & State
 		   -------------------- */
-		const DATA_PATH = 'data.json';
+		const DATA_PATH = new URL('data.json', window.location.href).href;
 		const PAGE_SIZE_KEY = 'archive.pageSize';
 		const DEFAULT_PAGE_SIZE = 10;
 		const PAGE_PREFETCH = 2; // how many pages of entries to keep loaded/rendered at once
@@ -1025,6 +978,14 @@
 			return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 		}
 
+		function sanitizeContentHtml(html) {
+			if (window.DOMPurify && typeof window.DOMPurify.sanitize === 'function') {
+				return window.DOMPurify.sanitize(html);
+			}
+			// mdToHtml already escapes the source when DOMPurify is unavailable.
+			return String(html || '');
+		}
+
 		function mdToHtml(txt) {
 			if (typeof txt !== 'string') return '';
 			if (txt.indexOf('---') === 0) {
@@ -1034,8 +995,11 @@
 					txt = nextLine !== -1 ? txt.slice(nextLine + 1) : txt.slice(fmEnd + 4);
 				}
 			}
-			if (window.marked) {
-				try { return (typeof window.marked.parse === 'function') ? window.marked.parse(txt) : window.marked(txt); } catch (e) { /* fallthrough */ }
+			if (window.marked && window.DOMPurify && typeof window.DOMPurify.sanitize === 'function') {
+				try {
+					const html = (typeof window.marked.parse === 'function') ? window.marked.parse(txt) : window.marked(txt);
+					return window.DOMPurify.sanitize(html);
+				} catch (e) { /* fallthrough */ }
 			}
 			return '<p>' + escapeHtml(txt).replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
 		}
@@ -1093,9 +1057,9 @@
 
 		function resolveMdPath(md) {
 			if (!md) return '';
-			if (md.indexOf('corkboard/') === 0) return '../' + md;
-			if (md.indexOf('./corkboard/') === 0) return '../' + md.slice(2);
-			return md;
+			const normalizedPath = md.replace(/^(?:\.\/)?corkboard\//, './');
+			try { return new URL(normalizedPath, DATA_PATH).href; }
+			catch (_) { return ''; }
 		}
 
 		function getOrdinal(n) {
@@ -1167,7 +1131,7 @@
 			const text = el('div', { 'class': 'blade-text' });
 
 			// If item._html is present (prefetched), show preview, else instruct to load
-			if (item._html) text.innerHTML = item._html;
+			if (item._html) text.innerHTML = sanitizeContentHtml(item._html);
 			else text.innerHTML = '<p><em>Click "Load" to fetch content</em></p>';
 			content.appendChild(text);
 
@@ -1379,7 +1343,10 @@
 			let items = MASTER.slice();
 
 			if (cat && cat !== 'all') items = items.filter(x => x && x.category && categoryMatches(x.category, cat));
-			if (unreadOnly) items = items.filter(it => localStorage.getItem('archive.read.' + stableIdForItem(it)) !== '1');
+			if (unreadOnly) items = items.filter(it => {
+				try { return localStorage.getItem('archive.read.' + stableIdForItem(it)) !== '1'; }
+				catch (e) { return true; }
+			});
 
 			if (sort === 'newest') items.sort(itemComparator);
 			else if (sort === 'oldest') items.sort((a, b) => {
@@ -1452,7 +1419,7 @@
 			updatePagerUI();
 
 			// trim cached html aggressively but keep prefetched pages' html
-			_trimHtmlCachePrefetch();
+			_trimHtmlCachePrefetch(built.pageItems);
 		}
 
 		function updatePagerUI() {
@@ -1474,11 +1441,11 @@
 		/* --------------------
 		   Cache trimming & cleanup
 		   -------------------- */
-		function _trimHtmlCachePrefetch() {
+		function _trimHtmlCachePrefetch(prefetchedItems = null) {
 			try {
 				// keep only the items that fall within the prefetched window (current .. current+PAGE_PREFETCH-1)
-				const built = buildViewArray();
-				const keepIds = new Set(built.pageItems.map(it => stableIdForItem(it)));
+				const itemsToKeep = prefetchedItems || buildViewArray().pageItems;
+				const keepIds = new Set(itemsToKeep.map(it => stableIdForItem(it)));
 				for (let i = 0; i < MASTER.length; i++) {
 					const id = stableIdForItem(MASTER[i]);
 					if (!keepIds.has(id) && MASTER[i]._html) {

@@ -1,20 +1,56 @@
+/* Shared font declarations. */
 @font-face {
-	font-family: 'ZenDots';
-	src: url('../fonts/ZenDots-Regular.ttf') format('truetype');
+    font-family: 'ZenDots';
+    src: url('../fonts/ZenDots-Regular.ttf') format('truetype');
+    font-display: swap;
 }
 
 @font-face {
-	font-family: 'Quicksand';
-	src: url('../fonts/Quicksand-Regular.ttf') format('truetype');
+    font-family: "Quicksand";
+    src:
+        url("../fonts/Quicksand-Regular.ttf")
+        format("truetype");
+    font-display: swap;
 }
 
 @font-face {
-	font-family: 'Lexend';
-	src: url('../fonts/accessible/Lexend-VariableFont_wght.ttf') format('truetype');
+    font-family: 'Lexend';
+    src: url('../fonts/accessible/Lexend-VariableFont_wght.ttf') format('truetype');
+    font-display: swap;
 }
 
 @font-face {
-	font-family: 'Libre Baskerville';
-	src: url('../fonts/accessible/LibreBaskerville-Regular.ttf') format('truetype');
+    font-family: 'Mochiy Pop One';
+    src: url('../fonts/MochiyPopOne-Regular.ttf') format('truetype');
+    font-display: swap;
 }
 
+@font-face {
+    font-family: 'Libre Baskerville';
+    src: url('../fonts/accessible/LibreBaskerville-Regular.ttf') format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Cormorant Garamond";
+    src: url("../img/environment/halloween/CormorantGaramond-VariableFont_wght.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 300 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Berkshire Swash";
+    src: url("../img/environment/holidays/BerkshireSwash-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Poiret One";
+    src: url("../img/environment/holidays/PoiretOne-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}

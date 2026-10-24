@@ -56,9 +56,7 @@ body.theme-night .buttons-panel {
 	width: 100%;
 }
 
-/* Story button base (flexible cards)
-   - default: frosted look (night-ish)
-   - day mode: dark grey surface via .theme-day on body */
+/* Story button base (flexible cards) */
 .story-btn {
 	position: relative;
 	display: inline-flex;
@@ -76,26 +74,17 @@ body.theme-night .buttons-panel {
 	border-radius: 0.9rem;
 	text-decoration: none;
 
-	/* frosted default (night-ish) */
-	background: var(--btn-frost-bg);
-	border: 1px solid var(--btn-frost-border);
-	color: var(--btn-text, #ffffff);
-	backdrop-filter: blur(10px) saturate(160%);
-	-webkit-backdrop-filter: blur(10px) saturate(160%);
+	background: var(--surface-bg);
+	border: 1px solid var(--surface-border);
+	color: var(--surface-color);
+	backdrop-filter: var(--surface-backdrop);
+	-webkit-backdrop-filter: var(--surface-backdrop);
 
 	box-shadow: 0 8px 22px rgba(0,0,0,0.28);
 	transition: transform 0.18s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.18s ease;
 	overflow: hidden;
 	padding-left: 1rem;
 	padding-right: 1rem;
-}
-
-/* Day mode: darker solid surface to preserve legibility on bright backgrounds */
-body.theme-day .story-btn {
-	background: var(--btn-day-bg);
-	border: 1px solid var(--btn-day-border);
-	color: var(--btn-text, #ffffff);
-	box-shadow: 0 8px 26px rgba(0,0,0,0.45);
 }
 
 /* hover: subtle light highlight (replaces wood/texture) */

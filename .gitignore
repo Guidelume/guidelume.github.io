@@ -1,2 +1,7 @@
-# Ignore the unfinished updates
+# Ignore undesired files
 template/
+/engine/encrypted/staging/
+/engine/encrypted/output/
+/engine/encrypted/tests/
+/engine/encrypted/README.md
+/engine/fonts/generic/

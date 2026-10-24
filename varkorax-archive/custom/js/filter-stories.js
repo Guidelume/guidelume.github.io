@@ -7,7 +7,7 @@ const DATA_JSON = "./stories/stories.json";
 
 // ---------- Settings ----------
 
-const SETTINGS_KEY = "basementSettings";
+const SETTINGS_KEY = "storiesSettings";
 
 let settings = {
     page: 1,
@@ -23,40 +23,38 @@ let settings = {
 };
 
 function loadSettings() {
-
-    const stored = localStorage.getItem(SETTINGS_KEY);
-
-    if (!stored)
-        return;
-
     try {
-
+        let stored = localStorage.getItem(SETTINGS_KEY);
+        let migrated = false;
+        if (!stored) {
+            const legacy = localStorage.getItem("basementSettings");
+            if (legacy) {
+                const previous = JSON.parse(legacy);
+                stored = JSON.stringify({ page: previous.page, pageSize: previous.pageSize, sort: previous.sort, search: previous.search });
+                migrated = true;
+            }
+        }
+        if (!stored) return;
         const saved = JSON.parse(stored);
-		
-		// Just in case I ever want to add more filters, so everyone's saved filters won't break
-		settings = {
-			...settings,
-			...saved,
-			filters: {
-				...settings.filters,
-				...(saved.filters || {})
-			}
-		};
-
+        if (!saved || typeof saved !== "object" || Array.isArray(saved)) return;
+        settings.page = Number.isSafeInteger(saved.page) && saved.page > 0 ? saved.page : 1;
+        settings.pageSize = [10, 20, 50].includes(Number(saved.pageSize)) ? Number(saved.pageSize) : 10;
+        settings.sort = ["newest", "oldest", "release-newest", "release-oldest", "az", "za"].includes(saved.sort)
+            ? saved.sort : "newest";
+        settings.search = typeof saved.search === "string" ? saved.search.slice(0, 500) : "";
+        if (saved.filters && typeof saved.filters === "object" && !Array.isArray(saved.filters)) {
+            for (const key of Object.keys(settings.filters)) {
+                if (typeof saved.filters[key] === "string") settings.filters[key] = saved.filters[key].slice(0, 200);
+            }
+        }
+        if (migrated) saveSettings();
+    } catch (_) {
+        // Storage may be disabled or unavailable in private browsing contexts.
     }
-
-    catch {
-        console.warn("Couldn't restore settings.");
-    }
-
 }
 
 function saveSettings() {
-    localStorage.setItem(
-        SETTINGS_KEY,
-        JSON.stringify(settings)
-    );
-
+    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (_) {}
 }
 
 let MASTER = [];
@@ -119,8 +117,6 @@ async function loadArchive() {
 		
         MASTER = data.entries || [];
 		
-		populateFilters();
-
     } catch (err) {
 
         console.error(err);
@@ -129,21 +125,19 @@ async function loadArchive() {
 
     }
 
-    pageSelect.value = pageSize;
-    sortSelect.value = sortMode;
-
-    refresh();
+    refresh(true);
 
 }
 
-function refresh() {
-	
-	const start =
-    (settings.page - 1) * settings.pageSize;
-	
+function refresh(syncControls = false) {
     currentPage = settings.page;
     pageSize = settings.pageSize;
     sortMode = settings.sort;
+	if (syncControls) {
+		searchInput.value = settings.search;
+		pageSelect.value = String(pageSize);
+		sortSelect.value = sortMode;
+	}
 
     FILTERED = [...MASTER];
 
@@ -199,44 +193,12 @@ function applySearch(list) {
 }
 
 function applyFilters(list, ignore = null) {
-	
-    return list.filter(entry => {
-
-        if (
-            settings.filters.category &&
-            entry.category !== settings.filters.category
-        )
-            return false;
-
-        if (
-            settings.filters.genre &&
-            entry.genre !== settings.filters.genre
-        )
-            return false;
-
-        if (
-            settings.filters.status &&
-            entry.status !== settings.filters.status
-        )
-            return false;
-
-        if (
-            settings.filters.tag &&
-            !(entry.tags || []).includes(settings.filters.tag)
-        )
-            return false;
-		
-		if (
-			ignore !== "category" &&
-			settings.filters.category &&
-			entry.category !== settings.filters.category
-		)
-			return false;
-		
-        return true;
-
-    });
-
+    const ignoredKey = ignore === "tags" ? "tag" : ignore;
+    const activeFilters = Object.entries(settings.filters)
+        .filter(([key, value]) => value && key !== ignoredKey);
+    return list.filter(entry => activeFilters.every(([key, value]) =>
+        key === "tag" ? (entry.tags || []).includes(value) : entry[key] === value
+    ));
 }
 
 function applySorting(list) {
@@ -438,11 +400,8 @@ function updatePagination() {
     nextBtn.disabled =
         currentPage === totalPages;
 
-    localStorage.setItem(
-        "filterPage",
-        currentPage
-    );
-
+    settings.page = currentPage;
+    saveSettings();
 }
 
 function filteredWithout(field){
@@ -546,6 +505,8 @@ function populateSelect(select, field, label) {
 
     select.appendChild(all);
 
+    const settingKey = field === "tags" ? "tag" : field;
+    const options = document.createDocumentFragment();
     buildOptions(field).forEach(optionData => {
 
 		const option =
@@ -558,17 +519,12 @@ function populateSelect(select, field, label) {
 
 		option.disabled =
 			optionData.count === 0 &&
-			optionData.value !== settings.filters[field];
+			optionData.value !== settings.filters[settingKey];
 		
-		select.appendChild(option);
-		
-		const settingKey =
-			field === "tags" ? "tag" : field; // Whoopsie. Eh I'll make it more explicit eventually
-		
-		select.value =
-			settings.filters[settingKey] ?? "";
-		
+		options.appendChild(option);
 	});
+	select.appendChild(options);
+	select.value = settings.filters[settingKey] ?? "";
 
 }
 

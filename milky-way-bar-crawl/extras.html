@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     
     <title>MWBC | Extras</title>
 	<meta property="og:title" content="Milky Way Bar Crawl">
@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="../engine/css/guide.css" />
     <link rel="stylesheet" href="../engine/css/accessible-fonts.css" />
 	<link rel="stylesheet" href="./custom/css/extras.css" />
+    <script src="./custom/js/metadata.js" defer></script>
 </head>
 <body>
 
@@ -107,7 +108,7 @@
 			
 			<div class="nav-updated" role="contentinfo">
 				Last Updated:<br>
-				August 2026 · v2.1
+				<span data-guide-updated>October 2026 · v2.2</span>
 			</div>
 			
 		</aside>
@@ -131,7 +132,7 @@
                     
                     <!-- Panel 0 -->
                     <section id="preamble" class="panel open" data-index="0">
-                        <header class="panel-header" role="button" aria-expanded="true">
+                        <header class="panel-header" role="button" tabindex="0" aria-expanded="true">
                             <h3>Time To Choose</h3>
                             <div class="caret">▾</div>
                         </header>
@@ -167,7 +168,7 @@
 					
                     <!-- Panel 1 -->
                     <section id="me1" class="panel" data-index="1">
-                        <header class="panel-header" role="button" aria-expanded="true">
+                        <header class="panel-header" role="button" tabindex="0" aria-expanded="true">
                             <h3>LE1</h3>
                             <div class="caret">▾</div>
                         </header>
@@ -275,7 +276,7 @@
 							
 							<br>
 							
-							<div id="chi-ld" class="mod-card anchor" data-parent="me1">
+							<div id="me1-chi-ld" class="mod-card anchor" data-parent="me1" data-guide-legacy-id="chi-ld">
 								<div class="mod-header">
 									<h4>
 										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1812" target="_blank">
@@ -316,7 +317,7 @@
 							
 							<br>
 							
-							<div id="om-key1" class="mod-card anchor" data-parent="me1">
+							<div id="me1-om-key1" class="mod-card anchor" data-parent="me1" data-guide-legacy-id="om-key1">
 								<div class="mod-header">
 									<h4>
 										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/959" target="_blank">
@@ -356,7 +357,7 @@
 							
 							<br>
 							
-							<div id="sam-e1" class="mod-card anchor" data-parent="me1">
+							<div id="me1-sam-e1" class="mod-card anchor" data-parent="me1" data-guide-legacy-id="sam-e1">
 								<div class="mod-header">
 									<h4>
 										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/564" target="_blank">
@@ -376,7 +377,7 @@
 							
 							<br>
 							
-							<div id="mor-n" class="mod-card anchor" data-parent="me1">
+							<div id="me1-mor-n" class="mod-card anchor" data-parent="me1" data-guide-legacy-id="mor-n">
 								<div class="mod-header">
 									<h4>Community Creators: Appearance</h4>
 								</div>
@@ -411,7 +412,7 @@
                     
                     <!-- Panel 2 -->
                     <section id="me2" class="panel" data-index="2">
-                        <header class="panel-header" role="button" aria-expanded="true">
+                        <header class="panel-header" role="button" tabindex="0" aria-expanded="true">
                             <h3>LE2</h3>
                             <div class="caret">▾</div>
                         </header>
@@ -508,7 +509,7 @@
                             <!-- <hr style="color:#fff;width:99%;text-align:left;margin-left:0">
 							<br> -->
 							
-							<div id="chi-ld" class="mod-card anchor" data-parent="me2">
+							<div id="me2-chi-ld" class="mod-card anchor" data-parent="me2">
 								<div class="mod-header">
 									<h4>
 										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/2156" target="_blank">
@@ -572,7 +573,7 @@
 							
 							<br>
 							
-							<div id="om-key1" class="mod-card anchor" data-parent="me2">
+							<div id="me2-om-key1" class="mod-card anchor" data-parent="me2">
 								<div class="mod-header">
 									<h4>
 										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/959" target="_blank">
@@ -611,7 +612,7 @@
 							
 							<br>
 							
-							<div id="sam-e1" class="mod-card anchor" data-parent="me2">
+							<div id="me2-sam-e1" class="mod-card anchor" data-parent="me2">
 								<div class="mod-header">
 									<h4>
 										<a href="https://www.nexusmods.com/masseffectlegendaryedition/mods/1115" target="_blank">
@@ -654,7 +655,7 @@
 							
 							<br>
 							
-							<div id="mor-n" class="mod-card anchor" data-parent="me2">
+							<div id="me2-mor-n" class="mod-card anchor" data-parent="me2">
 								<div class="mod-header">
 									<h4>Community Creators: Appearance</h4>
 								</div>
@@ -689,7 +690,7 @@
                     
                     <!-- Panel 3 -->
                     <section id="me3" class="panel" data-index="3">
-                        <header class="panel-header" role="button" aria-expanded="true">
+                        <header class="panel-header" role="button" tabindex="0" aria-expanded="true">
                             <h3>LE3</h3>
                             <div class="caret">▾</div>
                         </header>
@@ -832,7 +833,7 @@
 							
 							
 							
-							<div id="mor-n" class="mod-card anchor" data-parent="me3">
+							<div id="me3-mor-n" class="mod-card anchor" data-parent="me3">
 								<div class="mod-header">
 									<h4>Community Creators: Appearance</h4>
 								</div>

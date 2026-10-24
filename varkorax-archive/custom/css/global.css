@@ -1,9 +1,16 @@
+html[data-resource-state="suspended"] *,
+html[data-resource-state="suspended"] *::before,
+html[data-resource-state="suspended"] *::after {
+	animation-play-state: paused !important;
+}
+
 /* =========================
    BASE RESET + TYPOGRAPHY
    ========================= */
 * { box-sizing: border-box; }
 
 html, body { height: 100%; margin: 0; }
+html { overflow-y: scroll; scrollbar-gutter: stable; }
 
 /* -------------------------
    Site-wide tokens & font stacks
@@ -23,6 +30,14 @@ html, body { height: 100%; margin: 0; }
 	--btn-frost-border: rgba(255,255,255,0.35);
 	--btn-day-bg: rgba(40,40,40,0.92);
 	--btn-day-border: rgba(0,0,0,0.28);
+	--surface-bg: var(--btn-frost-bg);
+	--surface-hover-bg: rgba(255,255,255,0.20);
+	--surface-border: var(--btn-frost-border);
+	--surface-hover-border: rgba(255,255,255,0.48);
+	--surface-color: #ffffff;
+	--surface-backdrop: blur(12px) saturate(160%);
+	--surface-shadow: 0 10px 30px rgba(0,0,0,0.22);
+	--surface-disabled-border: rgba(255,255,255,0.12);
 
 	/* separators: night/light variants */
 	--separator-night: rgba(255,255,255,0.30);
@@ -233,11 +248,11 @@ body.theme-night .readable-panel {
 	width: 64px;
 	height: 64px;
 	border-radius: 999px;
-	background: var(--btn-frost-bg);
-	border: 1px solid var(--btn-frost-border);
-	backdrop-filter: blur(12px) saturate(160%);
-	-webkit-backdrop-filter: blur(12px) saturate(160%);
-	box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+	background: var(--surface-bg);
+	border: 1px solid var(--surface-border);
+	backdrop-filter: var(--surface-backdrop);
+	-webkit-backdrop-filter: var(--surface-backdrop);
+	box-shadow: var(--surface-shadow);
 	transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 	cursor: pointer;
 	text-decoration: none;
@@ -250,8 +265,8 @@ body.theme-night .readable-panel {
 
 .topbar-btn:hover {
 	transform: translateY(-3px);
-	background: rgba(255,255,255,0.20);
-	border-color: rgba(255,255,255,0.48);
+	background: var(--surface-hover-bg);
+	border-color: var(--surface-hover-border);
 	box-shadow: 0 14px 36px rgba(0,0,0,0.24);
 }
 
@@ -262,7 +277,7 @@ body.theme-night .readable-panel {
 	transform: none;
 	cursor: default;
 	pointer-events: none;
-	border-color: rgba(255,255,255,0.12);
+	border-color: var(--surface-disabled-border);
 	box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
@@ -287,11 +302,11 @@ body.theme-night .readable-panel {
 	width: 64px;
 	height: 64px;
 	border-radius: 999px;
-	background: var(--btn-frost-bg);
-	border: 1px solid var(--btn-frost-border);
-	backdrop-filter: blur(12px) saturate(160%);
-	-webkit-backdrop-filter: blur(12px) saturate(160%);
-	box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+	background: var(--surface-bg);
+	border: 1px solid var(--surface-border);
+	backdrop-filter: var(--surface-backdrop);
+	-webkit-backdrop-filter: var(--surface-backdrop);
+	box-shadow: var(--surface-shadow);
 	transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 	cursor: pointer;
 	padding: 8px;
@@ -300,7 +315,40 @@ body.theme-night .readable-panel {
 
 .infobar-btn img { width: 32px; height: 32px; image-rendering: pixelated; display: block; margin: auto; }
 
-.infobar-btn:hover { transform: translateY(-3px); background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.44); }
+.infobar-btn:hover { transform: translateY(-3px); background: var(--surface-hover-bg); border-color: var(--surface-hover-border); }
+
+/* Compact shared display-mode menu opened from the archive's top-right utility bar. */
+.time-of-day-menu {
+	position: fixed;
+	top: 76px;
+	right: 20px;
+	z-index: 1200;
+	width: min(230px, calc(100vw - 24px));
+	padding: 10px;
+	border: 1px solid rgba(255,255,255,.32);
+	border-radius: 12px;
+	background: rgba(250, 250, 250, .97);
+	box-shadow: 0 12px 34px rgba(0,0,0,.38);
+	color: #181818;
+	backdrop-filter: blur(12px);
+}
+.time-of-day-menu[hidden] { display: none; }
+.time-of-day-heading { margin: 2px 8px 8px; font-size: .85rem; opacity: .75; }
+.time-of-day-menu button {
+	display: block;
+	width: 100%;
+	padding: 9px 10px;
+	border: 0;
+	border-radius: 8px;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+.time-of-day-menu button:hover,
+.time-of-day-menu button:focus-visible { background: rgba(0,0,0,.09); outline: none; }
+.time-of-day-menu button[aria-checked="true"]::after { content: "✓"; float: right; }
 
 .font-icon {
 	font-family: var(--font-header);
@@ -345,14 +393,29 @@ body.theme-night .readable-panel {
 	opacity: 1;
 }
 
-/* =========================
-   THEME OVERRIDES (day vs night)
-   ========================= */
-body.theme-day .topbar-btn,
-body.theme-day .infobar-btn {
-	background: var(--btn-day-bg);
-	border: 1px solid var(--btn-day-border);
-	box-shadow: 0 12px 36px rgba(0,0,0,0.45);
+/* Shared element surfaces: solid and dark during day, frosted glass at night. */
+body.theme-day,
+body[data-surface-theme="day"] {
+	--surface-bg: var(--btn-day-bg);
+	--surface-hover-bg: rgba(55,55,55,0.98);
+	--surface-border: var(--btn-day-border);
+	--surface-hover-border: rgba(0,0,0,0.42);
+	--surface-color: #ffffff;
+	--surface-backdrop: none;
+	--surface-shadow: 0 12px 36px rgba(0,0,0,0.45);
+	--surface-disabled-border: rgba(0,0,0,0.18);
+}
+
+body.theme-night,
+body[data-surface-theme="night"] {
+	--surface-bg: var(--btn-frost-bg);
+	--surface-hover-bg: rgba(255,255,255,0.20);
+	--surface-border: var(--btn-frost-border);
+	--surface-hover-border: rgba(255,255,255,0.48);
+	--surface-color: #ffffff;
+	--surface-backdrop: blur(12px) saturate(160%);
+	--surface-shadow: 0 10px 30px rgba(0,0,0,0.22);
+	--surface-disabled-border: rgba(255,255,255,0.12);
 }
 
 /* make separators starker in day mode */
@@ -452,6 +515,7 @@ body.theme-day .popup {
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
+	padding-top: 48px;
 	align-items: stretch;
 	justify-content: flex-start;
 	position: relative;
@@ -490,14 +554,17 @@ body.theme-day .popup {
 	border-radius: 12px;
 	display: grid;
 	place-items: center;
-	background: rgba(255,255,255,0.06);
-	border: 1px solid rgba(255,255,255,0.16);
-	color: #fff;
+	background: var(--surface-bg);
+	border: 1px solid var(--surface-border);
+	backdrop-filter: var(--surface-backdrop);
+	-webkit-backdrop-filter: var(--surface-backdrop);
+	box-shadow: var(--surface-shadow);
+	color: var(--surface-color);
 	cursor: pointer;
 	z-index: 30;
 	transition: transform 120ms ease, background 120ms ease;
 }
-.popup-close:hover { transform: translateY(-2px); background: rgba(255,255,255,0.12); }
+.popup-close:hover { transform: translateY(-2px); background: var(--surface-hover-bg); border-color: var(--surface-hover-border); }
 
 .popup .popup-help {
 	margin: 0;

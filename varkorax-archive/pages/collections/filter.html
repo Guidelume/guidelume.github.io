@@ -131,14 +131,14 @@
 			align-items: center;
 			justify-content: center;
 
-			border: 1px solid var(--btn-frost-border);
+			border: 1px solid var(--surface-border);
 			border-radius: 999px;
-			background: var(--btn-frost-bg);
+			background: var(--surface-bg);
 
-			backdrop-filter: blur(12px) saturate(160%);
-			-webkit-backdrop-filter: blur(12px) saturate(160%);
+			backdrop-filter: var(--surface-backdrop);
+			-webkit-backdrop-filter: var(--surface-backdrop);
 
-			box-shadow: 0 10px 30px rgba(0,0,0,.22);
+			box-shadow: var(--surface-shadow);
 
 			cursor: pointer;
 
@@ -164,8 +164,8 @@
 
 		#backToTop:hover {
 			transform: translateX(0) translateY(-3px);
-			background: rgba(255,255,255,.20);
-			border-color: rgba(255,255,255,.48);
+			background: var(--surface-hover-bg);
+			border-color: var(--surface-hover-border);
 		}
 
 		#backToTop img {
@@ -577,29 +577,31 @@
 			width: 128px;
 			height: 48px;
 			border-radius: 999px;
-			background: var(--btn-frost-bg);
-			border: 1px solid var(--btn-frost-border);
-			backdrop-filter: blur(12px) saturate(160%);
-			-webkit-backdrop-filter: blur(12px) saturate(160%);
-			box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+			background: var(--surface-bg);
+			border: 1px solid var(--surface-border);
+			backdrop-filter: var(--surface-backdrop);
+			-webkit-backdrop-filter: var(--surface-backdrop);
+			box-shadow: var(--surface-shadow);
 			transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 			cursor: pointer;
 			text-decoration: none;
 			-webkit-tap-highlight-color: transparent;
 			padding: 8px;
-			color: white;
+			color: var(--surface-color);
 			
 		}
 		
 		.filter-clear:hover {
 			transform: translateY(-3px);
-			background: rgba(255,255,255,0.20);
-			border-color: rgba(255,255,255,0.48);
+			background: var(--surface-hover-bg);
+			border-color: var(--surface-hover-border);
 			box-shadow: 0 14px 36px rgba(0,0,0,0.24);
 		}
 		
 		</style>
-	</head>
+		<link rel="stylesheet" href="../../../engine/css/accessible-fonts.css" />
+	<script src="../../../engine/js/font-accessibility.js" defer></script>
+</head>
 
 	<body>
 		<!-- Changing Background -->
@@ -617,7 +619,7 @@
 				data-tooltip="Home"
 				aria-label="Home"
 			>
-				<img src="../../custom/img/side-home.png" alt="Home" />
+				<img data-src="custom/img/side-home.png" alt="Home" />
 			</a>
 			
 			<div class="topbar-sep" aria-hidden="true"></div>
@@ -647,15 +649,16 @@
             <div class="topbar-sep" aria-hidden="true"></div>
 			
 			<!-- Modding Guide Mass Effect -->
-			<a
-				href="https://milkywaybarcrawl.github.io"
+			<button
+				type="button"
 				class="topbar-btn"
 				style="width: 128px"
 				data-tooltip="Milky Way Bar Crawl"
-				aria-label="MWBC"
+				aria-label="Milky Way Bar Crawl (unavailable)"
+				disabled
 			>
-				<img src="../../custom/img/logo-bare-flat.png" style="width: 128px; image-rendering: auto" alt="MWBC" />
-			</a>
+				<img data-src="custom/img/logo-bare-flat.png" style="width: 128px; image-rendering: auto" alt="MWBC" />
+			</button>
 			
 		</nav>
 		
@@ -730,10 +733,10 @@
                 id="settings-toggle"
                 class="infobar-btn"
                 aria-expanded="false"
-                aria-controls="settings-popup"
-                data-tooltip="Settings"
+                aria-controls="time-of-day-menu"
+                data-tooltip="Time of day"
                 >
-                <img data-src="./custom/img/bottom-gear.png" alt="Settings" id="settings-icon" />
+                <img data-src="./custom/img/bottom-gear.png" alt="Time of day" id="settings-icon" />
             </button>
 			
 			<div class="infobar-sep" style="height: 20px" aria-hidden="true"></div>
@@ -759,37 +762,14 @@
                 aria-controls="social-popup"
                 data-tooltip="Socials"
                 ><a href="https://bsky.app/profile/varkorax.bsky.social">
-                <img src="../../custom/img/socials.svg" alt="Socials" id="notif-icon" />
+				<img data-src="custom/img/socials.svg" alt="Socials" id="notif-icon" />
 				</a>
             </button>
 			
         </nav>
 
 		<!-- SETTINGS POPUP (inlined) -->
-		<div id="settings-popup" class="popup" role="dialog" aria-hidden="true" aria-label="Settings panel" aria-modal="true">
-			<div class="popup-inner">
-				<button class="popup-start visually-hidden" aria-label="Start of settings dialog">Start settings</button>
-				<button class="popup-close" aria-label="Close settings panel">✕</button>
-
-				<div class="popup-content">
-					<!-- IFRAME: settings page -->
-					<iframe
-						src="../settings.html"
-						title="Settings"
-						style="display:block; width:100%; height:100%; min-height:320px; border:0;"
-						allow="clipboard-read; clipboard-write; geolocation; microphone; camera; autoplay"
-						></iframe>
-
-					<noscript>
-						<div class="content small">
-							<p>JavaScript is required to load the settings panel. <a class="bare-link" href="./pages/settings.html">Open settings</a></p>
-						</div>
-					</noscript>
-				</div>
-
-				<p class="popup-help">To close, click outside the window or press Escape.</p>
-			</div>
-		</div>
+		
 
 		<!-- INFO POPUP (inlined) -->
 		<div id="info-popup" class="popup" role="dialog" aria-hidden="true" aria-label="Info panel" aria-modal="true">

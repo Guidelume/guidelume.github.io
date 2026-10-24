@@ -1,0 +1,84 @@
+/* Blackwall intentionally keeps its own palette in every desktop theme. */
+.blackwall-dialog {
+    box-sizing: border-box;
+    width: min(620px, calc(100vw - 32px));
+    max-width: none;
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: clamp(20px, 4vw, 36px);
+    overflow: auto;
+    border: 1px solid #83313f;
+    border-top: 3px solid #c34755;
+    border-radius: 2px;
+    background: linear-gradient(155deg, #180d12, #09090d 65%);
+    color: #eee3e5;
+    box-shadow: 0 24px 96px #000b, 0 0 40px #9e24351f, inset 0 1px #ffffff05;
+    font-family: Consolas, "Liberation Mono", monospace;
+    font-size: calc(13px * var(--text-size-scale, 1));
+    line-height: 1.6;
+    color-scheme: dark;
+    scrollbar-color: #83313f #09090d;
+}
+
+.blackwall-dialog::backdrop {
+    background: rgb(3 3 8 / 82%);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+.blackwall-dialog[open] { animation: blackwall-enter 180ms ease-out both; }
+
+.blackwall-header { display: flex; align-items: center; gap: 16px; }
+.blackwall-shield { width: 44px; height: 48px; flex: 0 0 auto; stroke: #e66d7b; stroke-width: 2; }
+.blackwall-dialog .blackwall-eyebrow { margin: 0 0 5px; color: #bd929b; font-size: .68em; letter-spacing: .1em; }
+.blackwall-dialog h2 { margin: 0; color: #f3e8eb; font-size: 1.35em; line-height: 1.4; letter-spacing: .04em; overflow-wrap: anywhere; }
+.blackwall-dialog h2:focus { outline: none; }
+.blackwall-alert { margin: 24px 0 16px; color: #ff929e; font-size: .87em; font-weight: 700; letter-spacing: .1em; }
+.blackwall-summary p { margin: 0 0 10px; color: #c2afb5; }
+.blackwall-report { margin-top: 24px; padding: 18px 0; border-block: 1px solid #502630; }
+.blackwall-report h3 { margin: 0 0 14px; color: #d48b97; font-size: .8em; letter-spacing: .13em; }
+.blackwall-report dl { display: grid; grid-template-columns: minmax(105px, .6fr) minmax(0, 1fr); gap: 7px 16px; margin: 0; font-size: .86em; }
+.blackwall-report dt { color: #b9a1aa; }
+.blackwall-report dd { margin: 0; color: #eee3e5; overflow-wrap: anywhere; }
+.blackwall-lockdown { padding-top: 24px; text-align: center; }
+.blackwall-status { margin: 0; color: #ff929e; font-size: .8em; font-weight: 700; letter-spacing: .1em; }
+.blackwall-timer { margin: 4px 0 18px; color: #ffb4bc; font-size: 4.2em; font-variant-numeric: tabular-nums; line-height: 1.3; letter-spacing: .08em; }
+.blackwall-dismiss {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+    border: 1px solid #a24755;
+    border-radius: 0;
+    background: #33121c;
+    color: #ffd8df;
+    font: inherit;
+    font-size: .87em;
+    letter-spacing: .06em;
+    cursor: pointer;
+}
+.blackwall-dismiss:disabled { border-color: #502630; background: #170d12; color: #b0949e; cursor: not-allowed; }
+.blackwall-dismiss:hover:enabled { background: #4b1b27; }
+.blackwall-dismiss:focus-visible { outline: 2px solid #ffb4bc; outline-offset: 4px; }
+.blackwall-footer { margin-top: 22px; color: #ac8d97; font-size: .67em; letter-spacing: .08em; text-align: center; overflow-wrap: anywhere; }
+
+@keyframes blackwall-enter {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 420px) {
+    .blackwall-header { gap: 12px; }
+    .blackwall-shield { width: 34px; height: 40px; }
+    .blackwall-dialog h2 { font-size: 1.15em; }
+    .blackwall-alert { margin-top: 18px; }
+    .blackwall-report { margin-top: 18px; padding-block: 14px; }
+    .blackwall-report dl { grid-template-columns: minmax(88px, .65fr) minmax(0, 1fr); gap: 7px 10px; }
+    .blackwall-lockdown { padding-top: 18px; }
+    .blackwall-timer { font-size: 3.8em; margin-bottom: 14px; }
+    .blackwall-footer { margin-top: 16px; }
+}
+
+html[data-reduced-motion="true"] .blackwall-dialog[open] { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+    .blackwall-dialog[open] { animation: none; }
+}

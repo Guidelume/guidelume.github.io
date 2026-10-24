@@ -35,12 +35,15 @@
 
 			padding: 0.55rem 1.1rem;
 
-			border: 1px solid rgba(255,255,255,0.08);
+			border: 1px solid var(--surface-border);
 			border-radius: 0.75rem;
 
-			background: rgba(255,255,255,0.12);
+			background: var(--surface-bg);
 
-			color: #fff;
+			color: var(--surface-color);
+			backdrop-filter: var(--surface-backdrop);
+			-webkit-backdrop-filter: var(--surface-backdrop);
+			box-shadow: var(--surface-shadow);
 			text-decoration: none;
 			font-weight: 600;
 
@@ -54,8 +57,8 @@
 		}
 
 		.story-btn:hover {
-			background: rgba(255,255,255,0.18);
-			border-color: rgba(255,255,255,0.16);
+			background: var(--surface-hover-bg);
+			border-color: var(--surface-hover-border);
 
 			transform: translateY(-2px);
 		}
@@ -226,7 +229,9 @@
 			
 		}
         </style>
-    </head>
+    	<link rel="stylesheet" href="../../engine/css/accessible-fonts.css" />
+	<script src="../../engine/js/font-accessibility.js" defer></script>
+</head>
 
     <body>
         <!-- Changing Background -->
@@ -297,10 +302,10 @@
                 id="settings-toggle"
                 class="infobar-btn"
                 aria-expanded="false"
-                aria-controls="settings-popup"
-                data-tooltip="Settings"
+                aria-controls="time-of-day-menu"
+                data-tooltip="Time of day"
                 >
-                <img data-src="../custom/img/bottom-gear.png" alt="Settings" id="settings-icon" />
+                <img data-src="../custom/img/bottom-gear.png" alt="Time of day" id="settings-icon" />
             </button>
             
             <div class="infobar-sep" aria-hidden="true"></div>
@@ -313,7 +318,7 @@
                 aria-controls="social-popup"
                 data-tooltip="Socials"
                 ><a href="https://bsky.app/profile/varkorax.bsky.social">
-                <img src="../custom/img/side-social-bsky.png" alt="Socials" id="notif-icon" />
+				<img data-src="custom/img/side-social-bsky.png" alt="Socials" id="notif-icon" />
 				</a>
             </button>
 			
@@ -330,30 +335,7 @@
         </nav>
         
         <!-- SETTINGS POPUP (inlined) -->
-        <div id="settings-popup" class="popup" role="dialog" aria-hidden="true" aria-label="Settings panel" aria-modal="true">
-            <div class="popup-inner">
-                <button class="popup-start visually-hidden" aria-label="Start of settings dialog">Start settings</button>
-                <button class="popup-close" aria-label="Close settings panel">✕</button>
-
-                <div class="popup-content">
-                    <!-- IFRAME: settings page -->
-                    <iframe
-                        src="./settings.html"
-                        title="Settings"
-                        style="display:block; width:100%; height:100%; min-height:320px; border:0;"
-                        allow="clipboard-read; clipboard-write; geolocation; microphone; camera; autoplay"
-                        ></iframe>
-
-                    <noscript>
-                        <div class="content small">
-                            <p style="font-family: 'Lexend'">JavaScript is required to load the settings panel. <a class="bare-link" href="./pages/settings.html">Open settings</a></p>
-                        </div>
-                    </noscript>
-                </div>
-
-                <p class="popup-help" style="font-family: 'Lexend'">To close, click outside the window or press Escape.</p>
-            </div>
-        </div>
+        
 
         <!-- INFO POPUP (inlined) -->
         <div id="info-popup" class="popup" role="dialog" aria-hidden="true" aria-label="Info panel" aria-modal="true">
@@ -395,8 +377,8 @@
         <script src="../custom/js/global.js" defer></script>
 		
 		<!-- Markdown parser + DOMPurify -->
-		<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/marked@18.0.5/lib/marked.umd.js" integrity="sha512-eYhVvgK6+HzGzZYdrMauPoXufKz0jNWSvBEj2yWkM5My9btV3cwRWylUnLDrhGM9HWpRKMaQvV251rUPt9Yo9g==" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.10/dist/purify.min.js" integrity="sha512-zV0+P1qGCdp57soPEGVEr6xoBBPouKeHMhr5IB979T6DExjQdHZBJcjItIyn+BkeFU5xl/8cCW5ZwBUHM0ThOQ==" crossorigin="anonymous"></script>
 		
 		<!-- Page script: glue the floating back button under the current topbar button -->
 		<script>
@@ -515,11 +497,13 @@
 					}
 
 					const markdown = await mdRes.text();
-
-					document.getElementById("changelog-content").innerHTML =
-						DOMPurify.sanitize(
-							marked.parse(markdown)
-						);
+					const content = document.getElementById("changelog-content");
+					if (window.marked && window.DOMPurify && typeof window.DOMPurify.sanitize === "function") {
+						content.innerHTML = window.DOMPurify.sanitize(window.marked.parse(markdown));
+					} else {
+						content.textContent = markdown;
+						content.style.whiteSpace = "pre-wrap";
+					}
 
 				}
 				catch (err) {

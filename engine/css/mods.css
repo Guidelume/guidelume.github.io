@@ -1,0 +1,45 @@
+.mod-overview { padding: 26px; }
+
+.mod-overview .mod-overview-eyebrow {
+    margin: 0 0 10px;
+    color: var(--text-secondary);
+    font-size: .65em;
+    font-weight: 700;
+    letter-spacing: .1em;
+}
+
+.mod-overview h2 {
+    margin: 0 0 12px;
+    color: var(--accent-light);
+    font-size: 1em;
+}
+
+.mod-feature-list { display: grid; gap: 12px; margin: 0 0 22px; padding-left: 22px; }
+.mod-feature-list li::marker { color: var(--accent-light); }
+.mod-overview .mod-overview-options { color: var(--text-secondary); font-size: .85em; }
+.mod-download { display: grid; gap: 10px; padding-top: 18px; border-top: 1px solid color-mix(in srgb, var(--accent-strong), transparent 55%); }
+.mod-download small { color: var(--text-secondary); font-size: .7em; }
+
+.mod-download-button,
+.mod-download-button:visited {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    color: var(--chrome-text);
+    font: inherit;
+    text-align: center;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+.mod-download-button:focus-visible { outline: 2px solid var(--accent-light); outline-offset: 3px; }
+
+@media (max-width: 700px) {
+    .mod-overview { padding: 20px; }
+}
+
+html[data-reduced-motion="true"] .mod-download-button { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+    .mod-download-button { transition: none; }
+}

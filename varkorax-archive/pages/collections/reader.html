@@ -12,93 +12,8 @@
 		<link rel="stylesheet" href="../../custom/css/global.css" />
 		<link rel="stylesheet" href="../../custom/css/reader.css" />
 
-		<!-- Local (stories page) theme & button tuning, scoped to #reader and a body flag 
-		Who is gonna read any of this anyway? Yeah, you. Weirdo -->
+		<!-- Footer styles -->
 		<style>
-			/* TEXT COLOR RULES FOR THE READER (explicit mapping) */
-			#reader.theme-default,
-			#reader.theme-dark {
-				color: #ffffff !important; /* default + dark => white text */
-			}
-			#reader.theme-light {
-				color: #111111 !important; /* light => black text */
-			}
-			#reader .content,
-			#reader .chapter-header {
-				color: inherit !important;
-			}
-			
-			.popup-inner h1,
-			.popup-inner h2,
-			.popup-inner p,
-			.popup-inner button,
-			.popup-inner label {
-				color: #ffffff !important;
-			}
-			
-			/* BUTTON DAY/NIGHT helper classes (only used when no global theme is present) */
-			body.stories-btn-day:not(.theme-day):not(.theme-night) .control-btn,
-			body.stories-btn-day:not(.theme-day):not(.theme-night) .btn-base,
-			body.stories-btn-day:not(.theme-day):not(.theme-night) .cozy-btn,
-			body.stories-btn-day:not(.theme-day):not(.theme-night) .infobar-btn,
-			body.stories-btn-day:not(.theme-day):not(.theme-night) .topbar-btn,
-			body.stories-btn-day:not(.theme-day):not(.theme-night) .popup-close,
-			body.stories-btn-day:not(.theme-day):not(.theme-night) #player-collapse,
-			body.stories-btn-day:not(.theme-day):not(.theme-night) #player-controls button {
-				background: rgba(40, 40, 40, 0.92) !important;
-				border-color: rgba(0, 0, 0, 0.28) !important;
-				color: #ffffff !important;
-				backdrop-filter: none !important;
-				-webkit-backdrop-filter: none !important;
-				box-shadow: 0 8px 20px rgba(0,0,0,0.3) !important;
-			}
-			body.stories-btn-night:not(.theme-day):not(.theme-night) .control-btn,
-			body.stories-btn-night:not(.theme-day):not(.theme-night) .btn-base,
-			body.stories-btn-night:not(.theme-day):not(.theme-night) .cozy-btn,
-			body.stories-btn-night:not(.theme-day):not(.theme-night) .infobar-btn,
-			body.stories-btn-night:not(.theme-day):not(.theme-night) .topbar-btn,
-			body.stories-btn-night:not(.theme-day):not(.theme-night) .popup-close,
-			body.stories-btn-night:not(.theme-day):not(.theme-night) #player-collapse,
-			body.stories-btn-night:not(.theme-day):not(.theme-night) #player-controls button {
-				background: var(--btn-bg) !important;
-				border-color: var(--btn-border) !important;
-				color: var(--btn-text) !important;
-				backdrop-filter: blur(12px) saturate(160%) !important;
-				-webkit-backdrop-filter: blur(12px) saturate(160%) !important;
-				box-shadow: var(--shadow-soft) !important;
-			}
-			
-			.control-btn.is-active,
-			.btn-base.is-active,
-			body.theme-day .control-btn.is-active,
-			body.theme-night .control-btn.is-active,
-			body.stories-btn-day .control-btn.is-active,
-			body.stories-btn-night .control-btn.is-active,
-			body.theme-day .btn-base.is-active,
-			body.theme-night .btn-base.is-active,
-			body.stories-btn-day .btn-base.is-active,
-			body.stories-btn-night .btn-base.is-active {
-				/* visible orange ring + subtle drop shadow */
-				box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.95) !important,
-							0 10px 30px rgba(0,0,0,0.25) !important;
-				border-color: rgba(255, 165, 0, 1) !important;
-				/* extra outline fallback for any user agents that suppress box-shadow */
-				outline: 3px solid rgba(255, 165, 0, 0.95) !important;
-				color: #ffffff !important;
-			}
-			
-			/* control button color by theme so active/outline visuals have proper contrast */
-			body.theme-day .control-btn,
-			body.theme-day .btn-base { color: #111111 !important; }
-			body.theme-night .control-btn,
-			body.theme-night .btn-base { color: #ffffff !important; }
-			
-			/* active control button contrast override */
-			body.theme-day .control-btn.is-active,
-			body.theme-day .btn-base.is-active { color: #111111 !important; }
-			body.theme-night .control-btn.is-active,
-			body.theme-night .btn-base.is-active { color: #ffffff !important; }
-			
 			/* =
 		   Footer
 		   = */
@@ -350,7 +265,9 @@
 			border-top: 2px solid white;
 		}
 		</style>
-	</head>
+		<link rel="stylesheet" href="../../../engine/css/accessible-fonts.css" />
+	<script src="../../../engine/js/font-accessibility.js" defer></script>
+</head>
 	
 	<body>
 		<!-- Scenic background -->
@@ -490,8 +407,8 @@
 		<script src="../../custom/js/global.js" defer></script>
 		
 		<!-- Markdown parser + DOMPurify -->
-		<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/marked@18.0.5/lib/marked.umd.js" integrity="sha512-eYhVvgK6+HzGzZYdrMauPoXufKz0jNWSvBEj2yWkM5My9btV3cwRWylUnLDrhGM9HWpRKMaQvV251rUPt9Yo9g==" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.10/dist/purify.min.js" integrity="sha512-zV0+P1qGCdp57soPEGVEr6xoBBPouKeHMhr5IB979T6DExjQdHZBJcjItIyn+BkeFU5xl/8cCW5ZwBUHM0ThOQ==" crossorigin="anonymous"></script>
 		
 		<!-- Router Logic 
 		Bear with me but in the interim of unifying the two readers it instead loads a Small
@@ -505,10 +422,19 @@
 				const urlParams = new URLSearchParams(window.location.search);
 				const genre = urlParams.get('genre'); // could be null or empty
 				const fallbackURL = `../landing_collections.html`;
-				const referrer = document.referrer;
+				const archiveRoot = new URL('../../', window.location.href);
+				let returnURL = fallbackURL;
 
-				// Security: Use referrer if it’s from this site, otherwise fallback
-				backBtn.href = (referrer && referrer.includes(window.location.hostname)) ? referrer : fallbackURL;
+				// Guidelume and Archive share a hostname. Only return to referrers
+				// inside Archive, so an embedding Guidelume page is not opened here.
+				try {
+					const referrer = new URL(document.referrer);
+					if (referrer.origin === window.location.origin && referrer.pathname.startsWith(archiveRoot.pathname)) {
+						returnURL = referrer.href;
+					}
+				} catch (_) {}
+
+				backBtn.href = returnURL;
 			})();
 			
 			document.addEventListener('DOMContentLoaded', () => {
@@ -517,6 +443,15 @@
 				const btnNight = document.getElementById('btn-night');
 				const reader = document.getElementById('reader');
 				const body = document.body;
+				const readReaderMode = () => {
+					try { return sessionStorage.getItem('storiesReaderMode'); } catch (_) { return null; }
+				};
+				const saveReaderMode = mode => {
+					try {
+						if (mode === 'day' || mode === 'night') sessionStorage.setItem('storiesReaderMode', mode);
+						else sessionStorage.removeItem('storiesReaderMode');
+					} catch (_) {}
+				};
 
 				/* ---------- ACTIVE STATE HIGHLIGHT (restored logic) ---------- */
 				function updateButtonStates(active) {
@@ -554,6 +489,7 @@
 
 					// Update local button visuals
 					updateButtonStates(mode);
+					try { window.setBackgroundAndText && window.setBackgroundAndText(); } catch (_) {}
 
 					// Let stories.js know about the change so it can centralise state & update outlines.
 					try {
@@ -563,11 +499,7 @@
 
 				function setReaderTheme(mode) {
 					// Use sessionStorage so it is local to the tab/session and does not affect other pages/tabs
-					if (mode === 'day' || mode === 'night') {
-						sessionStorage.setItem('storiesReaderMode', mode);
-					} else {
-						sessionStorage.removeItem('storiesReaderMode');
-					}
+					saveReaderMode(mode);
 					applyReaderTheme(mode);
 				}
 
@@ -577,118 +509,9 @@
 				if (btnDefault) btnDefault.addEventListener('click', (e) => { e.preventDefault(); setReaderTheme(null); });
 
 				// Initial reader theme
-				const savedReader = sessionStorage.getItem('storiesReaderMode');
+				const savedReader = readReaderMode();
 				applyReaderTheme((savedReader === 'day' || savedReader === 'night') ? savedReader : null);
 
-				/* ---------- BUTTON LEGIBILITY: respect global override, else time-of-day ---------- */
-
-				let isApplying = false;
-
-				function computeDayNightFromClock() {
-					const h = new Date().getHours();
-					return (h >= 6 && h < 22) ? 'day' : 'night';
-				}
-
-				function ensureStoriesClassPresence(desiredMode) {
-					if (!desiredMode) return;
-					const desiredClass = (desiredMode === 'day') ? 'stories-btn-day' : 'stories-btn-night';
-					if (body.classList.contains(desiredClass)) return;
-					body.classList.remove('stories-btn-day', 'stories-btn-night');
-					body.classList.add(desiredClass);
-				}
-
-				function removeStoriesClassesIfPresent() {
-					if (body.classList.contains('stories-btn-day') || body.classList.contains('stories-btn-night')) {
-						body.classList.remove('stories-btn-day', 'stories-btn-night');
-					}
-				}
-
-				function reapplyActiveState() {
-					// Reapply the active button outline based on sessionStorage (reader mode)
-					const s = sessionStorage.getItem('storiesReaderMode');
-					const val = (s === 'day' || s === 'night') ? s : null;
-					// Small DOM microtask delay to ensure any style changes have been applied first
-					requestAnimationFrame(() => {
-						updateButtonStates(val);
-					});
-				}
-
-				function reapplyActiveState() {
-					// Prefer any global theme set on <body> first (stories.js may set these).
-					// If none present, fall back to the per-page sessionStorage value.
-					const hasGlobalTheme = body.classList.contains('theme-day') || body.classList.contains('theme-night');
-					let val = null;
-					if (hasGlobalTheme) {
-						val = body.classList.contains('theme-day') ? 'day' : 'night';
-					} else {
-						const s = sessionStorage.getItem('storiesReaderMode');
-						val = (s === 'day' || s === 'night') ? s : null;
-					}
-					// small DOM microtask delay to ensure any style changes have been applied first
-					requestAnimationFrame(() => {
-						updateButtonStates(val);
-					});
-				}
-
-				function syncButtonLegibility() {
-					if (isApplying) return;
-					isApplying = true;
-					try {
-						const hasGlobalTheme = body.classList.contains('theme-day') || body.classList.contains('theme-night');
-						if (hasGlobalTheme) {
-							// If the global theme is present, remove local 'stories-btn-*' decorating classes
-							// so the global styles take precedence.
-							removeStoriesClassesIfPresent();
-						} else {
-							let userMode = null;
-							try { userMode = localStorage.getItem('userMode'); } catch (e) { userMode = null; }
-							const mode = (userMode === 'day' || userMode === 'night') ? userMode : computeDayNightFromClock();
-							ensureStoriesClassPresence(mode);
-						}
-					} finally {
-						isApplying = false;
-						// After changing legibility classes, ensure active button visuals are in sync
-						reapplyActiveState();
-					}
-				}
-
-				// Update when localStorage 'userMode' changes in other tabs
-				window.addEventListener('storage', (ev) => {
-					if (ev.key === 'userMode') syncButtonLegibility();
-				});
-
-				// Observe body.class changes
-				const bodyObserver = new MutationObserver((mutations) => {
-					for (const m of mutations) {
-						if (m.type === 'attributes' && m.attributeName === 'class') {
-							syncButtonLegibility();
-							break;
-						}
-					}
-				});
-				bodyObserver.observe(body, { attributes: true, attributeFilter: ['class'] });
-
-				// schedule clock-edge updates if needed
-				function scheduleNextClockEdge() {
-					let userMode = null;
-					try { userMode = localStorage.getItem('userMode'); } catch (e) { userMode = null; }
-					const hasGlobalTheme = body.classList.contains('theme-day') || body.classList.contains('theme-night');
-					if (userMode === 'day' || userMode === 'night' || hasGlobalTheme) return;
-
-					const now = new Date();
-					const msUntilNextHour = (60 - now.getMinutes()) * 60 * 1000 - now.getSeconds() * 1000 - now.getMilliseconds();
-					setTimeout(() => {
-						syncButtonLegibility();
-						scheduleNextClockEdge();
-					}, Math.max(250, msUntilNextHour + 50));
-				}
-				scheduleNextClockEdge();
-
-				// Also run reapplyActiveState after the whole window load to catch late scripts
-				window.addEventListener('load', () => {
-					// small delay to allow any global script to finish its paint
-					setTimeout(reapplyActiveState, 60);
-				});
 			});
 		</script>
 	</body>

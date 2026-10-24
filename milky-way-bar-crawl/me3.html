@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 
     <title>MWBC | LE3</title>
 	<meta property="og:title" content="Milky Way Bar Crawl">
@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../engine/css/accessible-fonts.css" />
     <!-- ME3 (muted red) -->
 	<link rel="stylesheet" href="./custom/css/me3.css" />
+    <script src="./custom/js/metadata.js" defer></script>
 </head>
 <body>
 
@@ -108,7 +109,7 @@
 			
 			<div class="nav-updated" role="contentinfo">
 				Last Updated:<br>
-				August 2026 · v2.1
+				<span data-guide-updated>October 2026 · v2.2</span>
 			</div>
 			
 		</aside>
@@ -131,7 +132,7 @@
                 <article class="content-box" id="contentBox" tabindex="0" aria-labelledby="stepTitle">
 					
 					<section id="preamble" class="panel open" data-index="0">
-						<header class="panel-header" role="button" aria-expanded="true">
+						<header class="panel-header" role="button" tabindex="0" aria-expanded="true">
 							<h3>The Final Round</h3>
 							<div class="caret">▾</div>
 						</header>
@@ -149,7 +150,7 @@
 
                     <!-- Batch Section -->
                     <section id="batch" class="panel" data-index="1">
-                        <header class="panel-header" role="button" aria-expanded="true">
+                        <header class="panel-header" role="button" tabindex="0" aria-expanded="true">
                             <h3>Batch</h3>
                             <div class="caret">▾</div>
                         </header>
@@ -222,7 +223,7 @@
 
                     <!-- Manual Section -->
 					<section id="manual" class="panel" data-index="2">
-						<header class="panel-header" role="button" aria-expanded="true">
+						<header class="panel-header" role="button" tabindex="0" aria-expanded="true">
 							<h3>Manual</h3>
 							<div class="caret">▾</div>
 						</header>
@@ -1198,7 +1199,7 @@
 					</section>
 					
 					<section id="whatthewhy" class="panel" data-index="3">
-						<header class="panel-header" role="button" aria-expanded="true">
+						<header class="panel-header" role="button" tabindex="0" aria-expanded="true">
 							<h3>Bonus: Explaining Choices</h3>
 							<div class="caret">▾</div>
 						</header>

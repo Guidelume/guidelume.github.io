@@ -5,7 +5,7 @@
         "summary": [
 			"Major rewrite of... basically everything."
 			],
-        "md":"changelogs/2.0.md",
+        "md":"changelogs/2.0.md.txt",
 		"featured": true
     }
 ]

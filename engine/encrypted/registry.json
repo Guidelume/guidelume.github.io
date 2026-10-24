@@ -1,0 +1,11 @@
+{
+  "format": "guidelume-encrypted-content-registry",
+  "version": 1,
+  "entries": [
+    {
+      "id": "content-01",
+      "payload": "developer-vault/vault.enc.json",
+      "presentation": "auto"
+    }
+  ]
+}

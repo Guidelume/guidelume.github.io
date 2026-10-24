@@ -1,5 +1,4 @@
-(() => {
-    function appendInlineMarkdown(parent, source) {
+function appendInlineMarkdown(parent, source) {
         // To-Do: Expose renderMarkdown so my stupid faux Sticky Note idea can use this later
 		// Markdown will find a way to break this I just know it
 		const tokens = /(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
@@ -53,9 +52,10 @@
         }
     }
 
-    function renderMarkdown(target, markdown) {
+export function renderMarkdown(target, markdown) {
         const lines = markdown.replace(/\r\n?/g, "\n").split("\n");
         let paragraph = [];
+        let listBreak = false;
 
         function flushParagraph() {
             if (!paragraph.length) return;
@@ -80,6 +80,7 @@
                 const element = document.createElement(`h${heading[1].length}`);
                 appendInlineMarkdown(element, heading[2]);
                 target.append(element);
+                listBreak = false;
                 continue;
             }
 
@@ -88,7 +89,7 @@
                 flushParagraph();
                 const ordered = /^\s*\d+\./.test(line);
                 // This behaves a bit odd under the hood but visually it seems fine
-				let list = target.lastElementChild;
+				let list = listBreak ? null : target.lastElementChild;
                 if (!list || list.tagName !== (ordered ? "OL" : "UL")) {
                     list = document.createElement(ordered ? "ol" : "ul");
                     target.append(list);
@@ -96,16 +97,22 @@
                 const item = document.createElement("li");
                 appendInlineMarkdown(item, listItem[1]);
                 list.append(item);
+                listBreak = false;
                 continue;
             }
 
-            if (!line.trim()) flushParagraph();
-            else paragraph.push(line);
+            if (!line.trim()) {
+                flushParagraph();
+                listBreak = true;
+            } else {
+                paragraph.push(line);
+                listBreak = false;
+            }
         }
         flushParagraph();
     }
 
-    document.querySelectorAll("[data-markdown-src]").forEach(async target => {
+if (typeof document !== "undefined") document.querySelectorAll("[data-markdown-src]").forEach(async target => {
         try {
             const sourceUrl = new URL(target.dataset.markdownSrc, document.baseURI);
             // I will regret this six months from now but it's fine for now
@@ -121,4 +128,3 @@
             target.textContent = "This document could not be loaded right now.";
         }
     });
-})();

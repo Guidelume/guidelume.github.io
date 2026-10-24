@@ -1,4 +1,8 @@
-/* Milky Way Bar Crawl: Guide JS */
+void import(new URL("./resource-lifecycle.js", document.currentScript.src).href).catch(() => {});
+
+/* Milky Way Bar Crawl: Guide JS 
+ * Or I guess not strictly just MWBC anymore. But Psssst
+ */
 
 /* ---------- Background helper ---------- */
 let bgLayer = document.getElementById('bgLayer');
@@ -14,6 +18,15 @@ function setBackground(src) {
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
+// Old duplicate IDs always addressed their first occurrence. Keep that destination
+// for published links and saved state while newly generated links use unique IDs.
+const legacyGuideIds = new Map($$('[data-guide-legacy-id]').map(element => [element.dataset.guideLegacyId, element.id]));
+function resolveGuideId(id) { return legacyGuideIds.get(id) || id; }
+function guideHashId() {
+	let id = location.hash.slice(1);
+	try { id = decodeURIComponent(id); } catch {}
+	return resolveGuideId(id);
+}
 function basename(path) { return (path || '').split('/').pop(); }
 function debounce(fn, wait = 120) {
 	let t = null;
@@ -31,6 +44,28 @@ const closeAllBtn = $('#closeAllBtn');
 const prevPageBtn = $('#prevPageBtn');
 const nextPageBtn = $('#nextPageBtn');
 const chapList = $('#leftPanel');
+
+let anchorsByPanel = new Map();
+let activeContentsLink = null;
+let restoredGuideState = null;
+try {
+	const rawState = window.frameElement?.dataset.resourceRestore;
+	if (rawState) restoredGuideState = JSON.parse(rawState);
+} catch {
+	// Ignore invalid state supplied by an older desktop session.
+}
+const standaloneGuideStateKey = `mwbc-guide-state:${location.pathname}${location.search}`;
+if (!restoredGuideState && window.parent === window) {
+	try {
+		const rawState = sessionStorage.getItem(standaloneGuideStateKey);
+		if (rawState) restoredGuideState = JSON.parse(rawState);
+	} catch {
+		// Storage can be unavailable in private browsing or restricted contexts.
+	}
+}
+if (restoredGuideState?.href && restoredGuideState.href !== window.location.href) {
+	restoredGuideState = null;
+}
 
 /* ===========================
 	PAGE SEQUENCE (Prev/Next)
@@ -167,6 +202,13 @@ function setPanelCaret(panel) {
 	const header = $('.panel-header', panel);
 	const caret = header && $('.caret', header);
 	const open = panel.classList.contains('open');
+	const body = $('.panel-body', panel);
+	if (body) {
+		if (!open && body.contains(document.activeElement)) header?.focus({ preventScroll: true });
+		if (!body.id) body.id = `${panel.id}-body`;
+		body.inert = !open;
+		if (header) header.setAttribute('aria-controls', body.id);
+	}
 	if (header) {
 		header.setAttribute('aria-expanded', open ? 'true' : 'false');
 	}
@@ -175,16 +217,36 @@ function setPanelCaret(panel) {
 	}
 }
 
+function getPanelTransitionMs(panel) {
+	const body = $('.panel-body', panel);
+	if (!body) return 0;
+	const style = getComputedStyle(body);
+	const parseTime = value => {
+		const amount = Number.parseFloat(value) || 0;
+		return value.trim().endsWith('ms') ? amount : amount * 1000;
+	};
+	const durations = style.transitionDuration.split(',').map(parseTime);
+	const delays = style.transitionDelay.split(',').map(parseTime);
+	return Math.max(0, ...durations.map((duration, index) => duration + (delays[index % delays.length] || 0)));
+}
+
+function afterPanelTransitions(changedPanels, callback) {
+	const waitMs = Math.max(0, ...changedPanels.map(getPanelTransitionMs));
+	setTimeout(() => requestAnimationFrame(callback), waitMs + (waitMs ? 24 : 0));
+}
+
 function openPanel(index, opts = { closeOthers: false, scrollOnOpen: true, behavior: 'smooth' }, cb = null) {
 	panels = getPanels();
 	if (index < 0 || index >= panels.length) return;
 	const target = panels[index];
+	const changedPanels = [];
 
 	if (opts.closeOthers) {
 		panels.forEach(p => {
 			if (p !== target && p.classList.contains('open')) {
 				p.classList.remove('open');
 				setPanelCaret(p);
+				changedPanels.push(p);
 			}
 		});
 	}
@@ -192,14 +254,16 @@ function openPanel(index, opts = { closeOthers: false, scrollOnOpen: true, behav
 	if (!target.classList.contains('open')) {
 		target.classList.add('open');
 		setPanelCaret(target);
-	}
-	if (opts.scrollOnOpen) {
-		navigateToElement(target, 0, opts.behavior || 'smooth');
+		changedPanels.push(target);
 	}
 
 	updateActivePanel(index);
 	updateActiveLinks();
-	if (typeof cb === 'function') cb();
+	schedulePersistGuideState();
+	afterPanelTransitions(changedPanels, () => {
+		if (opts.scrollOnOpen) navigateToElement(target, 0, opts.behavior || 'smooth');
+		if (typeof cb === 'function') cb();
+	});
 }
 
 contentBox && contentBox.addEventListener('click', (e) => {
@@ -212,43 +276,76 @@ contentBox && contentBox.addEventListener('click', (e) => {
 	if (wasOpen) {
 		panel.classList.remove('open');
 		setPanelCaret(panel);
+		const navLink = contentsList?.querySelector(`a[href="#${panel.id}"]`);
+		setContentsSectionState(navLink?.closest('.contents-section'), false);
+		if (forcedActiveAnchor && document.getElementById(forcedActiveAnchor)?.closest('.panel') === panel) {
+			forcedActiveAnchor = null;
+		}
 		const openIdx = getPanels().findIndex(p => p.classList.contains('open'));
 		updateActivePanel(openIdx >= 0 ? openIdx : 0);
 		updateActiveLinks();
 	} else {
 		openPanel(idx, { closeOthers: false, scrollOnOpen: false, behavior: 'smooth' });
 	}
+	schedulePersistGuideState();
+});
+
+contentBox && contentBox.addEventListener('keydown', (e) => {
+	if (e.key !== 'Enter' && e.key !== ' ') return;
+	const header = e.target.closest('.panel-header[role="button"]');
+	if (!header) return;
+	e.preventDefault();
+	if (e.key === 'Enter' && !e.repeat) header.click();
+});
+
+contentBox && contentBox.addEventListener('keyup', (e) => {
+	if (e.key !== ' ') return;
+	const header = e.target.closest('.panel-header[role="button"]');
+	if (!header) return;
+	e.preventDefault();
+	header.click();
 });
 
 /* ---------- Right contents builder ---------- */
 function buildContents() {
 	panels = getPanels();
 	if (!contentsList) return;
+	activeContentsLink = null;
 	contentsList.innerHTML = '';
+	const hashId = guideHashId();
+	const hashTarget = hashId ? document.getElementById(hashId) : null;
+	const hashPanel = hashTarget?.closest('.panel') || null;
 	panels.forEach((p, i) => {
 		p.dataset.index = i;
 		const heading = $('.panel-header h3', p);
 		const title = heading ? heading.innerText.trim() : `Panel ${i + 1}`;
 
 		const li = document.createElement('li');
+		li.className = 'contents-section';
+		const row = document.createElement('div');
+		row.className = 'contents-section-row';
 		const a = document.createElement('a');
 		a.href = `#${p.id}`;
 		a.textContent = `${i + 1}. ${title}`;
+		a.className = 'contents-link';
 		a.dataset.index = i;
 		a.addEventListener('click', (e) => {
 			e.preventDefault();
+			setContentsSectionState(li, true);
 			const targetHash = `#${p.id}`;
 			if (location.hash !== targetHash) {
 				history.pushState(null, '', targetHash);
 			}
 			openPanel(i, { closeOthers: false, scrollOnOpen: true, behavior: 'smooth' });
+			schedulePersistGuideState();
 		});
-		li.appendChild(a);
+		row.appendChild(a);
 
 		const children = $$('.anchor[data-parent]', p);
 		if (children.length) {
 			const sub = document.createElement('ul');
 			sub.className = 'contents-sublist';
+			sub.id = `contents-${p.id}-sublist`;
 			children.forEach(child => {
 				const chi = document.createElement('li');
 				const ca = document.createElement('a');
@@ -280,15 +377,43 @@ function buildContents() {
 					setTimeout(() => {
 						programmaticScroll = false;
 					}, 1000); //I can only estimate but this feels mostly right
+					schedulePersistGuideState();
 				});
 			});
 				chi.appendChild(ca);
 				sub.appendChild(chi);
 			});
+
+			const initiallyOpen = p.classList.contains('open') || hashPanel === p;
+			const toggle = document.createElement('button');
+			toggle.type = 'button';
+			toggle.className = 'contents-toggle';
+			toggle.setAttribute('aria-controls', sub.id);
+			row.appendChild(toggle);
+			li.appendChild(row);
 			li.appendChild(sub);
+			setContentsSectionState(li, initiallyOpen);
+			toggle.addEventListener('click', (e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				setContentsSectionState(li, !li.classList.contains('open'));
+				schedulePersistGuideState();
+			});
+		} else {
+			li.appendChild(row);
 		}
 		contentsList.appendChild(li);
 	});
+}
+
+function setContentsSectionState(section, open) {
+	if (!section) return;
+	section.classList.toggle('open', open);
+	const toggle = $('.contents-toggle', section);
+	if (!toggle) return;
+	toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+	toggle.setAttribute('aria-label', `${open ? 'Hide' : 'Show'} headings in ${$('.contents-link', section)?.textContent || 'chapter'}`);
+	toggle.textContent = open ? '▾' : '▸';
 }
 
 /* ---------- Scrolling helpers ---------- */
@@ -296,6 +421,15 @@ function getActiveScrollRoot() {
 	if (contentBox && contentBox.scrollHeight > contentBox.clientHeight) return contentBox;
 	return document.scrollingElement || document.documentElement;
 }
+
+function rebuildAnchorIndex() {
+	anchorsByPanel = new Map(panels.map(panel => [panel, []]));
+	$$('.anchor', contentBox || document).forEach(anchor => {
+		const panel = anchor.closest('.panel');
+		if (panel && anchorsByPanel.has(panel)) anchorsByPanel.get(panel).push(anchor);
+	});
+}
+
 function getScrollTop() {
 	const root = getActiveScrollRoot();
 	if (root === document.scrollingElement || root === document.documentElement) {
@@ -311,7 +445,9 @@ function navigateToElement(el, headerOffset = 0, behavior = 'smooth') {
 	const elRect = el.getBoundingClientRect();
 	const offsetWithin = elRect.top - rootRect.top;
 	const currentScroll = getScrollTop();
-	const target = Math.max(0, Math.round(currentScroll + offsetWithin - headerOffset - 4));
+	const compactLayout = window.matchMedia('(max-width: 700px)').matches;
+	const stickyChapterOffset = compactLayout && chapList ? chapList.getBoundingClientRect().height + 8 : 0;
+	const target = Math.max(0, Math.round(currentScroll + offsetWithin - headerOffset - stickyChapterOffset - 4));
 	try {
 		if (rootIsPage) {
 			window.scrollTo({ top: target, behavior });
@@ -327,6 +463,31 @@ function navigateToElement(el, headerOffset = 0, behavior = 'smooth') {
 	}
 }
 
+function navigateToCurrentHash(behavior = 'auto') {
+	const hashId = guideHashId();
+	const target = hashId ? document.getElementById(hashId) : null;
+	if (!target) return;
+	const panel = target.closest('.panel');
+	if (panel) {
+		const index = getPanels().indexOf(panel);
+		if (index >= 0) {
+			panel.classList.add('open');
+			setPanelCaret(panel);
+			updateActivePanel(index);
+		}
+	}
+	forcedActiveAnchor = target.classList.contains('anchor') ? target.id : null;
+	programmaticScroll = true;
+	afterPanelTransitions(panel ? [panel] : [], () => {
+		const headerHeight = panel ? ($('.panel-header', panel)?.offsetHeight || 0) : 0;
+		navigateToElement(target, headerHeight, behavior);
+		updateActiveLinks();
+		setTimeout(() => { programmaticScroll = false; }, 250);
+	});
+}
+window.addEventListener('popstate', () => navigateToCurrentHash());
+window.addEventListener('hashchange', () => navigateToCurrentHash());
+
 /* ---------- Scroll state -> active links ---------- */
 let scrollRaf = null;
 function scrollHandler() {
@@ -339,6 +500,7 @@ function scrollHandler() {
 
 		handleContentScroll();
 		updateContentProgress();
+		schedulePersistGuideState();
 
 		scrollRaf = null;
 	});
@@ -381,7 +543,7 @@ function handleContentScroll() {
 }
 
 const debouncedEnsureNavVisible = debounce((link) => {
-	if (!link) return;
+	if (!link || link.offsetParent === null) return;
 
 	const nav = contentsList?.closest('.contents-panel');
 	if (!nav) return;
@@ -399,6 +561,7 @@ const debouncedEnsureNavVisible = debounce((link) => {
 	}
 
 	// Only scroll when the active link actually leaves the viewport.
+	// I might want to consider changing this eventually but it's a preference thing
 	if (linkRect.top < navRect.top + PAD) {
 		nav.scrollTo({
 			top: nav.scrollTop + (linkRect.top - navRect.top) - PAD,
@@ -427,17 +590,33 @@ function findVerticalScrollParent(el) {
 
 function updateActiveLinks() {
 	if (!contentsList) return;
-	$$('.active', contentsList).forEach(a => a.classList.remove('active'));
+	const activateLink = link => {
+		const activeSection = link.closest('.contents-section');
+		$$('.contents-section.open', contentsList).forEach(section => {
+			if (section !== activeSection) setContentsSectionState(section, false);
+		});
+		if (activeContentsLink !== link) {
+			activeContentsLink?.classList.remove('active');
+			link.classList.add('active');
+			activeContentsLink = link;
+		}
+		setContentsSectionState(activeSection, true);
+		debouncedEnsureNavVisible(link);
+	};
 	
 	// An explicit anchor jump takes precedence until the user scrolls again.
+	// Also making me realize all my stupid anchor names are relevant. Oops.
+	if (forcedActiveAnchor) {
+		const target = document.getElementById(forcedActiveAnchor);
+		if (!target?.closest('.panel')?.classList.contains('open')) forcedActiveAnchor = null;
+	}
 	if (forcedActiveAnchor) {
 		const forcedLink = contentsList.querySelector(
 			`a[href="#${forcedActiveAnchor}"]`
 		);
 
 		if (forcedLink) {
-			forcedLink.classList.add('active');
-			debouncedEnsureNavVisible(forcedLink);
+			activateLink(forcedLink);
 			return;
 		}
 
@@ -446,50 +625,48 @@ function updateActiveLinks() {
 	
 	panels = getPanels();
 	if (!panels.length) return;
+	if (!panels.some(panel => panel.classList.contains('open'))) {
+		activeContentsLink?.classList.remove('active');
+		activeContentsLink = null;
+		$$('.contents-section.open', contentsList).forEach(section => setContentsSectionState(section, false));
+		return;
+	}
 
-	const st = getScrollTop();
+	// handleContentScroll has already selected the panel containing the viewport.
+	// Search only that panel's cached anchors, then search their positions.
+	const panel = panels[currentPanelIndex];
+	if (!panel?.classList.contains('open')) return;
+	const visibleAnchors = anchorsByPanel.get(panel) || [];
 	const root = getActiveScrollRoot();
 	const rootRect = (root === document.scrollingElement || root === document.documentElement) ? { top: 0 } : root.getBoundingClientRect();
-
-	const allAnchors = $$('.anchor', contentBox);
-	const visibleAnchors = allAnchors.filter(a => {
-		const panel = a.closest('.panel');
-		if (!panel) return false;
-		if (!panel.classList.contains('open')) return false;
-		return a.offsetParent !== null;
-	});
-
-	const currentPanel = panels[currentPanelIndex];
-	const headerH = currentPanel ? ($('.panel-header', currentPanel)?.offsetHeight || 0) : 0;
+	const headerH = $('.panel-header', panel)?.offsetHeight || 0;
 	const offset = Math.max(60, headerH + 12);
-
 	let currentAnchor = null;
-	for (let i = 0; i < visibleAnchors.length; i++) {
-		const a = visibleAnchors[i];
-		const aRect = a.getBoundingClientRect();
-		const anchorTopRel = (aRect.top - rootRect.top) + st;
-		if (anchorTopRel - offset <= st) {
-			currentAnchor = a;
+	let low = 0;
+	let high = visibleAnchors.length - 1;
+	const activationLine = rootRect.top + offset;
+	while (low <= high) {
+		const middle = (low + high) >> 1;
+		if (visibleAnchors[middle].getBoundingClientRect().top <= activationLine) {
+			currentAnchor = visibleAnchors[middle];
+			low = middle + 1;
 		} else {
-			break;
+			high = middle - 1;
 		}
 	}
 
 	if (currentAnchor) {
 		const subLink = contentsList.querySelector(`a[href="#${currentAnchor.id}"]`);
 		if (subLink) {
-			subLink.classList.add('active');
-			debouncedEnsureNavVisible(subLink);
+			activateLink(subLink);
 			return;
 		}
 	}
 
-	const panel = panels[currentPanelIndex];
-	if (panel) {
+	if (panel?.classList.contains('open')) {
 		const panelLink = contentsList.querySelector(`a[href="#${panel.id}"]`);
 		if (panelLink) {
-			panelLink.classList.add('active');
-			debouncedEnsureNavVisible(panelLink);
+			activateLink(panelLink);
 		}
 	}
 }
@@ -506,14 +683,17 @@ const progressBar = $('.content-progress-bar');
 function updateContentProgress() {
 	if (!contentBox || !progressBar) return;
 
-	const maxScroll = contentBox.scrollHeight - contentBox.clientHeight;
+	const root = getActiveScrollRoot();
+	const isPageScroll = root === document.scrollingElement || root === document.documentElement;
+	const maxScroll = root.scrollHeight - root.clientHeight;
 
 	if (maxScroll <= 0) {
 		progressBar.style.width = '0%';
 		return;
 	}
 
-	const progress = (contentBox.scrollTop / maxScroll) * 100;
+	const scrollTop = isPageScroll ? (window.scrollY || document.documentElement.scrollTop || 0) : root.scrollTop;
+	const progress = (scrollTop / maxScroll) * 100;
 	progressBar.style.width = `${progress}%`;
 }
 
@@ -525,11 +705,15 @@ function rebuildAll() {
 	panels.forEach((p, i) => {
 		p.dataset.index = i;
 	});
+	const hashId = guideHashId();
+	const hashPanel = document.getElementById(hashId)?.closest('.panel');
+	if (hashPanel) hashPanel.classList.add('open');
 	buildContents();
-	panels.forEach(setPanelCaret);
-	if (!panels.some(p => p.classList.contains('open')) && panels[0]) {
+	rebuildAnchorIndex();
+	if (!restoredGuideState && !panels.some(p => p.classList.contains('open')) && panels[0]) {
 		panels[0].classList.add('open');
 	}
+	panels.forEach(setPanelCaret);
 	currentPanelIndex = panels.findIndex(p => p.classList.contains('open'));
 	if (currentPanelIndex === -1) currentPanelIndex = 0;
 	updateActivePanel(currentPanelIndex);
@@ -538,6 +722,96 @@ function rebuildAll() {
 }
 const debouncedRebuildAll = debounce(rebuildAll, 140);
 rebuildAll();
+
+function getGuideResourceState() {
+	return {
+	href: window.location.href,
+	contentScrollTop: contentBox?.scrollTop || 0,
+	pageScrollX: window.scrollX || 0,
+	pageScrollTop: window.scrollY || document.documentElement.scrollTop || 0,
+	contentsScrollTop: $('.contents-panel')?.scrollTop || 0,
+	chaptersScrollTop: chapList?.scrollTop || 0,
+	openContentsSectionIds: $$('.contents-section.open', contentsList || document).map(section => section.querySelector('.contents-link')?.getAttribute('href')?.slice(1)).filter(Boolean),
+	activeAnchorId: activeContentsLink?.getAttribute('href')?.slice(1) || null,
+	openPanelIds: getPanels().filter(panel => panel.classList.contains('open')).map(panel => panel.id),
+	currentPanelId: panels[currentPanelIndex]?.id || null
+	};
+}
+
+function applyGuideResourceState(state) {
+	if (!state || !Array.isArray(state.openPanelIds)) return false;
+	panels = getPanels();
+	const savedIds = new Set(state.openPanelIds.filter(id => typeof id === 'string').map(resolveGuideId));
+	const changedPanels = [];
+	panels.forEach(panel => {
+		const shouldOpen = savedIds.has(panel.id);
+		if (panel.classList.contains('open') !== shouldOpen) changedPanels.push(panel);
+		panel.classList.toggle('open', shouldOpen);
+		setPanelCaret(panel);
+	});
+	const savedCurrentIndex = panels.findIndex(panel => panel.id === resolveGuideId(state.currentPanelId));
+	currentPanelIndex = savedCurrentIndex >= 0
+		? savedCurrentIndex
+		: panels.findIndex(panel => panel.classList.contains('open'));
+	if (currentPanelIndex < 0) currentPanelIndex = 0;
+	updateActivePanel(currentPanelIndex);
+	afterPanelTransitions(changedPanels, () => {
+		const savedContentsSections = new Set((state.openContentsSectionIds || []).filter(id => typeof id === 'string').map(resolveGuideId));
+		$$('.contents-section', contentsList || document).forEach(section => {
+			const id = section.querySelector('.contents-link')?.getAttribute('href')?.slice(1);
+			setContentsSectionState(section, savedContentsSections.has(id));
+		});
+		const contentsPanel = $('.contents-panel');
+		if (contentsPanel) contentsPanel.scrollTop = Math.max(0, Number(state.contentsScrollTop) || 0);
+		if (chapList) chapList.scrollTop = Math.max(0, Number(state.chaptersScrollTop) || 0);
+		
+		// The page can switch between contentBox scrolling and document scrolling as
+		// its layout changes (for example, when panels are restored). Restore both
+		// independently so the saved position survives either scroll-root choice.
+		const savedContentScrollTop = Math.max(0, Number(state.contentScrollTop) || 0);
+		const savedPageScrollTop = Math.max(0, Number(state.pageScrollTop) || 0);
+		if (contentBox) contentBox.scrollTop = savedContentScrollTop;
+		window.scrollTo(Math.max(0, Number(state.pageScrollX) || 0), savedPageScrollTop);
+		const hashId = guideHashId();
+		const savedAnchorId = typeof state.activeAnchorId === 'string' ? resolveGuideId(state.activeAnchorId) : hashId;
+		const hashTarget = savedAnchorId ? document.getElementById(savedAnchorId) : null;
+		forcedActiveAnchor = hashTarget?.classList.contains('anchor') ? savedAnchorId : null;
+		const activeRoot = getActiveScrollRoot();
+		const activeRootIsPage = activeRoot === document.scrollingElement || activeRoot === document.documentElement;
+		const savedOffsetForActiveRoot = activeRootIsPage ? savedPageScrollTop : savedContentScrollTop;
+		
+		// If this layout has no saved offset for its active scroll root, use the
+		// saved chapter link to recover position.
+		if (hashTarget && savedOffsetForActiveRoot === 0) {
+			const targetPanel = hashTarget.closest('.panel');
+			navigateToElement(hashTarget, targetPanel ? ($('.panel-header', targetPanel)?.offsetHeight || 0) : 0, 'auto');
+		}
+		updateActiveLinks();
+		handleContentScroll();
+		try { if (window.frameElement) delete window.frameElement.dataset.resourceRestore; } catch {}
+		restoredGuideState = null;
+	});
+	return true;
+}
+
+window.guidelumeGetResourceState = getGuideResourceState;
+window.guidelumeRestoreResourceState = state => {
+	if (state?.href && state.href !== window.location.href) return false;
+	requestAnimationFrame(() => requestAnimationFrame(() => applyGuideResourceState(state)));
+	return true;
+};
+
+let persistGuideStateTimer = null;
+function schedulePersistGuideState() {
+	if (window.parent !== window) return;
+	clearTimeout(persistGuideStateTimer);
+	persistGuideStateTimer = setTimeout(saveStandaloneGuideState, 180);
+}
+function saveStandaloneGuideState() {
+	if (window.parent !== window) return;
+	try { sessionStorage.setItem(standaloneGuideStateKey, JSON.stringify(getGuideResourceState())); } catch {}
+}
+window.addEventListener('pagehide', saveStandaloneGuideState);
 
 /* ========================================================================
 	LEFT NAV
@@ -548,6 +822,35 @@ rebuildAll();
 
 document.addEventListener('DOMContentLoaded', () => {
 	const currentFile = (basename(window.location.pathname) || '').toLowerCase();
+	const contentsPanel = $('.contents-panel');
+	const rightPanel = $('.right-panel');
+	if (contentsPanel && rightPanel) {
+		const compactLayout = window.matchMedia('(max-width: 700px)');
+		let disclosure = null;
+		const syncContentsDisclosure = () => {
+			if (compactLayout.matches && !contentsPanel.parentElement?.matches('.mobile-contents-disclosure')) {
+				disclosure = document.createElement('details');
+				disclosure.className = 'mobile-contents-disclosure';
+				const summary = document.createElement('summary');
+				summary.setAttribute('aria-label', 'Show table of contents');
+				const icon = document.createElement('span');
+				icon.className = 'mobile-contents-icon';
+				icon.setAttribute('aria-hidden', 'true');
+				summary.append(icon);
+				disclosure.append(summary, contentsPanel);
+				rightPanel.insertBefore(disclosure, rightPanel.firstChild);
+				disclosure.open = false;
+				disclosure.addEventListener('toggle', () => {
+					summary.setAttribute('aria-label', `${disclosure.open ? 'Hide' : 'Show'} table of contents`);
+				});
+			} else if (!compactLayout.matches && contentsPanel.parentElement?.matches('.mobile-contents-disclosure')) {
+				contentsPanel.parentElement.replaceWith(contentsPanel);
+				disclosure = null;
+			}
+		};
+		syncContentsDisclosure();
+		compactLayout.addEventListener('change', syncContentsDisclosure);
+	}
 
 	const sections = $$('.nav-section');
 
@@ -575,6 +878,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			/*
 			 If this is an LE page, also mark the Modding
 			 trail up to the current game.
+			 I guess this code isn't strictly needed anmyore
 			 */
 			const lePages = ['me1.html', 'me2.html', 'me3.html'];
 			const leIndex = lePages.indexOf(currentFile);
@@ -651,9 +955,19 @@ document.addEventListener('DOMContentLoaded', () => {
 	handleContentScroll();
 	
 	if (location.hash) {
-		setTimeout(() => {
-			window.dispatchEvent(new Event('hashchange'));
-		}, 60);
+		if (!restoredGuideState) setTimeout(() => navigateToCurrentHash('auto'), 60);
+	}
+
+	if (restoredGuideState && Array.isArray(restoredGuideState.openPanelIds)) {
+		window.guidelumeRestoreResourceState(restoredGuideState);
+	} else if (!restoredGuideState && window.parent === window) {
+		const hashId = location.hash.slice(1);
+		if (hashId) {
+			requestAnimationFrame(() => requestAnimationFrame(() => {
+				handleContentScroll();
+				updateActiveLinks();
+			}));
+		}
 	}
 });
 
@@ -671,6 +985,7 @@ function expandAllPanels() {
 	const firstOpen = panels.findIndex(p => p.classList.contains('open'));
 	updateActivePanel(firstOpen >= 0 ? firstOpen : 0);
 	updateActiveLinks();
+	schedulePersistGuideState();
 }
 function closeAllPanels() {
 	const panels = getPanels();
@@ -680,6 +995,7 @@ function closeAllPanels() {
 	});
 	updateActivePanel(0);
 	updateActiveLinks();
+	schedulePersistGuideState();
 }
 expandAllBtn && expandAllBtn.addEventListener('click', (e) => {
 	e.preventDefault();
@@ -1145,3 +1461,4 @@ window.__STEP = {
 		}); // end per-carousel foreach
 	}); // end DOMContentLoaded
 })(); // end everything if this doesn't work
+

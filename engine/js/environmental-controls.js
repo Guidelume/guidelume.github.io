@@ -10,115 +10,202 @@ import {
 export function initEnvironmentalControls({ memory, queueSave, effectManager, elements }) {
     const {
         sectionToggles,
-        presetSelect,
+        presetToggles,
         ambientAnimationToggle,
         weatherToggles,
         decorationToggles,
         themeToggles,
-        intensityRadios,
-        rotationToggle,
+        weatherIntensityRadios,
+        weatherModeRadios,
+        rotationClearToggle,
         rotationInterval,
-        applyButton
+        weatherSection,
+        decorationSection,
+        applyButton,
+        applyStatus
     } = elements;
     const supportedRotationIntervals = new Set(["30m", "1h", "3h", "6h", "12h"]);
     let current = normalizeEnvironmentSettings(memory.settings.environment, memory.settings);
+    const applyDock = applyButton?.closest(".environmental-apply-dock");
+    const applyScroller = applyButton?.closest(".setup-content");
 
-    if (presetSelect) {
-        const baseOption = presetSelect.querySelector('option[value=""]') || new Option("Desktop Default", "");
-        presetSelect.replaceChildren(baseOption);
-        Object.entries(environmentPresets).forEach(([id, preset]) => {
-            presetSelect.add(new Option(preset.name, id));
-        });
+    const selectedPreset = () => presetToggles.find(toggle =>
+        toggle.checked && Object.hasOwn(environmentPresets, toggle.dataset.environmentPreset)
+    )?.dataset.environmentPreset || "none";
+    const selectedThemes = () => themeToggles
+        .filter(toggle => toggle.checked && Object.hasOwn(seasonalThemes, toggle.dataset.seasonalTheme))
+        .map(toggle => toggle.dataset.seasonalTheme);
+    const overrideIsActive = () => selectedPreset() !== "none" || selectedThemes().length > 0;
+    const labelFor = toggle => toggle?.closest("label")?.querySelector("span")?.textContent?.trim()
+        || toggle?.dataset.environmentPreset
+        || toggle?.dataset.seasonalTheme
+        || "";
+
+    function updateApplyPreview() {
+        if (!applyStatus) return;
+        const selectedPresetToggle = presetToggles.find(toggle => toggle.checked);
+        const selectedThemeToggle = themeToggles.find(toggle => toggle.checked);
+        if (selectedPresetToggle) {
+            applyStatus.textContent = `Environment preset ${labelFor(selectedPresetToggle)} selected — don’t forget to apply.`;
+        } else if (selectedThemeToggle) {
+            applyStatus.textContent = `Seasonal theme ${labelFor(selectedThemeToggle)} selected — don’t forget to apply.`;
+        } else {
+            applyStatus.textContent = "Settings changed — don’t forget to apply.";
+        }
     }
 
-    function syncWeatherSelection() {
-        weatherToggles.forEach(toggle => {
-            toggle.checked = current.weather.includes(toggle.dataset.weatherEffect);
-        });
+    function syncApplyDockPosition() {
+        if (!applyDock || !applyScroller) return;
+        const activePanel = applyScroller.querySelector(".environment-tab-panel:not([hidden])");
+        if (!activePanel) return;
+        const isAtBottom = activePanel.scrollTop + activePanel.clientHeight >= activePanel.scrollHeight - 2;
+        applyDock.classList.toggle("is-at-bottom", isAtBottom);
     }
 
-    function syncDisabledState() {
-        const sectionIsEnabled = name => sectionToggles.some(toggle =>
-            toggle.dataset.environmentSection === name && toggle.checked
-        );
-        const weatherEnabled = sectionIsEnabled("weather");
-        const presetsEnabled = sectionIsEnabled("presets");
-        const decorationsEnabled = sectionIsEnabled("decorations");
-        const themesEnabled = sectionIsEnabled("themes");
-
-        if (presetSelect) presetSelect.disabled = !presetsEnabled;
-        if (ambientAnimationToggle) ambientAnimationToggle.disabled = !presetsEnabled;
-        weatherToggles.forEach(toggle => {
-            toggle.disabled = !weatherEnabled || !Object.hasOwn(weatherEffects, toggle.dataset.weatherEffect);
-        });
-        decorationToggles.forEach(toggle => {
-            toggle.disabled = !decorationsEnabled || !Object.hasOwn(environmentDecorations, toggle.dataset.decoration)
-                || !environmentDecorations[toggle.dataset.decoration].asset;
-        });
-        themeToggles.forEach(toggle => {
-            toggle.disabled = !themesEnabled || !Object.hasOwn(seasonalThemes, toggle.dataset.seasonalTheme);
-        });
-        intensityRadios.forEach(radio => {
-            radio.disabled = !weatherEnabled;
-        });
-
-        const availableWeather = new Set(weatherToggles
-            .filter(toggle => toggle.checked && Object.hasOwn(weatherEffects, toggle.dataset.weatherEffect))
-            .map(toggle => toggle.dataset.weatherEffect));
-        const canRotateWeather = weatherEnabled && availableWeather.size > 0;
-        if (rotationToggle) rotationToggle.disabled = !canRotateWeather;
-        if (rotationInterval) rotationInterval.disabled = !canRotateWeather || !rotationToggle?.checked;
+    presetToggles.forEach(toggle => {
+        toggle.checked = current.sections.presets && current.preset === toggle.dataset.environmentPreset;
+    });
+    themeToggles.forEach(toggle => {
+        toggle.checked = current.sections.themes && current.themes.includes(toggle.dataset.seasonalTheme);
+    });
+    if (selectedPreset() !== "none") themeToggles.forEach(toggle => { toggle.checked = false; });
+    if (presetToggles.some(toggle => toggle.checked)) {
+        presetToggles.filter(toggle => toggle.checked).slice(1).forEach(toggle => { toggle.checked = false; });
+    } else if (themeToggles.some(toggle => toggle.checked)) {
+        themeToggles.filter(toggle => toggle.checked).slice(1).forEach(toggle => { toggle.checked = false; });
     }
 
     sectionToggles.forEach(toggle => {
         toggle.checked = current.sections[toggle.dataset.environmentSection] === true;
     });
-    if (presetSelect) presetSelect.value = current.preset === "none" ? "" : current.preset;
     if (ambientAnimationToggle) ambientAnimationToggle.checked = current.effects.ambientAnimation;
-    syncWeatherSelection();
+    weatherToggles.forEach(toggle => {
+        toggle.checked = current.weather.includes(toggle.dataset.weatherEffect);
+    });
     decorationToggles.forEach(toggle => {
         toggle.checked = current.decorations.includes(toggle.dataset.decoration);
     });
-    themeToggles.forEach(toggle => {
-        toggle.checked = current.themes.includes(toggle.dataset.seasonalTheme);
+    weatherIntensityRadios.forEach(radio => {
+        radio.checked = radio.value === current.weatherIntensities[radio.dataset.weatherIntensity];
     });
-    intensityRadios.forEach(radio => {
-        radio.checked = radio.value === current.intensity;
+    weatherModeRadios.forEach(radio => {
+        radio.checked = radio.value === (current.rotation.enabled ? "rotate" : "together");
     });
-    if (rotationToggle) rotationToggle.checked = current.rotation.enabled;
+    if (rotationClearToggle) rotationClearToggle.checked = current.rotation.includeClear;
     if (rotationInterval) rotationInterval.value = current.rotation.interval;
+
+    function syncDisabledState() {
+        const overrideActive = overrideIsActive();
+        const sectionIsEnabled = name => sectionToggles.some(toggle =>
+            toggle.dataset.environmentSection === name && toggle.checked
+        );
+        const weatherEnabled = !overrideActive && sectionIsEnabled("weather");
+        const decorationsEnabled = !overrideActive && sectionIsEnabled("decorations");
+
+        sectionToggles.forEach(toggle => {
+            toggle.disabled = overrideActive;
+        });
+        weatherToggles.forEach(toggle => {
+            toggle.disabled = !weatherEnabled || !Object.hasOwn(weatherEffects, toggle.dataset.weatherEffect);
+        });
+        decorationToggles.forEach(toggle => {
+            const decoration = environmentDecorations[toggle.dataset.decoration];
+            toggle.disabled = !decorationsEnabled || !Object.hasOwn(environmentDecorations, toggle.dataset.decoration)
+                || !(decoration?.asset || decoration?.items?.some(item => item.asset));
+        });
+        themeToggles.forEach(toggle => {
+            toggle.disabled = !Object.hasOwn(seasonalThemes, toggle.dataset.seasonalTheme);
+        });
+        presetToggles.forEach(toggle => {
+            toggle.disabled = selectedThemes().length > 0
+                || !Object.hasOwn(environmentPresets, toggle.dataset.environmentPreset);
+        });
+        const weatherSelection = weatherToggles
+            .filter(toggle => toggle.checked && Object.hasOwn(weatherEffects, toggle.dataset.weatherEffect))
+            .map(toggle => toggle.dataset.weatherEffect);
+        weatherIntensityRadios.forEach(radio => {
+            const effectSelected = weatherSelection.includes(radio.dataset.weatherIntensity);
+            radio.disabled = !weatherEnabled || !effectSelected;
+        });
+
+        const canChoosePlayback = weatherEnabled && weatherSelection.length > 0;
+        weatherModeRadios.forEach(radio => {
+            radio.disabled = !canChoosePlayback;
+        });
+        const rotating = weatherModeRadios.some(radio => radio.checked && radio.value === "rotate");
+        const canRotateWeather = canChoosePlayback && rotating;
+        if (rotationClearToggle) rotationClearToggle.disabled = !canRotateWeather;
+        if (rotationInterval) rotationInterval.disabled = !canRotateWeather;
+        weatherSection?.classList.toggle("is-overridden", overrideActive);
+        decorationSection?.classList.toggle("is-overridden", overrideActive);
+        weatherSection?.setAttribute("aria-disabled", String(overrideActive));
+        decorationSection?.setAttribute("aria-disabled", String(overrideActive));
+    }
+
+    function handleOverrideChange(changedToggle) {
+        if (changedToggle.checked) {
+            [...presetToggles, ...themeToggles].forEach(toggle => {
+                if (toggle !== changedToggle) toggle.checked = false;
+            });
+        }
+        syncDisabledState();
+    }
 
     sectionToggles.forEach(toggle => toggle.addEventListener("change", syncDisabledState));
     weatherToggles.forEach(toggle => toggle.addEventListener("change", syncDisabledState));
     decorationToggles.forEach(toggle => toggle.addEventListener("change", syncDisabledState));
-    themeToggles.forEach(toggle => toggle.addEventListener("change", syncDisabledState));
-    presetSelect?.addEventListener("change", syncDisabledState);
+    presetToggles.forEach(toggle => toggle.addEventListener("change", () => handleOverrideChange(toggle)));
+    themeToggles.forEach(toggle => toggle.addEventListener("change", () => handleOverrideChange(toggle)));
     ambientAnimationToggle?.addEventListener("change", syncDisabledState);
-    rotationToggle?.addEventListener("change", syncDisabledState);
+    weatherModeRadios.forEach(radio => radio.addEventListener("change", syncDisabledState));
+
+    [
+        ...sectionToggles,
+        ...presetToggles,
+        ...weatherToggles,
+        ...decorationToggles,
+        ...themeToggles,
+        ...weatherIntensityRadios,
+        ...weatherModeRadios,
+        ambientAnimationToggle,
+        rotationClearToggle,
+        rotationInterval
+    ].filter(Boolean).forEach(control => control.addEventListener("change", () => {
+        updateApplyPreview();
+    }));
+
     syncDisabledState();
+    syncApplyDockPosition();
+    applyScroller?.querySelectorAll(".environment-tab-panel").forEach(panel => {
+        panel.addEventListener("scroll", syncApplyDockPosition, { passive: true });
+    });
+    applyScroller?.addEventListener("tabchange", syncApplyDockPosition);
+    window.addEventListener("resize", syncApplyDockPosition);
     effectManager.applySettings(current);
 
     applyButton?.addEventListener("click", () => {
+        const preset = selectedPreset();
+        const themes = selectedThemes();
+        const weather = weatherToggles
+            .filter(toggle => toggle.checked && Object.hasOwn(weatherEffects, toggle.dataset.weatherEffect))
+            .map(toggle => toggle.dataset.weatherEffect);
+        const decorations = decorationToggles
+            .filter(toggle => toggle.checked && Object.hasOwn(environmentDecorations, toggle.dataset.decoration))
+            .map(toggle => toggle.dataset.decoration);
         const sections = Object.fromEntries(sectionToggles.map(toggle => [
             toggle.dataset.environmentSection,
             toggle.checked
         ]));
-        const preset = presetSelect?.value && Object.hasOwn(environmentPresets, presetSelect.value)
-            ? presetSelect.value
-            : "none";
-        const weather = weatherToggles
-            .filter(toggle => toggle.checked && Object.hasOwn(weatherEffects, toggle.dataset.weatherEffect))
-            .map(toggle => toggle.dataset.weatherEffect);
-        const presetWeather = environmentPresets[preset]?.layers.weather || [];
-        const suppressedWeather = presetWeather.filter(effect => !weather.includes(effect));
-        const decorations = decorationToggles
-            .filter(toggle => toggle.checked && Object.hasOwn(environmentDecorations, toggle.dataset.decoration))
-            .map(toggle => toggle.dataset.decoration);
-        const themes = themeToggles
-            .filter(toggle => toggle.checked && Object.hasOwn(seasonalThemes, toggle.dataset.seasonalTheme))
-            .map(toggle => toggle.dataset.seasonalTheme);
-        const intensity = intensityRadios.find(radio => radio.checked)?.value;
-        const canRotateWeather = sections.weather && weather.length > 0;
+        sections.presets = preset !== "none";
+        sections.themes = themes.length > 0;
+        const weatherIntensities = Object.fromEntries(
+            Object.keys(weatherEffects).map(effect => [
+                effect,
+                weatherIntensityRadios.find(radio => radio.dataset.weatherIntensity === effect && radio.checked)?.value
+                    || current.weatherIntensities[effect]
+            ])
+        );
+        const rotationEnabled = weatherModeRadios.some(radio => radio.checked && radio.value === "rotate");
 
         current = normalizeEnvironmentSettings({
             preset,
@@ -126,12 +213,16 @@ export function initEnvironmentalControls({ memory, queueSave, effectManager, el
             sections,
             effects: { ambientAnimation: ambientAnimationToggle?.checked !== false },
             weather,
-            suppressedWeather,
+            suppressedWeather: [],
             decorations,
             themes,
-            intensity: supportedEffectIntensities.includes(intensity) ? intensity : "balanced",
+            weatherIntensities: Object.fromEntries(Object.entries(weatherIntensities).map(([effect, intensity]) => [
+                effect,
+                supportedEffectIntensities.includes(intensity) ? intensity : "balanced"
+            ])),
             rotation: {
-                enabled: canRotateWeather && rotationToggle?.checked === true,
+                enabled: rotationEnabled,
+                includeClear: rotationClearToggle?.checked !== false,
                 interval: supportedRotationIntervals.has(rotationInterval?.value)
                     ? rotationInterval.value
                     : "1h"
@@ -141,5 +232,35 @@ export function initEnvironmentalControls({ memory, queueSave, effectManager, el
         effectManager.applySettings(current);
         queueSave();
         syncDisabledState();
+        if (applyStatus) applyStatus.textContent = "Environmental settings applied.";
     });
+
+    return {
+        applyRestoredSettings(value) {
+            current = normalizeEnvironmentSettings(value);
+            memory.settings.environment = current;
+            presetToggles.forEach(toggle => {
+                toggle.checked = current.sections.presets && current.preset === toggle.dataset.environmentPreset;
+            });
+            themeToggles.forEach(toggle => {
+                toggle.checked = current.sections.themes && current.themes.includes(toggle.dataset.seasonalTheme);
+            });
+            sectionToggles.forEach(toggle => {
+                toggle.checked = current.sections[toggle.dataset.environmentSection] === true;
+            });
+            if (ambientAnimationToggle) ambientAnimationToggle.checked = current.effects.ambientAnimation;
+            weatherToggles.forEach(toggle => { toggle.checked = current.weather.includes(toggle.dataset.weatherEffect); });
+            decorationToggles.forEach(toggle => { toggle.checked = current.decorations.includes(toggle.dataset.decoration); });
+            weatherIntensityRadios.forEach(radio => {
+                radio.checked = radio.value === current.weatherIntensities[radio.dataset.weatherIntensity];
+            });
+            weatherModeRadios.forEach(radio => { radio.checked = radio.value === (current.rotation.enabled ? "rotate" : "together"); });
+            if (rotationClearToggle) rotationClearToggle.checked = current.rotation.includeClear;
+            if (rotationInterval) rotationInterval.value = current.rotation.interval;
+            effectManager.applySettings(current);
+            syncDisabledState();
+            updateApplyPreview();
+            queueSave();
+        }
+    };
 }

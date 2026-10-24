@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" data-onboarding-stage="intro">
+<html lang="en" data-onboarding-complete="false" data-restoration-state="loading">
 <!--
-	Index.html V6
+ Index.html V12
 -->
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>| BETA Guidelume</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>| Guidelume</title>
 	
     <meta property="og:title" content="Guidelume">
     <meta property="og:description" content="Breaking through the gloom, a solitary beam of light.">
@@ -21,29 +21,34 @@
     <link rel="shortcut icon" href="./engine/dagaz.svg">
 	
     <link rel="stylesheet" href="./engine/css/global-v2.css">
+    <link rel="stylesheet" href="./engine/css/taskbar.css">
+    <link rel="stylesheet" href="./engine/css/windows.css">
+    <link rel="stylesheet" href="./engine/css/notepad.css">
+    <link rel="stylesheet" href="./engine/css/backup-restore.css">
+    <link rel="stylesheet" href="./engine/css/developer-vault.css">
+    <link rel="stylesheet" href="./engine/css/terminal.css">
+    <link rel="stylesheet" href="./engine/css/blackwall.css">
+    <link rel="stylesheet" href="./engine/css/setup-options.css">
+    <link rel="stylesheet" href="./engine/css/environment.css">
+    <link rel="stylesheet" href="./engine/css/widgets.css">
+    <link rel="stylesheet" href="./engine/css/mods.css">
+    <link rel="stylesheet" href="./engine/css/looking-glass.css">
+    <link rel="stylesheet" href="./engine/css/tabs.css">
     <link rel="stylesheet" href="./engine/css/fonts.css">
     <link rel="stylesheet" href="./engine/css/accessible-fonts.css">
 	
     <script src="./engine/js/font-accessibility.js" defer></script>
-    <script src="./engine/js/markdown-renderer.js" defer></script>
-    <!-- For links on Nexus add ?from=nexus&guide=name-of-the-guide
-		This will automatically skip setup, put the site into Reader mode and open the guide -->
+    <!-- Nexus guide links use ?from=nexus&guide=mwbc or ?from=nexus&guide=twfg. -->
 	<script>
         try {
-            const query = new URLSearchParams(window.location.search);
-            const nexusGuideRequest =
-                query.get("from") === "nexus" && query.get("guide") === "mwbc";
             const savedMemory = JSON.parse(localStorage.getItem("guidelume_desktop_memory"));
             const savedExperience = localStorage.getItem("guidelume_experience");
-            if (
-                savedMemory?.settings?.onboardingComplete === true
-                || ["interactive", "reader", "basic"].includes(savedExperience)
-                || nexusGuideRequest
-            ) {
-                document.documentElement.dataset.onboardingStage = "complete";
-            }
+            const completed = savedMemory?.onboarding?.completed === true
+                || savedMemory?.settings?.onboardingComplete === true
+                || (!savedMemory && ["interactive", "reader", "basic"].includes(savedExperience));
+            document.documentElement.dataset.onboardingComplete = String(completed);
         } catch {
-            // Keep the first-run desktop hidden if saved state cannot be read.
+            document.documentElement.dataset.onboardingComplete = "false";
         }
     </script>
     <script src="./engine/js/global.js" type="module"></script>
@@ -52,110 +57,57 @@
     <div id="crt">
         <div class="environment-effects" aria-hidden="true">
         </div>
-        <header class="setup-header">
-            <img
-                class="guidelume-logo"
-                src="./engine/img/guidelume-logo.png"
-                alt="Guidelume"
-            >
-            <p class="tagline">
-                - Breaking through the gloom, a solitary light guides your path -
-            </p>
-        </header>
+        <div class="new-years-countdown" id="newYearsCountdown" role="timer" aria-live="off" hidden>
+            <div class="new-years-countdown__digits" aria-hidden="true">
+                <span data-countdown-days>000</span><span class="new-years-countdown__separator">:</span>
+                <span data-countdown-hours>00</span><span class="new-years-countdown__separator">:</span>
+                <span data-countdown-minutes>00</span><span class="new-years-countdown__separator">:</span>
+                <span data-countdown-seconds>00</span>
+            </div>
+            <p class="new-years-countdown__caption" data-countdown-caption></p>
+        </div>
+		
+        <div class="boot-state" id="bootState" role="status">Restoring your workspace…</div>
+		
         <main class="setup-page pixel-sharp">
-            <!-- To-Do: Rework the Reset button in the Start Menu so it just resets things to their default
-						and doesn't send people back to the setup screen. That is Guidelume Setups's job 
-					
-						The chapters on the right side of MWBC should be collapsible as well.
-						
-						The archive needs a bit of love once I am done here. Not much of an archive
-						with nothing in it
-						
-						Mad idea but at some point I'd like virtual folders
-			-->
+			<header class="setup-header">
+				<img class="guidelume-logo" src="./engine/img/guidelume-logo.png" alt="Guidelume">
+				<p class="tagline">- Breaking through the gloom, a solitary light guides your path -</p>
+			</header>
 			
 			<!-- Desktop icons. Relative positions for x and y -->
-            <div
-                class="desktop-icon"
-                role="button"
-                tabindex="0"
-                data-icon="setup"
-                data-open-window="setup"
-                data-memory="desktop-icon-setup"
-                data-x="0.08"
-                data-y="0.18"
-            >
-                <img
-                    src="./engine/dagaz.svg"
-                    alt=""
-                >
-                <span>
-                    Guidelume Setup
-                </span>
+            <div class="desktop-icon" role="button" tabindex="0" data-folder-icon="true" data-onboarding-advanced data-icon="documents-folder" data-open-window="folder-documents" data-x="0.08" data-y="0.58">
+                <img src="./engine/img/environment/doc_folder.svg" data-seasonal-icon="folder" alt=""><span>Documents</span>
             </div>
-            <div
-                class="desktop-icon"
-                role="button"
-                tabindex="0"
-                data-icon="readme"
-                data-open-window="readme"
-                data-x="0.08"
-                data-y="0.58"
-            >
-                <img
-                    src="./engine/img/environment/doc_text.svg"
-                    alt=""
-                >
-                <span>README</span>
+            <div class="desktop-icon" role="button" tabindex="0" data-folder-icon="true" data-onboarding-advanced data-icon="system-folder" data-open-window="folder-system" data-x="0.08" data-y="0.75">
+                <img src="./engine/img/environment/doc_folder.svg" data-seasonal-icon="folder" alt=""><span>System</span>
             </div>
-            <div
-                class="desktop-icon"
-                role="button"
-                tabindex="0"
-                data-icon="mwbc"
-                data-open-window="mwbc"
-                data-x="0.85"
-                data-y="0.18"
-            >
-                <img src="./milky-way-bar-crawl/custom/favicon.svg" alt="">
-                <span>Milky Way Bar Crawl</span>
+            <div class="desktop-icon" role="button" tabindex="0" data-onboarding-only data-icon="setup" data-open-window="setup" data-x="0.08" data-y="0.18">
+                <img src="./engine/dagaz.svg" alt=""><span>Setup</span>
             </div>
-            <div
-                class="desktop-icon"
-                role="button"
-                tabindex="0"
-                data-icon="environmental-controls"
-                data-open-window="environmental-controls"
-                data-x="0.15"
-                data-y="0.30"
-            >
-                <img src="./engine/img/environment/doc_env.svg" alt="">
-                <span>Environmental Controls</span>
+            <div class="desktop-icon" role="button" tabindex="0" data-icon="readme" data-open-window="readme" data-x="0.08" data-y="0.38">
+                <img src="./engine/img/environment/doc_text.svg" data-seasonal-icon="text" alt=""><span>Readme</span>
             </div>
-            <div
-                class="desktop-icon"
-                role="button"
-                tabindex="0"
-                data-icon="varkorax-archive"
-                data-open-window="varkorax-archive"
-                data-x="0.85"
-                data-y="0.58"
-            >
-                <img src="./engine/favicon.svg" alt="">
-                <span>Varkorax Archive</span>
+            <div class="desktop-icon" role="button" tabindex="0" data-icon="mwbc" data-open-window="mwbc" data-x="0.85" data-y="0.18">
+                <img src="./milky-way-bar-crawl/custom/favicon.svg" alt=""><span>Milky Way Bar Crawl</span>
             </div>
-            <div
-                class="desktop-icon"
-                role="button"
-                tabindex="0"
-                data-icon="changelog"
-                data-open-window="changelog"
-                data-x="0.15"
-                data-y="0.70"
-            >
-                <img src="./engine/img/environment/doc_text.svg" alt="">
-                <span>CHANGELOG</span>
+            <div class="desktop-icon" role="button" tabindex="0" data-folder-icon="true" data-icon="mods-folder" data-open-window="folder-mods" data-x="0.85" data-y="0.38">
+                <img src="./engine/img/environment/doc_folder.svg" data-seasonal-icon="folder" alt=""><span>Mods</span>
             </div>
+			<!--
+			WIP WIP WIP WIP WIP
+			-->
+            <div class="desktop-icon" role="button" tabindex="0" data-icon="varkorax-archive" data-open-window="varkorax-archive" data-x="0.85" data-y="0.58">
+                <img src="./varkorax-archive/custom/favicon.svg" alt=""><span>Varkorax Archive</span>
+            </div>
+            <div class="desktop-icon" role="button" tabindex="0" data-easter-eggs-icon data-onboarding-advanced hidden data-icon="easter-eggs" data-open-window="easter-eggs" data-x="0.08" data-y="0.58">
+                <img src="./engine/dagaz.svg" alt=""><span>Easter Eggs</span>
+            </div>
+            <div class="desktop-icon" role="button" tabindex="0" data-developer-vault-icon data-onboarding-advanced hidden data-icon="developer-vault" data-open-window="developer-vault" data-x="0.85" data-y="0.78">
+                <img src="./engine/dagaz.svg" alt=""><span>Developer Vault</span>
+            </div>
+            <div class="desktop-widgets" data-desktop-widgets aria-label="Desktop widgets"></div>
+            <div class="desktop-widgets-pinned" data-pinned-widgets aria-label="Pinned desktop widgets"></div>
             <nav
                 class="taskbar taskbar-bottom"
                 data-taskbar-position="bottom"
@@ -181,9 +133,16 @@
                     <span class="taskbar-time"></span>
                     <span class="taskbar-date"></span>
                 </time>
+                <button type="button" class="fullscreen-button" aria-label="Enter fullscreen">⛶</button>
             </nav>
+            <span class="fullscreen-hint" role="button" tabindex="0" aria-label="Dismiss fullscreen tip" hidden>Click the button or press F11 to exit fullscreen</span>
 
             <section class="start-menu" id="startMenu" role="dialog" aria-label="Start menu" hidden>
+                <button type="button" class="start-profile-card" data-profile-action aria-label="User profile: Visitor">
+                    <img data-profile-avatar src="./engine/img/environment/profile/planet00.png" alt="">
+                    <span class="start-profile-copy"><small>LOCAL PROFILE</small><strong data-profile-name>Visitor</strong></span>
+                    <span class="start-profile-arrow" aria-hidden="true">›</span>
+                </button>
                 <button
                     type="button"
                     class="start-menu-reset start-menu-action"
@@ -194,25 +153,39 @@
                     type="button"
                     class="start-menu-reset start-menu-action"
                     id="openSettings"
+                    data-onboarding-advanced
                     data-open-window="settings"
                     data-close-start-menu="true"
                 >
                     Settings
                 </button>
+                <button
+                    type="button"
+                    class="start-menu-reset start-menu-action"
+                    data-onboarding-advanced
+                    data-open-window="backup-restore"
+                    data-close-start-menu="true"
+                >Backup &amp; Restore</button>
                 <label class="crt-toggle">
                     <input type="checkbox" id="crtToggle" checked>
                     <span>CRT effects</span>
                 </label>
-                <button type="button" class="start-menu-reset" data-action="reset">Switch Modes</button>
+                <label class="crt-toggle">
+                    <input type="checkbox" id="brandingToggle" checked>
+                    <span>Logo and tagline</span>
+                </label>
+                <button type="button" class="start-menu-reset start-menu-action" data-onboarding-only data-open-window="setup" data-close-start-menu="true">Open Setup</button>
+                <button type="button" class="start-menu-security" data-blackwall-branding title="Blackwall Security System // Active">
+                    <svg viewBox="0 0 24 26" fill="none" aria-hidden="true"><path d="M12 2 22 6v7c0 5-6 9-10 11C8 22 2 18 2 13V6Z"/><path d="m7 13 3 3 7-7"/></svg>
+                    <span>Secured by Blackwall</span>
+                </button>
             </section>
-            <!-- Main setup window -->
-            <!-- Memory Attempt RC5
-                 Windows persist through reloads and state changes -->
+			
             <section
                 class="setup-window"
                 data-window="setup"
                 data-window-width="760px"
-                data-window-height="560px"
+                data-window-height="620px"
                 hidden
                 aria-labelledby="setup-title"
             >
@@ -220,7 +193,7 @@
                     <div class="titlebar-left">
                         <img
                             class="title-icon"
-                            src="./engine/favicon.svg"
+                            src="./engine/dagaz.svg"
                             alt=""
                             aria-hidden="true"
                         >
@@ -242,49 +215,53 @@
                     </button>
                 </div>
                 <div class="setup-content">
-                    <h1>
-                        Welcome to Guidelume
-                    </h1>
-                    <p>
-                        Guidelume can be experienced in two different ways.
-                    </p>
-                    <div class="experience-choice">
-                        <article class="choice">
-                            <h2>
-                                Reader Mode
-                            </h2>
-                            <p>
-                                A calm, reading-focused experience for browsing projects and guides.
-                            </p>
-                            <button
-                                type="button"
-                                class="setup-button"
-                                data-experience="reader"
-                            >
-                                Continue with Reader Mode
-                            </button>
-                        </article>
-                        <article class="choice">
-                            <h2>
-                                Interactive Mode
-                            </h2>
-                            <p>
-                                Explore an interactive desktop with draggable windows and appearance choices.
-                            </p>
-                            <button
-                                type="button"
-                                class="setup-button"
-                                data-experience="interactive"
-                            >
-                                Continue with Interactive Mode
-                            </button>
-                        </article>
+                    <div data-setup-incomplete>
+                        <h1>Make this desktop yours</h1>
+                        <p>Choose a name and avatar for this device. You can close Setup at any time and come back later.</p>
+                        <label class="profile-name-label" for="setupProfileName">Display name</label>
+                        <input class="profile-name-input" id="setupProfileName" data-setup-profile-name type="text" maxlength="24" autocomplete="nickname" placeholder="Visitor">
+                        <h2>Choose an avatar</h2>
+                        <div class="profile-avatar-grid" data-setup-profile-avatars role="group" aria-label="Choose a profile avatar"></div>
+                        <p class="profile-status" data-setup-profile-status role="status" aria-live="polite"></p>
+                        <p class="setup-appearance-requirement" id="setupAppearanceRequirement" data-setup-appearance-requirement role="status" aria-live="polite">Take a look through Appearance, then click Done to finish Setup.</p>
+                        <div class="setup-actions">
+                            <button type="button" class="secondary-button" data-open-window="appearance" data-scroll-top="true">Customize appearance</button>
+                            <button type="button" class="setup-button" data-finish-setup aria-describedby="setupAppearanceRequirement" disabled>Finish Setup</button>
+                        </div>
                     </div>
-                    <p class="setup-note">
-                        You can change your experience later from Guidelume's settings.
-                    </p>
+                    <div data-setup-complete hidden>
+                        <h1>Setup is complete</h1>
+                        <p>Your desktop and local profile are ready. You can change appearance settings or edit your profile whenever you like.</p>
+                        <div class="setup-actions">
+                            <button type="button" class="secondary-button" data-open-window="appearance">Customize appearance</button>
+                            <button type="button" class="setup-button" data-open-window="user-profile">Edit profile</button>
+                        </div>
+                    </div>
                 </div>
             </section>
+
+            <section class="setup-window" data-window="user-profile" data-window-width="620px" data-window-height="560px" hidden aria-labelledby="user-profile-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" data-profile-title-avatar src="./engine/img/environment/profile/planet00.png" alt=""><span id="user-profile-title">User Profile</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="user-profile" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="user-profile" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="user-profile" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content user-profile-content">
+                    <h1>Your profile</h1>
+                    <p>This name and avatar are saved only in this browser.</p>
+                    <img class="profile-avatar-preview" data-user-profile-preview src="./engine/img/environment/profile/planet00.png" alt="Current profile avatar">
+                    <label class="profile-name-label" for="userProfileName">Display name</label>
+                    <input class="profile-name-input" id="userProfileName" data-user-profile-name type="text" maxlength="24" autocomplete="nickname">
+                    <h2>Avatar</h2>
+                    <div class="profile-avatar-grid" data-user-profile-avatars role="group" aria-label="Choose a profile avatar"></div>
+                    <p class="profile-status" data-user-profile-status role="status" aria-live="polite"></p>
+                    <div class="setup-actions"><button type="button" class="setup-button" data-save-user-profile>Save</button></div>
+                </div>
+            </section>
+
             <section
                 class="setup-window"
                 data-window="readme"
@@ -295,7 +272,7 @@
             >
                 <div class="setup-titlebar window-drag-handle">
                     <div class="titlebar-left">
-                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                    <img class="title-icon" src="./engine/img/environment/doc_text.svg" data-seasonal-icon="text" alt="" aria-hidden="true">
                         <span id="readme-title">README</span>
                     </div>
                     <div class="window-controls">
@@ -304,10 +281,19 @@
                     </div>
                     <button type="button" class="window-close" data-close-window="readme" aria-label="Close window">X</button>
                 </div>
-                <div class="setup-content readme-content" data-markdown-src="./engine/readme.md" aria-live="polite">
-                    <p>Loading README…</p>
+                <div class="setup-content notepad-content" data-notepad-document="readme">
+                    <div class="notepad-controls">
+                        <div class="notepad-actions">
+                            <button type="button" class="notepad-button" data-document-save disabled>Save</button>
+                            <button type="button" class="notepad-button" data-document-restore hidden disabled>Restore Original</button>
+                        </div>
+                        <p class="notepad-status" data-document-status role="status" aria-live="polite">Editing disabled by Administrator</p>
+                    </div>
+                    <div class="notepad-document readme-content" data-document-view aria-label="README document"><p>Loading README…</p></div>
+                    <textarea class="notepad-editor" data-document-editor aria-label="README document" hidden></textarea>
                 </div>
             </section>
+
             <section
                 class="setup-window"
                 data-window="changelog"
@@ -318,7 +304,7 @@
             >
                 <div class="setup-titlebar window-drag-handle">
                     <div class="titlebar-left">
-                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                    <img class="title-icon" src="./engine/img/environment/doc_text.svg" data-seasonal-icon="text" alt="" aria-hidden="true">
                         <span id="changelog-title">CHANGELOG</span>
                     </div>
                     <div class="window-controls">
@@ -327,33 +313,343 @@
                     </div>
                     <button type="button" class="window-close" data-close-window="changelog" aria-label="Close window">X</button>
                 </div>
-                <div class="setup-content readme-content changelog-content" data-markdown-src="./engine/changelog.md" aria-live="polite">
-                    <p>Loading changelog…</p>
+                <div class="setup-content notepad-content" data-notepad-document="changelog">
+                    <div class="notepad-controls">
+                        <div class="notepad-actions">
+                            <button type="button" class="notepad-button" data-document-save disabled>Save</button>
+                            <button type="button" class="notepad-button" data-document-restore hidden disabled>Restore Original</button>
+                        </div>
+                        <p class="notepad-status" data-document-status role="status" aria-live="polite">Editing disabled by Administrator</p>
+                    </div>
+                    <div class="notepad-document readme-content changelog-content" data-document-view aria-label="Changelog document"><p>Loading changelog…</p></div>
+                    <textarea class="notepad-editor" data-document-editor aria-label="Changelog document" hidden></textarea>
                 </div>
             </section>
+
             <section
                 class="setup-window"
-                data-window="reset-confirmation"
-                data-window-width="420px"
-                data-window-height="280px"
+                data-window="progress-report-01"
+                data-window-width="max(760px, 55vw)"
+                data-window-height="560px"
                 hidden
-                aria-labelledby="reset-confirmation-title"
+                aria-labelledby="progress-report-01-title"
             >
-                <div class="setup-titlebar">
+                <div class="setup-titlebar window-drag-handle">
                     <div class="titlebar-left">
-                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
-                        <span id="reset-confirmation-title">Confirm mode switch</span>
+                        <img class="title-icon" src="./engine/img/environment/doc_text.svg" data-seasonal-icon="text" alt="" aria-hidden="true">
+                        <span id="progress-report-01-title">Progress-Report-01</span>
                     </div>
-                    <button type="button" class="window-close" data-close-window="reset-confirmation" aria-label="Close window">X</button>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="progress-report-01" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="progress-report-01" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="progress-report-01" aria-label="Close window">X</button>
                 </div>
-                <div class="setup-content reset-confirmation-content">
-                    <p>This will reset all saved Guidelume settings and restart setup. If you arrived from Nexus, consider opening Guidelume Setup instead.</p>
-                    <div class="confirmation-actions">
-                        <button type="button" class="secondary-button confirmation-button" data-confirm-reset="no">No</button>
-                        <button type="button" class="secondary-button confirmation-button" data-confirm-reset="yes">Yes</button>
+                <div class="setup-content notepad-content" data-notepad-document="progress-report-1">
+                    <div class="notepad-controls">
+                        <div class="notepad-actions">
+                            <button type="button" class="notepad-button" data-document-save disabled>Save</button>
+                            <button type="button" class="notepad-button" data-document-restore disabled>Restore Original</button>
+                        </div>
+                        <p class="notepad-status" data-document-status role="status" aria-live="polite">Loading document…</p>
+                    </div>
+                    <div class="notepad-document" data-document-view hidden aria-label="Progress-Report-01 document"></div>
+                    <textarea class="notepad-editor" data-document-editor aria-label="Progress-Report-01 document" spellcheck="false" hidden></textarea>
+                </div>
+            </section>
+
+            <section class="setup-window" data-window="folder-documents" data-window-width="580px" data-window-height="430px" hidden aria-labelledby="documents-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/doc_folder.svg" data-seasonal-icon="folder" alt=""><span id="documents-title">Documents</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="folder-documents" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="folder-documents" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="folder-documents" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content virtual-folder-content">
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="changelog"><img src="./engine/img/environment/doc_text.svg" data-seasonal-icon="text" alt=""><span>CHANGELOG</span></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="progress-report-01"><img src="./engine/img/environment/doc_text.svg" data-seasonal-icon="text" alt=""><span>Progress-Report-01</span></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="credits"><img src="./engine/dagaz.svg" alt=""><span>Credits</span></button>
+                </div>
+            </section>
+
+            <section class="setup-window" data-window="folder-system" data-window-width="580px" data-window-height="480px" hidden aria-labelledby="system-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/doc_folder.svg" data-seasonal-icon="folder" alt=""><span id="system-title">System</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="folder-system" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="folder-system" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="folder-system" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content virtual-folder-content">
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="environmental-controls"><img src="./engine/img/environment/doc_env.svg" data-seasonal-icon="environment" alt=""><span>Environmental Controls</span></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="terminal"><img src="./engine/img/environment/doc_term.svg" data-seasonal-icon="terminal" alt=""><span>Terminal</span></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="widgets"><img src="./engine/img/environment/doc_widget.svg" alt=""><span>Widgets</span></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="folder-unfinished"><img src="./engine/img/environment/doc_folder.svg" data-seasonal-icon="folder" alt=""><span>Unfinished</span></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-blackwall-protected-file aria-label="blackwall.sys — restricted system file" title="Protected system configuration. Access restricted."><img src="./engine/img/environment/doc_text.svg" data-seasonal-icon="text" alt=""><span>blackwall.sys</span><small>Restricted</small></button>
+                </div>
+            </section>
+
+            <section class="setup-window" data-window="folder-unfinished" data-window-width="580px" data-window-height="400px" hidden aria-labelledby="unfinished-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/doc_folder.svg" data-seasonal-icon="folder" alt=""><span id="unfinished-title">Unfinished</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="folder-unfinished" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="folder-unfinished" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="folder-unfinished" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content virtual-folder-content">
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="looking-glass"><img src="./engine/img/environment/doc_glass.svg" alt=""><span>Looking Glass</span></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="twfg"><img src="./the-warden-field-guide/volume-1/custom/favicon.svg" alt=""><span>The Warden's Field Guide</span></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="sound-mixer"><img src="./engine/img/environment/doc_sound.svg" alt=""><span>Sound Mixer</span></button>
+                </div>
+            </section>
+
+            <section class="setup-window" data-window="sound-mixer" data-window-width="440px" data-window-height="300px" hidden aria-labelledby="sound-mixer-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/doc_sound.svg" alt=""><span id="sound-mixer-title">Sound Mixer</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="sound-mixer" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="sound-mixer" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="sound-mixer" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content sound-mixer-content"><h1>Coming Soon</h1><p>The Sound Mixer is a placeholder for a future desktop feature.</p></div>
+            </section>
+
+            <section class="setup-window" data-window="folder-mods" data-window-width="580px" data-window-height="400px" hidden aria-labelledby="mods-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/doc_folder.svg" data-seasonal-icon="folder" alt=""><span id="mods-title">Mods</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="folder-mods" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="folder-mods" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="folder-mods" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content virtual-folder-content">
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="mod-one-for-the-road"><img src="./engine/dagaz.svg" alt=""><span>The Witcher 3</span></button>
+                </div>
+            </section>
+
+            <section class="setup-window" data-window="mod-one-for-the-road" data-window-width="720px" data-window-height="640px" hidden aria-labelledby="one-for-the-road-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/dagaz.svg" alt=""><span id="one-for-the-road-title">One for the Road</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="mod-one-for-the-road" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="mod-one-for-the-road" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="mod-one-for-the-road" aria-label="Close window">X</button>
+                </div>
+                <article class="setup-content mod-overview">
+                    <p class="mod-overview-eyebrow">THE WITCHER 3 · A MOD BY VARKORAX</p>
+                    <h1>One for the Road</h1>
+                    <p>A small quality-of-life mod that smooths out a few personal frustrations with upgrade costs, alchemy supplies, and merchant funds.</p>
+                    <h2>What it changes</h2>
+                    <ul class="mod-feature-list">
+                        <li><strong>More affordable upgrades.</strong> Reduces the cost of Runewright investments and Corvo Bianco renovations.</li>
+                        <li><strong>Better-stocked alchemists.</strong> Expands the inventories of the Pellar, Novigrad’s Crematory Alchemist, and Yolar on Skellige, inspired by Toussaint’s Perfumery merchant.</li>
+                        <li><strong>More generous merchants.</strong> Rebalances trader funds, with an alternative that assigns fixed amounts based on each shop’s wealth class.</li>
+                    </ul>
+                    <p class="mod-overview-options">Configuration options let you adjust these changes or keep the original upgrade prices and merchant funds.</p>
+                    <div class="mod-download">
+                        <a class="setup-button mod-download-button" href="./engine/files/modOneForTheRoad.zip" download="modOneForTheRoad.zip">Download One for the Road</a>
+                        <small>ZIP archive · mod, DLC, and configuration files included</small>
+                    </div>
+                </article>
+            </section>
+
+            <section class="setup-window" data-window="credits" data-window-width="700px" data-window-height="560px" hidden aria-labelledby="credits-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/dagaz.svg" alt=""><span id="credits-title">Credits</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="credits" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="credits" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="credits" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content readme-content" data-markdown-src="./engine/credits.md" aria-live="polite"><p>Loading credits…</p></div>
+            </section>
+
+            <section class="setup-window terminal-window" data-window="terminal" data-window-width="860px" data-window-height="520px" hidden aria-labelledby="terminal-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/doc_term.svg" data-seasonal-icon="terminal" alt=""><span id="terminal-title">Terminal</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="terminal" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="terminal" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="terminal" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content terminal-content">
+                    <div class="terminal-output" aria-live="polite" aria-label="Terminal output"></div>
+                    <form class="terminal-input-row" autocomplete="off">
+                        <label class="terminal-prompt" for="terminalInput"><span data-terminal-profile>Visitor</span>@TOP-HOG-1:<span data-terminal-path>~</span>$</label>
+                        <input id="terminalInput" class="terminal-input" name="command" aria-label="Terminal command" spellcheck="false" autocapitalize="off">
+                    </form>
+                </div>
+            </section>
+
+            <section class="setup-window" data-window="easter-eggs-password" data-window-width="440px" data-window-height="310px" hidden aria-labelledby="easter-password-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/dagaz.svg" alt=""><span id="easter-password-title">Unknown Program</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="easter-eggs-password" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="easter-eggs-password" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="easter-eggs-password" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content easter-password-content">
+                    <form class="easter-password-form" data-easter-password-form>
+                        <label for="easterEggPassword">Password</label>
+                        <input id="easterEggPassword" type="password" autocomplete="off" data-easter-password-input>
+                        <button type="submit" class="setup-button">OK</button>
+                    </form>
+                </div>
+            </section>
+
+            <section class="setup-window" data-window="easter-eggs" data-window-width="540px" data-window-height="340px" hidden aria-labelledby="easter-eggs-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/dagaz.svg" alt=""><span id="easter-eggs-title">Easter Eggs</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="easter-eggs" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="easter-eggs" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="easter-eggs" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content easter-eggs-content">
+				<!-- Oy no peeking >:( -->
+                    <h1>Easter Eggs</h1>
+                    <p>Here you can find some unserious or just plain fun goofs.</p>
+                    <label class="crt-toggle easter-font-toggle">
+                        <input type="checkbox" data-easter-egg-font-toggle>
+                        <span>Use Mochiy Pop One font</span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="setup-window looking-glass-window" data-window="looking-glass" data-fixed-maximized="true" data-iframe-navigation="false" hidden aria-labelledby="looking-glass-title">
+                <div class="setup-titlebar">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/doc_glass.svg" alt="" aria-hidden="true"><span id="looking-glass-title">Looking Glass</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="looking-glass" aria-label="Minimize window">−</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="looking-glass" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content glass-content">
+                    <div class="glass-toolbar" role="group" aria-label="Looking Glass controls">
+                        <button type="button" data-glass-toggle aria-expanded="true" aria-controls="glass-library">Hide library</button>
+                        <form class="glass-address-form" data-glass-address-form>
+                            <label for="glass-address">Address</label>
+                            <input id="glass-address" data-glass-address type="text" inputmode="url" autocomplete="off" spellcheck="false" autocapitalize="off" maxlength="2048" placeholder="Paste a YouTube video URL" aria-describedby="glass-status">
+                            <button type="submit">Load</button>
+                        </form>
+                        <button type="button" class="glass-unload" data-glass-unload title="Unload video and return to start" aria-label="Return to start" hidden>
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+                            <span>Start</span>
+                        </button>
+                        <button type="button" data-glass-bookmark disabled>Bookmark</button>
+                        <a class="glass-external" data-glass-external target="_blank" rel="noopener noreferrer" hidden>Open on YouTube ↗</a>
+                    </div>
+                    <form class="glass-editor" data-glass-editor hidden>
+                        <h2 data-glass-editor-heading>Save bookmark</h2>
+                        <label>Title<input data-glass-title required maxlength="160" autocomplete="off"></label>
+                        <label>Collection<input data-glass-collection required maxlength="80" list="glass-collections" autocomplete="off"></label>
+                        <datalist id="glass-collections" data-glass-collections></datalist>
+                        <div class="glass-editor-actions">
+                            <button type="submit">Save bookmark</button>
+                            <button type="button" data-glass-cancel>Cancel</button>
+                        </div>
+                    </form>
+                    <p id="glass-status" class="glass-status" data-glass-status role="status" aria-live="polite" hidden></p>
+                    <div class="glass-layout">
+                        <aside class="glass-sidebar" id="glass-library" data-glass-sidebar aria-label="Bookmark library">
+                            <h2>Built-in library</h2>
+                            <p class="glass-hint" data-glass-library-status role="status">Included with Guidelume · read-only</p>
+                            <button type="button" data-glass-retry hidden>Retry library</button>
+                            <div data-glass-built-in></div>
+                            <h2 data-glass-personal-heading tabindex="-1">Personal bookmarks</h2>
+                            <div data-glass-personal></div>
+                        </aside>
+                        <div class="glass-view">
+                            <div class="glass-empty" data-glass-empty>
+                                <img src="./engine/img/environment/doc_glass.svg" alt="">
+                                <h1>Through the looking glass</h1>
+                                <p>A little window into somewhere else. Paste a YouTube video URL above, or choose a video from your library.</p>
+                                <p class="glass-hint">Watch links, Shorts, and Live video links are supported. Press Play when you are ready.</p>
+                            </div>
+                            <div class="glass-stage" data-glass-stage hidden>
+                                <iframe class="glass-player" data-glass-player data-resource-lifecycle="external" title="Looking Glass — YouTube video player" allow="encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
+
+            <section class="setup-window developer-vault-window" data-window="developer-vault" data-window-width="740px" data-window-height="620px" hidden aria-labelledby="developer-vault-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true"><span id="developer-vault-title">Developer Vault</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="developer-vault" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="developer-vault" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="developer-vault" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content developer-vault-content">
+                    <div data-vault-locked-view>
+                        <div class="vault-intro">
+                            <span class="vault-lock-mark" aria-hidden="true">◆</span>
+                            <div>
+                                <h1>Universal (Developer) Vault</h1>
+                                <p>Your private notes stay encrypted until this device unlocks them.</p>
+                            </div>
+                        </div>
+                        <form class="vault-unlock-form" data-vault-unlock-form>
+                            <label for="developerVaultPassphrase">Passphrase</label>
+                            <input id="developerVaultPassphrase" type="password" maxlength="1024" autocomplete="off" autocapitalize="off" spellcheck="false" required data-vault-password>
+                            <button class="vault-primary-button" type="submit" data-vault-unlock-button>Unlock Vault</button>
+                            <p class="vault-status" data-vault-status role="status" aria-live="polite">Enter your vault passphrase to unlock.</p>
+                            <button class="vault-additional-cancel" type="button" data-vault-cancel-additional hidden>Cancel</button>
+                        </form>
+                    </div>
+                    <div class="vault-unlocked-view" data-vault-unlocked-view hidden>
+                        <div class="vault-workspace-heading">
+                            <div><span class="vault-eyebrow">PRIVATE WORKSPACE</span><h1>Developer Vault</h1></div>
+                            <div class="vault-workspace-actions">
+                                <button class="vault-add-unlock-button" type="button" data-vault-add-unlock hidden>Unlock another destination</button>
+                                <button class="vault-lock-button" type="button" data-vault-lock>Lock Vault</button>
+                            </div>
+                        </div>
+                        <div class="vault-additional-unlock-slot" data-vault-additional-unlock-slot hidden></div>
+                        <p class="vault-session-status" data-vault-session-status role="status" aria-live="polite" hidden></p>
+                        <section class="vault-destination-view" data-vault-destination-view hidden aria-label="Unlocked destinations">
+                            <h2>Choose a destination</h2>
+                            <div class="virtual-folder-content" data-vault-destinations role="group" aria-label="Unlocked encrypted content"></div>
+                        </section>
+
+                        <section class="vault-folder-view" data-vault-folder-view hidden aria-label="Vault folder">
+                            <div class="vault-folder-navigation">
+                                <button class="vault-back-button" type="button" data-vault-up aria-label="Go up one folder">↑ Up</button>
+                                <p data-vault-folder-path aria-live="polite"></p>
+                            </div>
+                            <div class="virtual-folder-content" data-vault-folder-list role="group" aria-label="Vault folder contents"></div>
+                            <p class="vault-view-status" data-vault-folder-status role="status" aria-live="polite"></p>
+                        </section>
+
+                        <section class="vault-file-view" data-vault-file-view hidden aria-label="Vault document">
+                            <div class="vault-file-navigation">
+                                <button class="vault-back-button" type="button" data-vault-file-back>← Back to folder</button>
+                                <h2 data-vault-file-name></h2>
+                            </div>
+                            <p class="vault-view-status" data-vault-file-status role="status" aria-live="polite"></p>
+                            <div class="vault-media-view" data-vault-media hidden></div>
+                            <article class="vault-document" data-vault-document tabindex="0" aria-label="Private document"></article>
+                        </section>
+                    </div>
+                </div>
+            </section>
+
             <section
                 class="setup-window"
                 data-window="mwbc"
@@ -365,7 +661,7 @@
             >
                 <div class="setup-titlebar">
                     <div class="titlebar-left">
-                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                        <img class="title-icon" src="./milky-way-bar-crawl/custom/favicon.svg" alt="" aria-hidden="true">
                         <span id="mwbc-title">Milky Way Bar Crawl</span>
                     </div>
                     <div class="window-controls">
@@ -377,6 +673,31 @@
                     <iframe data-src="./index-mwbc.html" title="Milky Way Bar Crawl" loading="lazy"></iframe>
                 </div>
             </section>
+
+            <section
+                class="setup-window"
+                data-window="twfg"
+                data-fixed-maximized="true"
+                data-window-width="760px"
+                data-window-height="560px"
+                hidden
+                aria-labelledby="twfg-title"
+            >
+                <div class="setup-titlebar">
+                    <div class="titlebar-left">
+                        <img class="title-icon" src="./the-warden-field-guide/volume-1/custom/favicon.svg" alt="" aria-hidden="true">
+                        <span id="twfg-title">The Warden's Field Guide</span>
+                    </div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="twfg" aria-label="Minimize window">−</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="twfg" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content demo-content">
+                    <iframe data-src="./index-twfg.html" title="The Warden's Field Guide" loading="lazy"></iframe>
+                </div>
+            </section>
+
             <section
                 class="setup-window"
                 data-window="varkorax-archive"
@@ -388,7 +709,7 @@
             >
                 <div class="setup-titlebar">
                     <div class="titlebar-left">
-                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                        <img class="title-icon" src="./varkorax-archive/custom/favicon.svg" alt="" aria-hidden="true">
                         <span id="varkorax-archive-title">Varkorax Archive</span>
                     </div>
                     <div class="window-controls">
@@ -398,32 +719,6 @@
                 </div>
                 <div class="setup-content demo-content">
                     <iframe data-src="./varkorax-archive/index.html" title="Varkorax Archive" loading="lazy"></iframe>
-                </div>
-            </section>
-            <section
-                class="setup-window"
-                data-window="onboarding"
-                data-window-width="500px"
-                data-window-height="380px"
-                hidden
-                aria-labelledby="onboarding-title"
-            >
-                <div class="setup-titlebar window-drag-handle">
-                    <div class="titlebar-left">
-                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
-                        <span id="onboarding-title">A few things to know</span>
-                    </div>
-                    <div class="window-controls">
-                        <button type="button" class="window-minimize" data-minimize-window="onboarding" aria-label="Minimize window">−</button>
-                        <button type="button" class="window-maximize" data-maximize-window="onboarding" aria-label="Maximize window" aria-pressed="false">□</button>
-                    </div>
-                    <button type="button" class="window-close" data-close-window="onboarding" aria-label="Close window">X</button>
-                </div>
-                <div class="setup-content onboarding-content">
-                    <h1>Welcome to Interactive Mode</h1>
-                    <p>Drag windows by their title bars and drag desktop icons to arrange your workspace.</p>
-                    <p>Use the Start menu’s Settings panel for desktop adjustments, including colors, backgrounds, taskbar position, and CRT effects.</p>
-                    <button type="button" class="setup-button" id="finishOnboarding">Understood</button>
                 </div>
             </section>
             <!-- Desktop appearance choice window -->
@@ -482,68 +777,10 @@
                     <h2>
                         Theme
                     </h2>
-                    <div class="color-grid" role="group" aria-label="Theme selection">
-                        <button
-                            type="button"
-                            class="color-choice selected"
-                            data-color="amber"
-                        >
-                            <span class="color-preview color-amber"></span>
-                            <span>
-                                Amber (default)
-                            </span>
-                        </button>
-                        <button
-                            type="button"
-                            class="color-choice"
-                            data-color="blue"
-                        >
-                            <span class="color-preview color-blue"></span>
-                            <span>
-                                Azure
-                            </span>
-                        </button>
-                        <button
-                            type="button"
-                            class="color-choice"
-                            data-color="violet"
-                        >
-                            <span class="color-preview color-violet"></span>
-                            <span>
-                                Violet
-                            </span>
-                        </button>
-                        <button
-                            type="button"
-                            class="color-choice"
-                            data-color="green"
-                        >
-                            <span class="color-preview color-green"></span>
-                            <span>
-                                Verdant
-                            </span>
-                        </button>
-                    </div>
+                    <div class="color-grid" data-theme-choice-list role="group" aria-label="Theme selection"></div>
                     <h2>Background</h2>
-					<!-- Inspired by Smartphone colors lol. You think I could get away with Space Grey? -->
-                    <div class="color-grid background-grid" role="group" aria-label="Background color">
-                        <button type="button" class="color-choice selected" data-background="midnight">
-                            <span class="background-preview preview-midnight"></span>
-                            <span>Midnight (default)</span>
-                        </button>
-                        <button type="button" class="color-choice" data-background="slate">
-                            <span class="background-preview preview-slate"></span>
-                            <span>Slate</span>
-                        </button>
-                        <button type="button" class="color-choice" data-background="plum">
-                            <span class="background-preview preview-plum"></span>
-                            <span>Plum</span>
-                        </button>
-                        <button type="button" class="color-choice" data-background="forest">
-                            <span class="background-preview preview-forest"></span>
-                            <span>Forest</span>
-                        </button>
-                    </div>
+                    <p class="background-choice-note">Recommended pairings follow your theme, but any combination is available.</p>
+                    <div class="color-grid background-grid" data-background-choice-list role="group" aria-label="Background palette selection"></div>
                     <!-- Taskbar selection -->
                     <h2>
                         Taskbar position
@@ -570,22 +807,24 @@
                             Bottom
                         </button>
                     </div>
+                    <p class="appearance-setup-hint" data-appearance-setup-hint role="status" aria-live="polite" hidden>Have a look through the options.</p>
                     <div class="choice-actions">
                         <button
                             type="button"
                             class="setup-button"
-                            id="finishSetup"
-                            disabled
+                            data-close-window="appearance"
+                            data-setup-appearance-done
                         >
-                            Continue
+                            Done
                         </button>
                     </div>
                 </div>
             </section>
+
             <section
                 class="setup-window"
                 data-window="settings"
-                data-window-width="780px"
+                data-window-width="840px"
                 data-window-height="700px"
                 hidden
                 aria-labelledby="settings-title"
@@ -601,54 +840,185 @@
                     </div>
                     <button type="button" class="window-close" data-close-window="settings" aria-label="Close window">X</button>
                 </div>
-                <div class="setup-content settings-content">
-                    <h1>Desktop settings</h1>
-                    <p>Adjust your theme, background, and taskbar position.</p>
-                    <p class="settings-unavailable-note" id="settingsUnavailableNote">These options are unavailable in Reader Mode. To change them, go through Setup again and choose Interactive Mode.</p>
-                    <h2>Theme</h2>
-                    <div class="color-grid" role="group" aria-label="Theme selection">
-                        <button type="button" class="color-choice" data-color="amber">
-                            <span class="color-preview color-amber"></span><span>Amber (default)</span>
-                        </button>
-                        <button type="button" class="color-choice" data-color="blue">
-                            <span class="color-preview color-blue"></span><span>Azure</span>
-                        </button>
-                        <button type="button" class="color-choice" data-color="violet">
-                            <span class="color-preview color-violet"></span><span>Violet</span>
-                        </button>
-                        <button type="button" class="color-choice" data-color="green">
-                            <span class="color-preview color-green"></span><span>Verdant</span>
-                        </button>
+                <div class="setup-content settings-content tabbed-window-content" data-tabbed-window>
+                    <div class="window-tablist" role="tablist" aria-label="Settings categories">
+                        <button type="button" class="window-tab" id="settings-overview-tab" role="tab" aria-selected="true" aria-controls="settings-overview-panel" tabindex="0" data-tab-id="settings-overview">Overview</button>
+                        <button type="button" class="window-tab" id="settings-theme-tab" role="tab" aria-selected="false" aria-controls="settings-theme-panel" tabindex="-1" data-tab-id="settings-theme">Theme</button>
+                        <button type="button" class="window-tab" id="settings-background-tab" role="tab" aria-selected="false" aria-controls="settings-background-panel" tabindex="-1" data-tab-id="settings-background">Background</button>
+                        <button type="button" class="window-tab" id="settings-reset-tab" role="tab" aria-selected="false" aria-controls="settings-reset-panel" tabindex="-1" data-tab-id="settings-reset">Reset</button>
                     </div>
-                    <h2>Background</h2>
-                    <div class="color-grid background-grid" role="group" aria-label="Background color">
-                        <button type="button" class="color-choice" data-background="midnight">
-                            <span class="background-preview preview-midnight"></span><span>Midnight (default)</span>
-                        </button>
-                        <button type="button" class="color-choice" data-background="slate">
-                            <span class="background-preview preview-slate"></span><span>Slate</span>
-                        </button>
-                        <button type="button" class="color-choice" data-background="plum">
-                            <span class="background-preview preview-plum"></span><span>Plum</span>
-                        </button>
-                        <button type="button" class="color-choice" data-background="forest">
-                            <span class="background-preview preview-forest"></span><span>Forest</span>
-                        </button>
-                    </div>
-                    <h2>Taskbar position</h2>
-                    <div class="taskbar-choice" role="group" aria-label="Taskbar position">
-                        <button type="button" class="taskbar-option" data-taskbar="top">
-                            <div class="taskbar-preview top-preview"><span></span></div>
-                            Top
-                        </button>
-                        <button type="button" class="taskbar-option" data-taskbar="bottom">
-                            <div class="taskbar-preview bottom-preview"><span></span></div>
-                            Bottom
-                        </button>
-                    </div>
-                    <p class="settings-note">More features will come with time.</p>
+                    <section class="window-tab-panel" id="settings-overview-panel" role="tabpanel" aria-labelledby="settings-overview-tab" tabindex="0" data-tab-panel="settings-overview">
+                        <h1>Make this desktop yours</h1>
+                        <p>Choose a theme and a background independently. Changes take effect right away.</p>
+                        <p class="settings-unavailable-note" data-settings-unavailable-note hidden></p>
+                        <div class="settings-overview-summary" aria-label="Current appearance">
+                            <p><span>Theme</span><strong class="appearance-summary-value"><span class="appearance-summary-swatch" data-current-theme-swatch aria-hidden="true"></span><span data-current-theme>Amber</span></strong></p>
+                            <p><span>Background</span><strong class="appearance-summary-value"><span class="appearance-summary-swatch" data-current-background-swatch aria-hidden="true"></span><span data-current-background>Midnight</span></strong></p>
+                        </div>
+                        <h2>Taskbar position</h2>
+                        <div class="taskbar-choice" role="group" aria-label="Taskbar position">
+                            <button type="button" class="taskbar-option" data-taskbar="top" aria-pressed="false">
+                                <div class="taskbar-preview top-preview"><span></span></div>
+                                Top
+                            </button>
+                            <button type="button" class="taskbar-option" data-taskbar="bottom" aria-pressed="true">
+                                <div class="taskbar-preview bottom-preview"><span></span></div>
+                                Bottom
+                            </button>
+                        </div>
+                    </section>
+
+                    <section class="window-tab-panel" id="settings-theme-panel" role="tabpanel" aria-labelledby="settings-theme-tab" tabindex="0" data-tab-panel="settings-theme" hidden>
+                        <h1>Theme</h1>
+                        <p>Choose the interface accent colors. Your background stays as selected.</p>
+                        <p class="settings-unavailable-note" data-settings-unavailable-note hidden></p>
+                        <div class="color-grid" data-theme-choice-list role="group" aria-label="Theme selection"></div>
+                    </section>
+
+                    <section class="window-tab-panel" id="settings-background-panel" role="tabpanel" aria-labelledby="settings-background-tab" tabindex="0" data-tab-panel="settings-background" hidden>
+                        <h1>Background</h1>
+                        <p>Choose a dark desktop palette. Recommendations follow your current theme, but remain optional.</p>
+                        <p class="settings-unavailable-note" data-settings-unavailable-note hidden></p>
+                        <div class="color-grid background-grid" data-background-choice-list role="group" aria-label="Background palette selection"></div>
+                    </section>
+
+                    <section class="window-tab-panel" id="settings-reset-panel" role="tabpanel" aria-labelledby="settings-reset-tab" tabindex="0" data-tab-panel="settings-reset" hidden>
+                        <h1>Reset</h1>
+                        <p>Choose how much of Guidelume you want to restore or clear.</p>
+                        <section class="settings-maintenance" aria-labelledby="settings-maintenance-title">
+                            <h2 id="settings-maintenance-title">Restore defaults</h2>
+                            <p>Resets appearance, accessibility, environment, desktop layout, taskbar, and widgets. Sticky Notes and their text are removed; your profile, discoveries, and personal Looking Glass bookmarks stay.</p>
+                            <button type="button" class="settings-maintenance-button" data-action="restore-defaults" data-settings-reset-action>Restore defaults</button>
+                        </section>
+
+                        <section class="settings-maintenance settings-reset-discoveries" aria-labelledby="settings-discoveries-title">
+                            <h2 id="settings-discoveries-title">Reset discoveries</h2>
+                            <p>Hides the Developer Vault and Easter Eggs until they are discovered again. Their positions and your other settings stay.</p>
+                            <button type="button" class="settings-maintenance-button" data-action="reset-discoveries" data-settings-reset-action>Reset discoveries</button>
+                        </section>
+                        <hr class="settings-section-divider" aria-hidden="true">
+                        <section class="settings-reset" aria-labelledby="settings-reset-title">
+                            <h2 id="settings-reset-title">Start over</h2>
+                            <p>Clears your profile, desktop layout, notes, discoveries, preferences, and saved guide position from this browser. Guidelume opens to first-run Setup afterward. This cannot be undone.</p>
+                            <button type="button" class="settings-reset-button" data-reset-entire-site>Reset entire site</button>
+                        </section>
+                    </section>
                 </div>
             </section>
+
+            <section class="setup-window" data-window="widgets" data-window-width="820px" data-window-height="760px" hidden aria-labelledby="widgets-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/doc_widget.svg" alt="" aria-hidden="true"><span id="widgets-title">Widgets</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="widgets" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="widgets" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="widgets" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content widgets-content tabbed-window-content" data-tabbed-window>
+                    <div class="window-tablist" role="tablist" aria-label="Widget categories">
+                        <button type="button" class="window-tab" id="widgets-gallery-tab" role="tab" aria-selected="true" aria-controls="widgets-gallery-panel" tabindex="0" data-tab-id="widgets-gallery">Gallery</button>
+                        <button type="button" class="window-tab" id="widgets-manage-tab" role="tab" aria-selected="false" aria-controls="widgets-manage-panel" tabindex="-1" data-tab-id="widgets-manage">Manage</button>
+                        <button type="button" class="window-tab" id="widgets-appearance-tab" role="tab" aria-selected="false" aria-controls="widgets-appearance-panel" tabindex="-1" data-tab-id="widgets-appearance">Appearance</button>
+                    </div>
+                    <section class="window-tab-panel widgets-tab-panel" id="widgets-gallery-panel" role="tabpanel" aria-labelledby="widgets-gallery-tab" tabindex="0" data-tab-panel="widgets-gallery">
+                        <header class="widgets-heading">
+                            <div><span class="widgets-eyebrow">DESKTOP COMPANIONS</span><h1>Widgets</h1><p>Small useful things for the corners of your desktop. Drag a widget by its header; its place and preferences are saved on this device.</p></div>
+                        </header>
+                        <div class="widgets-section-title"><h2>Widget gallery</h2><span>Choose a companion</span></div>
+                        <div class="widget-gallery">
+                            <article class="widget-gallery-card">
+                                <div class="widget-gallery-top"><span class="widget-gallery-mark">◷</span><h3>Analogue Clock</h3></div>
+                                <p>A small instrument dial with its own locale, time zone, and seconds hand.</p>
+                                <button type="button" class="widget-add-button" data-widget-add="clock" data-widget-management>Add clock</button>
+                            </article>
+                            <article class="widget-gallery-card">
+                                <div class="widget-gallery-top"><span class="widget-gallery-mark">▦</span><h3>Calendar</h3></div>
+                                <p>A date card at small size, or a full monthly calendar at medium and large sizes.</p>
+                                <button type="button" class="widget-add-button" data-widget-add="calendar" data-widget-management>Add calendar</button>
+                            </article>
+                            <article class="widget-gallery-card">
+                                <div class="widget-gallery-top"><span class="widget-gallery-mark mark-note">✎</span><h3>Sticky Notes</h3></div>
+                                <p>Keep a few plain text reminders nearby. Each note has its own paper color and place.</p>
+                                <button type="button" class="widget-add-button" data-widget-add="note" data-widget-management>Add note</button>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section class="window-tab-panel widgets-tab-panel" id="widgets-manage-panel" role="tabpanel" aria-labelledby="widgets-manage-tab" tabindex="0" data-tab-panel="widgets-manage" hidden>
+                        <div class="widgets-section-title"><h2>On this desktop</h2><span>Change size and appearance, or restore layout</span></div>
+                        <div class="widget-instance-list" data-widget-instances></div>
+                        <button type="button" class="widget-reset-layout" data-widget-reset-layout data-widget-management>Restore widget positions</button>
+                    </section>
+
+                    <section class="window-tab-panel widgets-tab-panel" id="widgets-appearance-panel" role="tabpanel" aria-labelledby="widgets-appearance-tab" tabindex="0" data-tab-panel="widgets-appearance" hidden>
+                        <h1>Widget appearance</h1>
+                        <p>Choose the palette used for new Sticky Notes. Existing notes keep their individual paper colors.</p>
+                        <div data-widget-palette-container></div>
+                    </section>
+                    <p class="widget-manager-status" data-widget-status role="status" aria-live="polite"></p>
+                </div>
+            </section>
+
+            <section class="setup-window backup-window" data-window="backup-restore" data-window-width="700px" data-window-height="650px" hidden aria-labelledby="backup-restore-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true"><span id="backup-restore-title">Backup &amp; Restore</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="backup-restore" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="backup-restore" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="backup-restore" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content backup-restore" aria-label="Backup and restore preferences">
+                    <header class="backup-heading">
+                        <span class="backup-eyebrow">WORKSPACE TOOLS</span>
+                        <h1>Backup &amp; Restore</h1>
+                        <p>Carry your Guidelume preferences with you, or restore a saved workspace.</p>
+                    </header>
+                    <section class="backup-card" aria-labelledby="backup-export-title">
+                        <div class="backup-card-heading"><span class="backup-step">01</span><div><h2 id="backup-export-title">Create a backup</h2><p>Expand a group to choose individual categories. All are selected to start.</p></div></div>
+                        <fieldset class="backup-category-fieldset">
+                            <legend>Included categories</legend>
+                            <div class="backup-category-controls">
+                                <button type="button" class="backup-utility-button" data-select-all-categories>Select all</button>
+                                <button type="button" class="backup-utility-button" data-deselect-all-categories>Clear selection</button>
+                            </div>
+                            <div class="backup-category-list" data-export-categories role="group" aria-label="Categories to include"></div>
+                        </fieldset>
+                        <div class="backup-actions">
+                            <button type="button" class="backup-primary-button" data-export-json><span aria-hidden="true">↓</span> Download JSON</button>
+                            <button type="button" class="backup-secondary-button" data-export-code><span aria-hidden="true">⧉</span> Copy configuration code</button>
+                        </div>
+                    </section>
+
+                    <section class="backup-card" aria-labelledby="backup-import-title">
+                        <div class="backup-card-heading"><span class="backup-step">02</span><div><h2 id="backup-import-title">Restore a backup</h2><p>Expand a group to preview changes and choose individual categories to restore.</p></div></div>
+                        <label class="backup-file-label" for="configurationFile">Choose a JSON file</label>
+                        <input id="configurationFile" data-import-file type="file" accept="application/json,.json">
+                        <div class="backup-divider"><span>or use a configuration code</span></div>
+                        <label class="backup-code-label" for="configurationCode">Paste configuration code</label>
+                        <textarea id="configurationCode" data-import-code rows="3" spellcheck="false" autocomplete="off" placeholder="Paste your Guidelume code here"></textarea>
+                        <div class="backup-actions backup-code-actions">
+                            <button type="button" class="backup-primary-button" data-preview-code>Preview code</button>
+                            <button type="button" class="backup-utility-button" data-clear-code>Clear code</button>
+                        </div>
+                        <div class="backup-import-preview" data-import-preview hidden>
+                            <div class="backup-preview-title"><span class="backup-preview-icon" aria-hidden="true">✓</span><div><h3>Backup preview</h3><p data-import-version></p></div></div>
+                            <div data-import-summary></div>
+                            <fieldset class="backup-preview-categories">
+                                <legend>Restore these categories</legend>
+                                <div class="backup-category-list" data-import-categories role="group" aria-label="Categories to restore"></div>
+                            </fieldset>
+                            <div class="backup-actions">
+                                <button type="button" class="backup-primary-button" data-apply-import>Apply selected settings</button>
+                                <button type="button" class="backup-utility-button" data-cancel-import>Cancel</button>
+                            </div>
+                        </div>
+                        <p class="backup-status" data-backup-status role="status" aria-live="polite"></p>
+                    </section>
+                </div>
+            </section>
+
             <section
                 class="setup-window"
                 data-window="accessibility"
@@ -670,12 +1040,32 @@
                 </div>
                 <div class="setup-content accessibility-content">
                     <h1>Accessibility</h1>
-                    <p>Choose a comfortable text size.</p>
+                    <p>Choose a comfortable size for text and desktop icons.</p>
+                    <div class="accessibility-size-options" role="group" aria-label="General size">
+                        <button type="button" class="accessibility-general-size" data-general-size="small" aria-pressed="false">Small</button>
+                        <button type="button" class="accessibility-general-size selected" data-general-size="default" aria-pressed="true">Default</button>
+                        <button type="button" class="accessibility-general-size" data-general-size="large" aria-pressed="false">Large</button>
+                        <button type="button" class="accessibility-general-size" data-general-size="extra-large" aria-pressed="false">Extra Large</button>
+                    </div>
+                    <label class="crt-toggle accessibility-independent-toggle">
+                        <input type="checkbox" id="independentSizeToggle">
+                        <span>Adjust text and icons independently</span>
+                    </label>
+                    <div class="accessibility-independent-sizes" id="independentSizeOptions">
+                    <p>Text size</p>
                     <div class="accessibility-size-options" role="group" aria-label="Text size">
                         <button type="button" class="accessibility-size" data-text-size="small" aria-pressed="false">Small</button>
                         <button type="button" class="accessibility-size selected" data-text-size="default" aria-pressed="true">Default</button>
                         <button type="button" class="accessibility-size" data-text-size="large" aria-pressed="false">Large</button>
                         <button type="button" class="accessibility-size" data-text-size="extra-large" aria-pressed="false">Extra Large</button>
+                    </div>
+                    <p>Choose a comfortable desktop icon size.</p>
+                    <div class="accessibility-size-options" role="group" aria-label="Desktop icon size">
+                        <button type="button" class="accessibility-icon-size" data-icon-size="small" aria-pressed="false">Small</button>
+                        <button type="button" class="accessibility-icon-size selected" data-icon-size="default" aria-pressed="true">Default</button>
+                        <button type="button" class="accessibility-icon-size" data-icon-size="large" aria-pressed="false">Large</button>
+                        <button type="button" class="accessibility-icon-size" data-icon-size="extra-large" aria-pressed="false">Extra Large</button>
+                    </div>
                     </div>
 					<span>Alternative Font</span>
 					<button type="button" class="accessibility-font-toggle start-menu-reset" data-accessible-font-toggle data-accessible-font-label aria-pressed="false">Accessible Font: Off</button>
@@ -689,17 +1079,18 @@
                     <p class="accessibility-note">When enabled, window opening and closing animations are turned off.</p>
                 </div>
             </section>
+
             <section
                 class="setup-window"
                 data-window="environmental-controls"
-                data-window-width="720px"
+                data-window-width="800px"
                 data-window-height="660px"
                 hidden
                 aria-labelledby="environmental-controls-title"
             >
                 <div class="setup-titlebar window-drag-handle">
                     <div class="titlebar-left">
-                        <img class="title-icon" src="./engine/dagaz.svg" alt="" aria-hidden="true">
+                        <img class="title-icon" src="./engine/img/environment/doc_env.svg" data-seasonal-icon="environment" alt="" aria-hidden="true">
                         <span id="environmental-controls-title">Environmental Controls</span>
                     </div>
                     <div class="window-controls">
@@ -708,145 +1099,164 @@
                     </div>
                     <button type="button" class="window-close" data-close-window="environmental-controls" aria-label="Close window">X</button>
                 </div>
-                <div class="setup-content environmental-content">
-                    <div class="environmental-sections">
-                        <h1>Environmental Controls (Pre-Alpha)</h1>
-                        <p>Choose the layers you want around your desktop. Select Apply at the bottom to save and show your choices. Environmental layers sit over your chosen background and do not change your interface theme.</p>
+                <div class="setup-content environment-content environmental-content tabbed-window-content" data-tabbed-window>
+                    <div class="window-tablist" role="tablist" aria-label="Environmental control categories">
+                        <button type="button" class="window-tab" id="environment-atmosphere-tab" role="tab" aria-selected="true" aria-controls="environment-atmosphere-panel" tabindex="0" data-tab-id="environment-atmosphere">Atmosphere</button>
+                        <button type="button" class="window-tab" id="environment-scenes-tab" role="tab" aria-selected="false" aria-controls="environment-scenes-panel" tabindex="-1" data-tab-id="environment-scenes">Presets &amp; Themes</button>
+                        <button type="button" class="window-tab" id="environment-decorations-tab" role="tab" aria-selected="false" aria-controls="environment-decorations-panel" tabindex="-1" data-tab-id="environment-decorations">Decorations</button>
+                    </div>
+                    <section class="window-tab-panel environment-tab-panel" id="environment-atmosphere-panel" role="tabpanel" aria-labelledby="environment-atmosphere-tab" tabindex="0" data-tab-panel="environment-atmosphere">
+                        <div class="environmental-sections">
+                            <h1>Environmental Controls (Beta)</h1>
+                            <p>Choose manual weather and decoration layers, or apply a preset or seasonal theme for a complete scene. Seasonal themes can also change the palette, font, and icons.</p>
+                            <p class="environment-performance-note">I tried not to go overboard with Effects but some of them might prove taxing on your system.</p>
+                            <section class="environment-section" aria-labelledby="environment-motion-title">
+                                <div class="environment-section-heading">
+                                    <h2 id="environment-motion-title">Motion</h2>
+                                </div>
+                                <label class="environment-option environment-suboption">
+                                    <input type="checkbox" id="environmentAmbientAnimation" checked>
+                                    <span>Ambient motion</span>
+                                </label>
+                                <p class="environment-help environment-ambient-help">Allows motion on supported environment layers, such as drifting clouds and occasional fireworks.</p>
+                            </section>
 
-                        <section class="environment-section" aria-labelledby="environment-weather-title">
-                            <div class="environment-section-heading">
-                                <h2 id="environment-weather-title">Weather</h2>
-                                <label class="environment-option environment-section-toggle">
-                                    <input type="checkbox" data-environment-section="weather">
-                                    <span>Enable weather</span>
-                                </label>
-                            </div>
-                            <div class="environment-option-grid">
-                                <label class="environment-option">
-                                    <input type="checkbox" id="rainToggle" data-weather-effect="rain">
-                                    <span>Rain</span>
-                                </label>
-                            </div>
-                            <fieldset class="environment-intensity-group">
-                                <legend>Intensity</legend>
-                                <div class="environment-option-grid environment-intensity-options">
-                                    <label class="environment-option">
-                                        <input type="radio" name="environmentIntensity" value="low">
-                                        <span>Low</span>
-                                    </label>
-                                    <label class="environment-option">
-                                        <input type="radio" name="environmentIntensity" value="balanced" checked>
-                                        <span>Medium</span>
-                                    </label>
-                                    <label class="environment-option">
-                                        <input type="radio" name="environmentIntensity" value="high">
-                                        <span>High</span>
+                            <section class="environment-section" aria-labelledby="environment-weather-title">
+                                <div class="environment-section-heading">
+                                    <h2 id="environment-weather-title">Weather</h2>
+                                    <label class="environment-option environment-section-toggle">
+                                        <input type="checkbox" data-environment-section="weather">
+                                        <span>Enable weather</span>
                                     </label>
                                 </div>
-                            </fieldset>
-                            <div class="environment-rotation">
-                                <label class="environment-option">
-                                    <input type="checkbox" id="environmentRotation">
-                                    <span>Rotate selected weather, including clear weather</span>
-                                </label>
-                                <label class="environment-select-row environment-rotation-interval" for="environmentRotationInterval">
-                                    <span>Change every</span>
-                                    <select id="environmentRotationInterval">
-                                        <option value="30m">30 minutes</option>
-                                        <option value="1h" selected>1 hour</option>
-                                        <option value="3h">3 hours</option>
-                                        <option value="6h">6 hours</option>
-                                        <option value="12h">12 hours</option>
-                                    </select>
-                                </label>
-                            </div>
-                        </section>
+                                <div class="environment-weather-effects">
+                                    <div class="environment-weather-effect">
+                                        <label class="environment-option">
+                                            <input type="checkbox" id="rainToggle" data-weather-effect="rain">
+                                            <span>Rain</span>
+                                        </label>
+                                        <fieldset class="environment-intensity-group">
+                                            <legend>Rain intensity</legend>
+                                            <div class="environment-option-grid environment-intensity-options">
+                                                <label class="environment-option"><input type="radio" name="rainIntensity" data-weather-intensity="rain" value="low"><span>Low</span></label>
+                                                <label class="environment-option"><input type="radio" name="rainIntensity" data-weather-intensity="rain" value="balanced" checked><span>Medium</span></label>
+                                                <label class="environment-option"><input type="radio" name="rainIntensity" data-weather-intensity="rain" value="high"><span>High</span></label>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <div class="environment-weather-effect">
+                                        <label class="environment-option">
+                                            <input type="checkbox" data-weather-effect="snow">
+                                            <span>Snow</span>
+                                        </label>
+                                        <fieldset class="environment-intensity-group">
+                                            <legend>Snow intensity</legend>
+                                            <div class="environment-option-grid environment-intensity-options">
+                                                <label class="environment-option"><input type="radio" name="snowIntensity" data-weather-intensity="snow" value="low"><span>Low</span></label>
+                                                <label class="environment-option"><input type="radio" name="snowIntensity" data-weather-intensity="snow" value="balanced" checked><span>Medium</span></label>
+                                                <label class="environment-option"><input type="radio" name="snowIntensity" data-weather-intensity="snow" value="high"><span>High</span></label>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <fieldset class="environment-weather-playback">
+                                    <legend>Weather playback</legend>
+                                    <div class="environment-option-grid environment-playback-options">
+                                        <label class="environment-option"><input type="radio" name="environmentWeatherMode" data-weather-mode value="together" checked><span>Together</span></label>
+                                        <label class="environment-option"><input type="radio" name="environmentWeatherMode" data-weather-mode value="rotate"><span>Rotate one at a time</span></label>
+                                    </div>
+                                    <p class="environment-help">Together can show selected effects at once. Rotation takes turns using the selected effects.</p>
+                                    <div class="environment-rotation">
+                                        <label class="environment-option">
+                                            <input type="checkbox" id="environmentRotationClear" checked>
+                                            <span>Include clear weather (aka nothing) between effects</span>
+                                        </label>
+                                        <label class="environment-select-row environment-rotation-interval" for="environmentRotationInterval">
+                                            <span>Change every</span>
+                                            <select id="environmentRotationInterval">
+                                                <option value="30m">30 minutes</option>
+                                                <option value="1h" selected>1 hour</option>
+                                                <option value="3h">3 hours</option>
+                                                <option value="6h">6 hours</option>
+                                                <option value="12h">12 hours</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </section>
+                        </div>
+                    </section>
 
-                        <section class="environment-section" aria-labelledby="environment-presets-title">
-                            <div class="environment-section-heading">
-                                <h2 id="environment-presets-title">Environment Presets</h2>
-                                <label class="environment-option environment-section-toggle">
-                                    <input type="checkbox" data-environment-section="presets">
-                                    <span>Enable presets</span>
-                                </label>
-                            </div>
-                            <label class="environment-select-row" for="environmentPreset">
-                                <span>Current Environment</span>
-                                <select id="environmentPreset">
-                                    <option value="">Desktop Default</option>
-                                    <option value="rainy-evening">Rainy Evening</option>
-                                </select>
-                            </label>
-                            <label class="environment-option environment-suboption">
-                                <input type="checkbox" id="environmentAmbientAnimation" checked>
-                                <span>Ambient animation</span>
-                            </label>
-                        </section>
-
-                        <section class="environment-section" aria-labelledby="seasonal-decorations-title">
-                            <div class="environment-section-heading">
-                                <h2 id="seasonal-decorations-title">Seasonal Decorations</h2>
-                                <label class="environment-option environment-section-toggle">
-                                    <input type="checkbox" data-environment-section="decorations">
-                                    <span>Enable decorations</span>
-                                </label>
-                            </div>
-                            <div class="environment-option-grid">
-                                <label class="environment-option">
-                                    <input type="checkbox" data-decoration="pumpkin">
-                                    <span>Pumpkin</span>
-                                </label>
-                                <label class="environment-option">
-                                    <input type="checkbox" data-decoration="cobwebs">
-                                    <span>Cobwebs</span>
-                                </label>
-                                <label class="environment-option">
-                                    <input type="checkbox" data-decoration="leaves">
-                                    <span>Leaves</span>
-                                </label>
-                                <label class="environment-option">
-                                    <input type="checkbox" data-decoration="test">
-                                    <span>Test (Dagaz)</span>
-                                </label>
-                            </div>
-                            <p class="environment-coming-soon">Pumpkin, cobweb, and leaf decorations will be available later.</p>
-                        </section>
-
-                        <section class="environment-section" aria-labelledby="seasonal-themes-title">
-                            <div class="environment-section-heading">
-                                <h2 id="seasonal-themes-title">Seasonal Themes</h2>
-                                <label class="environment-option environment-section-toggle">
-                                    <input type="checkbox" data-environment-section="themes">
-                                    <span>Enable seasonal themes</span>
-                                </label>
-                            </div>
-                            <div class="environment-event-list">
-                                <div class="environment-event">
-                                    <span>Halloween 🎃</span>
+                    <section class="window-tab-panel environment-tab-panel" id="environment-scenes-panel" role="tabpanel" aria-labelledby="environment-scenes-tab" tabindex="0" data-tab-panel="environment-scenes" hidden>
+                        <div class="environmental-sections">
+                            <section class="environment-section" aria-labelledby="environment-presets-title">
+                                <div class="environment-section-heading">
+                                    <h2 id="environment-presets-title">Environment Presets &amp; Seasonal Themes</h2>
+                                </div>
+                                <p class="environment-help">A preset controls the scene. A seasonal theme can also change the palette, font, and icons. Clear it to return to your saved settings.</p>
+                                <h3 class="environment-subheading">Environment Presets</h3>
+                                <div class="environment-option-grid environment-preset-options">
+                                    <label class="environment-option">
+                                        <input type="checkbox" data-environment-preset="rainy-evening">
+                                        <span>Rainy Evening</span>
+                                    </label>
+                                </div>
+                                <h3 class="environment-subheading environment-seasonal-subheading">Seasonal Themes</h3>
+                                <div class="environment-event-list">
+								<!-- Did you know that Windows Key + . opens an Emoji menu? -->
                                     <label class="environment-option">
                                         <input type="checkbox" data-seasonal-theme="halloween">
-                                        <span>Activate</span>
+                                        <span>Halloween 🎃</span>
                                     </label>
-                                </div>
-                                <div class="environment-event">
-                                    <span>Christmas ❄</span>
                                     <label class="environment-option">
                                         <input type="checkbox" data-seasonal-theme="christmas">
-                                        <span>Activate</span>
+                                        <span>Christmas 🎄</span>
+                                    </label>
+                                    <label class="environment-option">
+                                        <input type="checkbox" data-seasonal-theme="new-years">
+                                        <span>New Year’s 🎆</span>
                                     </label>
                                 </div>
-                            </div>
-                            <p class="environment-coming-soon">Seasonal themes are not available yet.</p>
-                        </section>
+                            </section>
+                        </div>
+                    </section>
+
+                    <section class="window-tab-panel environment-tab-panel" id="environment-decorations-panel" role="tabpanel" aria-labelledby="environment-decorations-tab" tabindex="0" data-tab-panel="environment-decorations" hidden>
+                        <div class="environmental-sections">
+                            <section class="environment-section" aria-labelledby="seasonal-decorations-title">
+                                <div class="environment-section-heading">
+                                    <h2 id="seasonal-decorations-title">Manual Decorations</h2>
+                                    <label class="environment-option environment-section-toggle">
+                                        <input type="checkbox" data-environment-section="decorations">
+                                        <span>Enable decorations</span>
+                                    </label>
+                                </div>
+                                <div class="environment-option-grid">
+                                    <label class="environment-option">
+                                        <input type="checkbox" data-decoration="test">
+                                        <span>Dagaz</span>
+                                    </label>
+                                    <label class="environment-option">
+                                        <input type="checkbox" data-decoration="pumpkin">
+                                        <span>Pumpkin</span>
+                                    </label>
+                                    <label class="environment-option">
+                                        <input type="checkbox" data-decoration="cobwebs">
+                                        <span>Cobwebs</span>
+                                    </label>
+                                    <span class="environment-placeholder">Leaves <span>Coming soon</span></span>
+                                </div>
+                            </section>
+                        </div>
+                    </section>
+                    <div class="environmental-apply-dock" id="environmentApplyDock">
+                        <button type="button" class="setup-button environmental-apply" id="applyEnvironment">Apply</button>
+                        <p class="environment-apply-status" id="environmentApplyStatus" role="status" aria-live="polite"></p>
                     </div>
-                    <button type="button" class="setup-button environmental-apply" id="applyEnvironment">Apply</button>
                 </div>
             </section>
         </main>
-        <div
-            id="scanlines"
-            aria-hidden="true"
-        ></div>
+        <div id="crtForeground" aria-hidden="true"></div>
     </div>
 </body>
 </html>

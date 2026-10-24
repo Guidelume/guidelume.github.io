@@ -1,0 +1,1316 @@
+/* Environmental effects sit over the backdrop and under the desktop UI. */
+.environment-effects {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.environment-particle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    pointer-events: none;
+}
+
+.environment-backdrop,
+.environment-lighting {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.environment-backdrop {
+    z-index: 0;
+}
+
+.environment-atmosphere {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.environment-particle {
+    z-index: 1;
+}
+
+.environment-lighting {
+    z-index: 2;
+}
+
+.environment-decoration {
+    position: absolute;
+    z-index: 3;
+    max-width: min(30vw, 320px);
+    height: auto;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.environment-decoration--opposite-taskbar {
+    left: auto;
+    right: 24px;
+    transform: none;
+}
+
+.environment-particle-rain {
+    width: 2px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, transparent, rgba(167, 190, 207, 0.78));
+    box-shadow: 0 0 2px rgba(167, 190, 207, 0.36);
+}
+
+.environment-particle-snow {
+    border-radius: 50%;
+    background: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.96), rgba(224, 237, 249, 0.82) 48%, rgba(191, 215, 237, 0.35) 76%, transparent 100%);
+    box-shadow: 0 0 7px rgba(214, 233, 250, 0.34);
+}
+
+.environment-particle-snow-landing {
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.78), rgba(226, 239, 250, 0.48) 46%, rgba(190, 215, 237, 0.14) 74%, transparent 100%);
+    box-shadow: 0 0 6px rgba(222, 238, 251, 0.32);
+}
+
+.environment-particle-snow-landing::before,
+.environment-particle-snow-landing::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 0 2px rgba(221, 238, 252, 0.42);
+    animation: snowLandingFleck 420ms ease-out both;
+}
+
+.environment-particle-snow-landing::before {
+    --fleck-x: -4px;
+    --fleck-y: -4px;
+}
+
+.environment-particle-snow-landing::after {
+    --fleck-x: 4px;
+    --fleck-y: -3px;
+    animation-delay: 35ms;
+}
+
+.environment-particle-splash {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(196, 213, 227, 0.82) 0%, rgba(170, 194, 211, 0.5) 28%, transparent 76%);
+    box-shadow:
+        -6px -1px 0 -2px rgba(167, 190, 207, 0.62),
+        6px -2px 0 -2px rgba(167, 190, 207, 0.52),
+        0 0 7px rgba(154, 184, 205, 0.28);
+}
+
+.environment-particle-splash--warm {
+    background: radial-gradient(ellipse at center, rgba(255, 222, 185, 0.72) 0%, rgba(244, 194, 145, 0.38) 30%, transparent 76%);
+    box-shadow:
+        -6px -1px 0 -2px rgba(255, 211, 166, 0.55),
+        6px -2px 0 -2px rgba(255, 211, 166, 0.46),
+        0 0 8px rgba(245, 188, 132, 0.3);
+}
+
+.environment-particle-splash::before,
+.environment-particle-splash::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 7px;
+    height: 3px;
+    border: 1px solid rgba(174, 199, 218, 0.62);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0.3);
+    animation: puddleRipple 430ms ease-out both;
+}
+
+.environment-particle-splash::after {
+    width: 5px;
+    height: 2px;
+    border-color: rgba(174, 199, 218, 0.38);
+    animation-delay: 90ms;
+}
+
+.environment-particle-splash--warm::before {
+    border-color: rgba(255, 221, 183, 0.6);
+}
+
+.environment-particle-splash--warm::after {
+    border-color: rgba(255, 210, 165, 0.38);
+}
+
+@keyframes puddleRipple {
+    0% { opacity: 0.72; transform: translate(-50%, -50%) scale(0.3); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(2.6); }
+}
+
+.environment-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.environmental-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.environment-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.environment-section-heading h2 {
+    margin: 0;
+}
+
+.environment-section-toggle {
+    flex: 0 0 auto;
+}
+
+.environment-content h2,
+.environment-intensity-group legend {
+    margin: 0 0 10px;
+    color: var(--accent-light);
+    font-size: calc(20px * var(--text-size-scale));
+    font-weight: 700;
+}
+
+.environment-content p {
+    margin: 0;
+}
+
+.environment-settings-row,
+.environment-select-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.environment-select-row {
+    justify-content: flex-start;
+}
+
+.environment-select-row > span {
+    min-width: 180px;
+}
+
+.environment-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.environment-option input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-strong);
+}
+
+.environment-option input:disabled + span,
+.environment-select-row select:disabled {
+    opacity: 0.48;
+}
+
+.environment-section {
+    margin: 0;
+    padding: 0 0 16px;
+    border: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent-strong), transparent 65%);
+}
+
+.environment-section.is-overridden {
+    opacity: 0.42;
+}
+
+.environment-section.is-overridden .environment-option {
+    cursor: not-allowed;
+}
+
+.environment-performance-note {
+    margin-top: -10px !important;
+    color: var(--text-secondary);
+    font-size: calc(12px * var(--text-size-scale));
+    opacity: 0.78;
+}
+
+.environment-option-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px 16px;
+}
+
+.environment-suboptions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 14px 0 0 22px;
+    padding-left: 14px;
+    border-left: 2px solid color-mix(in srgb, var(--accent-strong), transparent 45%);
+}
+
+.environment-subheading {
+    color: var(--text-secondary);
+    font-size: calc(15px * var(--text-size-scale));
+}
+
+.environment-content .environment-subheading {
+    margin: 14px 0 8px;
+}
+
+.environment-seasonal-subheading {
+    margin-top: 18px !important;
+}
+
+.environment-intensity-group {
+    min-width: 0;
+    margin: 18px 0 0;
+    padding-top: 0;
+    border: 0;
+}
+
+.environment-intensity-group legend {
+    padding: 0;
+}
+
+.environment-intensity-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.environment-weather-effects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 14px 20px;
+}
+
+.environment-weather-effect {
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid color-mix(in srgb, var(--accent-strong), transparent 72%);
+    background: color-mix(in srgb, var(--frame-dark), transparent 35%);
+}
+
+.environment-weather-effect > .environment-intensity-group {
+    margin-top: 12px;
+}
+
+.environment-weather-playback {
+    min-width: 0;
+    margin: 18px 0 0;
+    padding: 0;
+    border: 0;
+}
+
+.environment-weather-playback > legend {
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+    font-size: calc(15px * var(--text-size-scale));
+    font-weight: 700;
+}
+
+.environment-playback-options {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.environment-weather-playback > .environment-help {
+    margin-top: 8px !important;
+}
+
+.environment-select-row select {
+    min-width: 180px;
+    padding: 7px 10px;
+    border: 2px solid var(--frame-dark);
+    background: #111217;
+    color: var(--text-primary);
+    font: inherit;
+    accent-color: var(--accent-strong);
+}
+
+.environment-rotation-interval {
+    margin-top: 10px;
+}
+
+.environment-suboption {
+    margin-top: 14px;
+}
+
+.environment-rotation {
+    margin-top: 18px;
+}
+
+.environment-help {
+    margin-top: 8px !important;
+    color: var(--text-secondary);
+    font-size: calc(14px * var(--text-size-scale));
+}
+
+.environment-event-list {
+    display: grid;
+    gap: 10px;
+}
+
+.environment-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 36px;
+    padding: 6px 10px;
+    border: 1px solid color-mix(in srgb, var(--accent-strong), transparent 72%);
+    border-radius: 4px;
+    color: var(--text-secondary);
+}
+
+.environment-placeholder > span {
+    color: var(--accent-light);
+    font-size: calc(12px * var(--text-size-scale));
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.environmental-apply-dock {
+    position: sticky;
+    z-index: 5;
+    bottom: -30px;
+    display: grid;
+    gap: 6px;
+    margin: 18px -30px -30px;
+    padding: 16px 30px 14px;
+    border-top: 1px solid color-mix(in srgb, var(--accent-strong), transparent 54%);
+    background: linear-gradient(180deg, var(--window-content-top), var(--window-content-bottom) 44%);
+    box-shadow: 0 -8px 16px rgba(0, 0, 0, 0.18);
+}
+
+.environmental-apply-dock.is-at-bottom {
+    border-top-color: transparent;
+    background: transparent;
+    box-shadow: none;
+}
+
+.environmental-apply {
+    width: 100%;
+    margin: 0;
+    flex: 0 0 auto;
+}
+
+.environment-apply-status {
+    min-height: 1.2em;
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: calc(14px * var(--text-size-scale));
+}
+
+#environmentStatus {
+    width: 19px;
+    height: 19px;
+}
+
+.environment-backdrop--rainy-evening {
+    background: linear-gradient(
+        180deg,
+        rgba(15, 20, 29, 0.64),
+        rgba(31, 37, 47, 0.28) 35%,
+        rgba(23, 28, 36, 0.3) 68%,
+        rgba(10, 13, 18, 0.52)
+    );
+}
+
+.environment-backdrop--halloween-night {
+    background:
+        radial-gradient(ellipse 38% 42% at 83% 17%, rgba(152, 132, 183, 0.22), transparent 100%),
+        radial-gradient(ellipse 62% 42% at 18% 78%, rgba(122, 72, 75, 0.1), transparent 100%),
+        linear-gradient(180deg, #171523 0%, #1d1927 43%, #1b1521 70%, #100d16 100%);
+}
+
+.environment-backdrop--christmas-eve {
+    background:
+        radial-gradient(ellipse 56% 32% at 50% 29%, rgba(85, 119, 157, 0.2), transparent 100%),
+        radial-gradient(ellipse 62% 22% at 78% 73%, rgba(122, 133, 151, 0.09), transparent 100%),
+        linear-gradient(180deg, #101d30 0%, #1a2b43 43%, #20354b 71%, #152439 100%);
+}
+
+.environment-backdrop--new-years-midnight {
+    background:
+        radial-gradient(ellipse 44% 24% at 51% 76%, rgba(110, 89, 134, 0.2), transparent 100%),
+        radial-gradient(ellipse 29% 25% at 17% 23%, rgba(89, 105, 146, 0.13), transparent 100%),
+        radial-gradient(ellipse 32% 30% at 83% 35%, rgba(89, 78, 132, 0.12), transparent 100%),
+        linear-gradient(180deg, #111327 0%, #17192d 48%, #222034 76%, #111321 100%);
+}
+
+.environment-atmosphere--new-years-horizon-haze {
+    top: 43%;
+    left: -10%;
+    width: 120%;
+    height: 53%;
+    opacity: 0.76;
+    filter: blur(21px);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 35%, #000 79%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 35%, #000 79%, transparent 100%);
+    background:
+        radial-gradient(ellipse 29% 28% at 17% 76%, rgba(158, 145, 184, 0.23), transparent 100%),
+        radial-gradient(ellipse 32% 31% at 51% 74%, rgba(196, 160, 169, 0.22), transparent 100%),
+        radial-gradient(ellipse 27% 26% at 84% 77%, rgba(139, 158, 190, 0.23), transparent 100%),
+        linear-gradient(180deg, transparent 15%, rgba(151, 137, 176, 0.075) 65%, transparent 100%);
+}
+
+.environment-atmosphere--new-years-skyline {
+    top: auto;
+    bottom: -1%;
+    left: -3%;
+    width: 106%;
+    height: 32%;
+    background:
+        radial-gradient(1.2px 2px at 7% 64%, rgba(255, 218, 184, 0.66) 0 60%, transparent 100%),
+        radial-gradient(1px 2px at 10% 73%, rgba(195, 205, 232, 0.6) 0 60%, transparent 100%),
+        radial-gradient(1.2px 2px at 15% 58%, rgba(255, 218, 184, 0.56) 0 60%, transparent 100%),
+        radial-gradient(1px 2px at 22% 76%, rgba(200, 207, 228, 0.58) 0 60%, transparent 100%),
+        radial-gradient(1px 2px at 29% 64%, rgba(255, 211, 177, 0.58) 0 60%, transparent 100%),
+        radial-gradient(1.2px 2px at 34% 72%, rgba(207, 206, 229, 0.56) 0 60%, transparent 100%),
+        radial-gradient(1px 2px at 43% 61%, rgba(255, 218, 184, 0.56) 0 60%, transparent 100%),
+        radial-gradient(1px 2px at 48% 73%, rgba(201, 207, 228, 0.58) 0 60%, transparent 100%),
+        radial-gradient(1px 2px at 57% 64%, rgba(255, 218, 184, 0.62) 0 60%, transparent 100%),
+        radial-gradient(1px 2px at 63% 75%, rgba(195, 205, 232, 0.55) 0 60%, transparent 100%),
+        radial-gradient(1.2px 2px at 72% 61%, rgba(255, 211, 177, 0.59) 0 60%, transparent 100%),
+        radial-gradient(1px 2px at 78% 73%, rgba(200, 207, 228, 0.6) 0 60%, transparent 100%),
+        radial-gradient(1px 2px at 88% 62%, rgba(255, 218, 184, 0.58) 0 60%, transparent 100%),
+        radial-gradient(1px 2px at 94% 72%, rgba(195, 205, 232, 0.56) 0 60%, transparent 100%),
+        linear-gradient(180deg, #272438 0%, #211f32 48%, #171827 100%);
+    clip-path: polygon(
+        0 50%, 7% 50%, 7% 34%, 13% 34%, 13% 45%, 19% 45%, 19% 24%,
+        24% 24%, 24% 49%, 30% 49%, 30% 39%, 37% 39%, 37% 17%, 43% 17%,
+        43% 43%, 49% 43%, 49% 29%, 55% 29%, 55% 51%, 62% 51%, 62% 21%,
+        68% 21%, 68% 43%, 74% 43%, 74% 34%, 81% 34%, 81% 50%, 87% 50%,
+        87% 27%, 93% 27%, 93% 45%, 100% 45%, 100% 100%, 0 100%
+    );
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 5%, #000 95%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 5%, #000 95%, transparent 100%);
+}
+
+.environment-atmosphere--cloud-bank {
+    top: -7%;
+    left: -10%;
+    width: 120%;
+    height: 39%;
+    opacity: 1;
+    filter: blur(5px);
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 42%, rgba(0, 0, 0, 0.72) 66%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 42%, rgba(0, 0, 0, 0.72) 66%, transparent 100%);
+    background:
+        radial-gradient(ellipse 14% 31% at 8% 31%, rgba(117, 130, 148, 0.78) 0 22%, transparent 100%),
+        radial-gradient(ellipse 18% 40% at 25% 18%, rgba(79, 91, 109, 0.9) 0 24%, transparent 100%),
+        radial-gradient(ellipse 21% 45% at 49% 30%, rgba(108, 121, 140, 0.84) 0 22%, transparent 100%),
+        radial-gradient(ellipse 16% 37% at 72% 16%, rgba(75, 88, 107, 0.92) 0 24%, transparent 100%),
+        radial-gradient(ellipse 18% 35% at 94% 34%, rgba(118, 130, 147, 0.76) 0 22%, transparent 100%),
+        linear-gradient(180deg, rgba(14, 19, 28, 0.34), rgba(25, 32, 43, 0.2) 27%, rgba(53, 63, 76, 0.08) 67%, transparent 100%);
+}
+
+.environment-atmosphere--christmas-cloud-bank {
+    top: -9%;
+    left: -10%;
+    width: 120%;
+    height: 47%;
+    opacity: 0.94;
+    filter: blur(8px);
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 43%, rgba(0, 0, 0, 0.76) 70%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 43%, rgba(0, 0, 0, 0.76) 70%, transparent 100%);
+    background:
+        radial-gradient(ellipse 20% 38% at 7% 34%, rgba(99, 119, 145, 0.84) 0 24%, transparent 100%),
+        radial-gradient(ellipse 24% 46% at 25% 19%, rgba(67, 88, 116, 0.93) 0 26%, transparent 100%),
+        radial-gradient(ellipse 27% 47% at 49% 32%, rgba(90, 111, 139, 0.89) 0 24%, transparent 100%),
+        radial-gradient(ellipse 22% 42% at 73% 15%, rgba(67, 87, 114, 0.93) 0 25%, transparent 100%),
+        radial-gradient(ellipse 22% 40% at 95% 34%, rgba(105, 124, 148, 0.82) 0 23%, transparent 100%),
+        radial-gradient(ellipse 20% 32% at 15% 63%, rgba(65, 83, 107, 0.52) 0 23%, transparent 100%),
+        radial-gradient(ellipse 24% 32% at 52% 67%, rgba(69, 88, 113, 0.48) 0 22%, transparent 100%),
+        radial-gradient(ellipse 20% 31% at 86% 61%, rgba(67, 84, 106, 0.5) 0 22%, transparent 100%),
+        linear-gradient(180deg, rgba(12, 22, 37, 0.42), rgba(38, 56, 78, 0.22) 58%, transparent 100%);
+}
+
+.environment-atmosphere--christmas-snowbank {
+    isolation: isolate;
+    top: auto;
+    bottom: -2%;
+    left: -6%;
+    width: 112%;
+    height: 28%;
+    filter: blur(1.6px);
+    background:
+        radial-gradient(ellipse 18% 9% at 12% 38%, rgba(74, 103, 132, 0.42) 0 30%, rgba(74, 103, 132, 0.18) 62%, transparent 100%),
+        radial-gradient(ellipse 21% 10% at 38% 45%, rgba(91, 117, 143, 0.38) 0 30%, rgba(91, 117, 143, 0.16) 62%, transparent 100%),
+        radial-gradient(ellipse 20% 9% at 65% 38%, rgba(69, 99, 130, 0.4) 0 30%, rgba(69, 99, 130, 0.17) 62%, transparent 100%),
+        radial-gradient(ellipse 18% 10% at 88% 45%, rgba(84, 112, 140, 0.37) 0 30%, rgba(84, 112, 140, 0.15) 62%, transparent 100%),
+        radial-gradient(ellipse 24% 7% at 22% 33%, rgba(250, 253, 255, 0.44), transparent 100%),
+        radial-gradient(ellipse 29% 8% at 72% 34%, rgba(247, 251, 255, 0.4), transparent 100%),
+        linear-gradient(177deg, transparent 34%, rgba(110, 140, 168, 0.34) 38%, transparent 44%),
+        radial-gradient(ellipse 70% 55% at 50% 100%, rgba(101, 132, 160, 0.2), transparent 100%),
+        linear-gradient(180deg, rgba(188, 202, 216, 0.94) 0%, rgba(180, 196, 212, 0.94) 30%, rgba(172, 190, 208, 0.95) 68%, rgba(161, 183, 203, 0.96) 100%);
+    clip-path: polygon(
+        0 35%, 9% 34%, 18% 32%, 27% 34%, 36% 31%, 45% 34%,
+        54% 33%, 63% 31%, 72% 33%, 82% 34%, 91% 31%, 100% 34%,
+        100% 100%, 0 100%
+    );
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+}
+
+.environment-atmosphere--christmas-snowbank::after {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    pointer-events: none;
+    filter: blur(2px);
+    background: linear-gradient(180deg, rgba(239, 246, 252, 0.42), rgba(204, 220, 235, 0.14));
+    clip-path: polygon(
+        0 37%, 9% 36%, 18% 34%, 27% 36%, 36% 33%, 45% 36%,
+        54% 35%, 63% 33%, 72% 35%, 82% 36%, 91% 33%, 100% 36%,
+        100% 41%, 91% 38%, 82% 41%, 72% 40%, 63% 38%, 54% 40%,
+        45% 41%, 36% 38%, 27% 41%, 18% 39%, 9% 41%, 0 42%
+    );
+}
+
+.christmas-snowbank-texture {
+    position: absolute;
+    z-index: 1;
+    inset: 31% 0 auto;
+    height: 32%;
+    filter: blur(1.2px);
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 18% 44% at 14% 43%, rgba(80, 108, 136, 0.36), transparent 100%),
+        radial-gradient(ellipse 22% 48% at 42% 60%, rgba(102, 128, 153, 0.32), transparent 100%),
+        radial-gradient(ellipse 20% 43% at 69% 42%, rgba(77, 106, 135, 0.35), transparent 100%),
+        radial-gradient(ellipse 18% 47% at 91% 59%, rgba(97, 123, 149, 0.31), transparent 100%),
+        linear-gradient(177deg, transparent 28%, rgba(101, 131, 159, 0.27) 51%, transparent 78%);
+}
+
+.environment-atmosphere--christmas-distance-haze {
+    top: 64%;
+    left: -8%;
+    width: 116%;
+    height: 29%;
+    opacity: 0.96;
+    filter: blur(17px);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 23%, #000 70%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 23%, #000 70%, transparent 100%);
+    background:
+        radial-gradient(ellipse 30% 40% at 21% 61%, rgba(177, 190, 204, 0.25), transparent 100%),
+        radial-gradient(ellipse 33% 44% at 43% 71%, rgba(168, 183, 198, 0.22), transparent 100%),
+        radial-gradient(ellipse 31% 41% at 76% 58%, rgba(183, 190, 194, 0.23), transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(173, 188, 203, 0.065) 52%, transparent 100%);
+}
+
+.environment-atmosphere--christmas-village-lights {
+    top: 65%;
+    left: 0;
+    width: 100%;
+    height: 27%;
+    opacity: 0.8;
+    filter: blur(1.5px);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 24%, #000 75%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 24%, #000 75%, transparent 100%);
+    background:
+        radial-gradient(ellipse 10% 28% at 22% 58%, rgba(255, 192, 112, 0.085), transparent 100%),
+        radial-gradient(ellipse 9% 25% at 76% 53%, rgba(255, 202, 129, 0.075), transparent 100%),
+        radial-gradient(ellipse 0.7% 3.2% at 14% 49%, rgba(255, 224, 163, 0.62), transparent 100%),
+        radial-gradient(ellipse 0.55% 2.5% at 17% 56%, rgba(255, 210, 137, 0.54), transparent 100%),
+        radial-gradient(ellipse 0.6% 2.8% at 20% 51%, rgba(255, 225, 166, 0.58), transparent 100%),
+        radial-gradient(ellipse 0.65% 3% at 25% 61%, rgba(255, 213, 147, 0.52), transparent 100%),
+        radial-gradient(ellipse 0.55% 2.6% at 37% 48%, rgba(255, 228, 177, 0.48), transparent 100%),
+        radial-gradient(ellipse 0.7% 3.2% at 40% 57%, rgba(255, 209, 135, 0.56), transparent 100%),
+        radial-gradient(ellipse 0.6% 2.8% at 61% 53%, rgba(255, 224, 168, 0.52), transparent 100%),
+        radial-gradient(ellipse 0.65% 3% at 65% 62%, rgba(255, 203, 130, 0.5), transparent 100%),
+        radial-gradient(ellipse 0.55% 2.6% at 79% 49%, rgba(255, 227, 169, 0.58), transparent 100%),
+        radial-gradient(ellipse 0.7% 3.2% at 83% 57%, rgba(255, 210, 139, 0.5), transparent 100%),
+        radial-gradient(ellipse 0.6% 2.8% at 88% 52%, rgba(255, 226, 170, 0.54), transparent 100%);
+}
+
+.environment-lighting--christmas-star-glow {
+    background:
+        radial-gradient(ellipse 62% 40% at 50% 12%, rgba(173, 199, 229, 0.08), transparent 100%),
+        radial-gradient(ellipse 34% 18% at 50% 79%, rgba(255, 218, 166, 0.04), transparent 100%);
+}
+
+.environment-lighting--new-years-fireworks {
+    overflow: hidden;
+}
+
+.new-years-countdown {
+    position: absolute;
+    z-index: 9;
+    top: clamp(24px, 5.2vh, 54px);
+    left: 50%;
+    width: max-content;
+    max-width: calc(100% - 24px);
+    transform: translateX(-50%);
+    color: #e8e1ed;
+    font-family: "Poiret One", "Quicksand", sans-serif;
+    text-align: center;
+    text-shadow: 0 0 12px rgba(201, 193, 228, 0.26), 0 1px 3px rgba(5, 7, 18, 0.9);
+    pointer-events: none;
+}
+
+.new-years-countdown[hidden] {
+    display: none;
+}
+
+.new-years-countdown__digits {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: clamp(4px, 1vw, 13px);
+    font-size: clamp(1.4rem, 4.1vw, 3.15rem);
+    font-weight: 500;
+    letter-spacing: 0.055em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    text-shadow: 0 0 8px rgba(255, 223, 171, 0.34), 0 0 20px rgba(221, 176, 96, 0.18), 0 1px 3px rgba(5, 7, 18, 0.82);
+}
+
+.new-years-countdown__digits [data-countdown-days] {
+    min-width: 3ch;
+}
+
+.new-years-countdown__digits [data-countdown-hours],
+.new-years-countdown__digits [data-countdown-minutes],
+.new-years-countdown__digits [data-countdown-seconds] {
+    min-width: 2ch;
+}
+
+.new-years-countdown__separator {
+    color: rgba(232, 225, 237, 0.58);
+    font-size: 0.72em;
+    transform: translateY(-0.05em);
+}
+
+.new-years-countdown__caption {
+    margin: 7px 0 0;
+    color: rgba(220, 213, 230, 0.78);
+    font-size: clamp(0.78rem, 1.4vw, 1rem);
+    letter-spacing: 0.11em;
+    line-height: 1.2;
+}
+
+.new-years-firework {
+    position: absolute;
+    width: var(--firework-size, 64px);
+    aspect-ratio: 1;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.12);
+    background: radial-gradient(circle, color-mix(in srgb, var(--firework-color), transparent 77%) 0 8%, transparent 54%);
+    pointer-events: none;
+}
+
+.new-years-firework__spark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--spark-width, 1.5px);
+    height: calc(var(--firework-size, 64px) * var(--spark-length, 0.32));
+    border-radius: 100%;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 250, 242, 0.96) 0%,
+        color-mix(in srgb, var(--firework-color), white 12%) 26%,
+        color-mix(in srgb, var(--firework-color), transparent 35%) 73%,
+        transparent 100%
+    );
+    box-shadow: 0 0 4px color-mix(in srgb, var(--firework-color), transparent 28%);
+    transform: rotate(var(--spark-angle, 0deg));
+    transform-origin: 50% 0;
+}
+
+.new-years-firework__spark::after {
+    position: absolute;
+    right: 50%;
+    bottom: -1px;
+    width: 3px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--firework-color), white 22%);
+    box-shadow: 0 0 5px var(--firework-color);
+    content: "";
+    transform: translateX(50%);
+}
+
+.new-years-firework__core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #fff9ec;
+    box-shadow: 0 0 6px 2px color-mix(in srgb, var(--firework-color), transparent 10%), 0 0 18px var(--firework-color);
+    transform: translate(-50%, -50%);
+}
+
+.new-years-confetti {
+    position: absolute;
+    z-index: 1;
+    width: var(--confetti-width, 3px);
+    height: var(--confetti-height, 7px);
+    border-radius: 1px;
+    background: var(--confetti-color, #e9d6c3);
+    box-shadow: 0 0 7px color-mix(in srgb, var(--confetti-color), transparent 30%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.environment-effects.is-ambient-animated .new-years-firework {
+    animation: newYearsFirework ease-out infinite both;
+}
+
+.environment-effects.is-ambient-animated .new-years-confetti {
+    animation: newYearsConfettiDrift linear infinite both;
+}
+
+.environment-effects.is-ambient-animated .environment-atmosphere--new-years-horizon-haze {
+    animation: newYearsHorizonDrift 52s ease-in-out infinite alternate;
+}
+
+.christmas-star {
+    position: absolute;
+    z-index: 1;
+    width: var(--star-ray, 10px);
+    height: var(--star-ray, 10px);
+    opacity: 0.88;
+    transform: translate(-50%, -50%);
+}
+
+.christmas-star::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 36%, 69% 58%, 80% 94%, 50% 72%, 20% 94%, 31% 58%, 2% 36%, 39% 35%);
+    background: linear-gradient(135deg, #fff8e7, #e4d5ac 55%, #fff5da);
+    filter: drop-shadow(0 0 3px rgba(226, 211, 169, 0.52));
+}
+
+.christmas-star::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: #fffdf7;
+    box-shadow: 0 0 4px rgba(255, 244, 216, 0.88);
+    transform: translate(-50%, -50%);
+}
+
+.environment-effects.is-ambient-animated .christmas-star {
+    animation: christmasStarTwinkle 6s ease-in-out infinite alternate;
+}
+
+.environment-atmosphere--ground-plane {
+    top: auto;
+    bottom: -3%;
+    left: -8%;
+    width: 116%;
+    height: 30%;
+    background:
+        radial-gradient(ellipse 11% 14% at 24% 50%, rgba(255, 213, 164, 0.11) 0%, rgba(244, 193, 139, 0.055) 42%, transparent 100%),
+        radial-gradient(ellipse 24% 31% at 24% 50%, rgba(238, 182, 126, 0.035) 0%, transparent 100%),
+        radial-gradient(ellipse 12% 15% at 50% 48%, rgba(255, 221, 178, 0.13) 0%, rgba(246, 197, 146, 0.065) 42%, transparent 100%),
+        radial-gradient(ellipse 25% 32% at 50% 48%, rgba(241, 190, 138, 0.04) 0%, transparent 100%),
+        radial-gradient(ellipse 11% 14% at 76% 50%, rgba(255, 213, 164, 0.11) 0%, rgba(244, 193, 139, 0.055) 42%, transparent 100%),
+        radial-gradient(ellipse 24% 31% at 76% 50%, rgba(238, 182, 126, 0.035) 0%, transparent 100%),
+        radial-gradient(ellipse 105% 100% at 50% 100%, rgba(25, 32, 41, 0.28) 0%, rgba(23, 30, 39, 0.21) 58%, rgba(22, 29, 38, 0.08) 86%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(30, 37, 47, 0.07) 18%, rgba(27, 34, 43, 0.14) 59%, rgba(23, 29, 38, 0.22) 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+}
+
+.environment-atmosphere--halloween-mist {
+    top: 42%;
+    left: -12%;
+    width: 124%;
+    height: 58%;
+    opacity: 0.72;
+    background:
+        radial-gradient(ellipse 38% 21% at 13% 77%, rgba(169, 158, 183, 0.14), transparent 100%),
+        radial-gradient(ellipse 45% 25% at 49% 86%, rgba(154, 144, 175, 0.12), transparent 100%),
+        radial-gradient(ellipse 34% 19% at 86% 74%, rgba(176, 158, 171, 0.12), transparent 100%),
+        linear-gradient(180deg, transparent 18%, rgba(139, 130, 156, 0.025) 54%, rgba(143, 132, 154, 0.075) 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 23%, #000 78%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 23%, #000 78%, transparent 100%);
+}
+
+.environment-atmosphere--halloween-horizon {
+    top: 56%;
+    left: -2%;
+    width: 104%;
+    height: 23%;
+    opacity: 0.24;
+    filter: blur(2px);
+    background: #090a12;
+    clip-path: polygon(
+        0 76%, 4% 76%, 5% 60%, 7% 69%, 8% 48%, 10% 67%, 12% 29%, 15% 67%,
+        17% 55%, 19% 73%, 23% 73%, 25% 42%, 28% 70%, 31% 60%, 34% 75%,
+        38% 75%, 40% 51%, 42% 71%, 45% 39%, 48% 71%, 51% 58%, 54% 77%,
+        58% 77%, 60% 47%, 63% 72%, 66% 32%, 69% 70%, 72% 57%, 75% 77%,
+        79% 77%, 81% 46%, 84% 71%, 87% 30%, 90% 70%, 93% 57%, 96% 76%, 100% 76%,
+        100% 100%, 0 100%
+    );
+}
+
+html[data-seasonal-theme="halloween"] .setup-window:not([data-window="setup"])::before,
+html[data-seasonal-theme="halloween"] .setup-window:not([data-window="setup"])::after {
+    content: "";
+    position: absolute;
+    top: 34px;
+    z-index: 2;
+    width: 70px;
+    height: 56px;
+    opacity: 0.16;
+    pointer-events: none;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+html[data-seasonal-theme="halloween"] .setup-window:not([data-window="setup"])::before {
+    left: 0;
+    background-image: url("../img/environment/halloween/cobweb-corner-1-empty.png");
+}
+
+html[data-seasonal-theme="halloween"] .setup-window:not([data-window="setup"])::after {
+    right: 0;
+    transform: scaleX(-1);
+    background-image: url("../img/environment/halloween/cobweb-corner-1-empty.png");
+}
+
+html[data-seasonal-theme="halloween"] .setup-window[data-window^="folder"]::before {
+    background-image: url("../img/environment/halloween/cobweb-corner-1-partial.png");
+    opacity: 0.11;
+}
+
+html[data-seasonal-theme="halloween"] .setup-window[data-window^="folder"]::after {
+    background-image: url("../img/environment/halloween/cobweb-corner-1-full.png");
+    opacity: 0.09;
+}
+
+html[data-seasonal-theme="halloween"] .desktop-icon[data-folder-icon="true"]::after {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    top: 2px;
+    left: calc(50% + 12px);
+    width: 26px;
+    height: 26px;
+    opacity: 0.38;
+    pointer-events: none;
+    background: url("../img/environment/halloween/cobweb-alone.png") center / contain no-repeat;
+}
+
+.environment-effects.is-ambient-animated .environment-atmosphere--cloud-bank {
+    animation: cloudBankDrift 24s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+.environment-effects.is-ambient-animated .environment-atmosphere--christmas-cloud-bank {
+    animation: christmasCloudDrift 68s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+:root[data-seasonal-theme="halloween"] .taskbar-clock {
+    font-family: "Quicksand", sans-serif;
+    font-weight: 600;
+}
+
+:root[data-seasonal-theme="halloween"] .taskbar-time {
+    font-weight: 700;
+}
+
+:root[data-seasonal-theme="halloween"] .taskbar-date {
+    font-weight: 600;
+}
+
+:root[data-seasonal-theme="christmas"] .taskbar-clock {
+    font-family: "Quicksand", sans-serif;
+    font-weight: 600;
+}
+
+:root[data-seasonal-theme="new-years"] .taskbar-clock {
+    font-family: "Quicksand", sans-serif;
+    font-weight: 600;
+}
+
+:root[data-seasonal-theme="new-years"] .desktop-icon,
+:root[data-seasonal-theme="new-years"] .virtual-folder-entry {
+    font-family: "Poiret One", "Quicksand", sans-serif;
+}
+
+:root[data-seasonal-theme="new-years"] .taskbar {
+    --frame-dark: #896a37;
+    --button-light: #ffedc0;
+    --button-mid: #dfc486;
+    --button-dark: #b9bdc5;
+    background-image:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.48) 0, rgba(255, 247, 224, 0.2) 2px, transparent 24%),
+        linear-gradient(180deg, transparent 0%, transparent 88%, rgba(193, 199, 209, 0.62) 100%),
+        linear-gradient(180deg, #cda75e 0%, #dfbd79 22%, #f0dcaf 48%, #dfc487 74%, #c19d58 100%);
+}
+
+:root[data-seasonal-theme="new-years"] .setup-titlebar {
+    background-image:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.48) 0, rgba(255, 247, 224, 0.22) 2px, transparent 28%),
+        linear-gradient(180deg, transparent 0%, transparent 84%, rgba(193, 199, 209, 0.55) 100%),
+        linear-gradient(180deg, #d0ad69 0%, #e1c58f 24%, #f0dfba 50%, #dec58f 76%, #c6a565 100%);
+}
+
+:root[data-seasonal-theme="new-years"] .taskbar-window.is-open {
+    color: var(--chrome-text);
+}
+
+:root[data-seasonal-theme="new-years"] .taskbar-window.is-open:not(.is-focused) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.32), transparent 34%), linear-gradient(180deg, #dfbd79 0%, #f0dcaf 48%, #d3b36f 100%);
+}
+
+:root[data-seasonal-theme="christmas"] .taskbar-window.is-open {
+    color: #e5e7e9;
+}
+
+:root[data-seasonal-theme="christmas"] .taskbar-window.is-open:not(.is-focused) {
+    background: linear-gradient(180deg, #89373c, #6d2c32);
+}
+
+:root[data-seasonal-theme="christmas"] .taskbar,
+:root[data-seasonal-theme="christmas"] .setup-titlebar {
+    background-image:
+        linear-gradient(180deg, rgba(194, 210, 224, 0.42) 0, rgba(178, 196, 212, 0.2) 2px, transparent 11px),
+        linear-gradient(180deg, var(--chrome-light), var(--chrome-dark));
+}
+
+@keyframes snowLandingFleck {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+    26% { opacity: 0.56; }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--fleck-x)), calc(-50% + var(--fleck-y))) scale(1); }
+}
+
+.environment-effects.is-ambient-animated .environment-atmosphere--halloween-mist {
+    animation: halloweenMistDrift 48s ease-in-out infinite alternate;
+    will-change: transform, opacity;
+}
+
+:root[data-seasonal-theme="halloween"] .environment-atmosphere--ground-plane {
+    background:
+        radial-gradient(ellipse 105% 100% at 50% 100%, rgba(25, 32, 41, 0.22) 0%, rgba(23, 30, 39, 0.16) 58%, rgba(22, 29, 38, 0.055) 86%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(30, 37, 47, 0.045) 18%, rgba(27, 34, 43, 0.09) 59%, rgba(23, 29, 38, 0.14) 100%);
+}
+
+.environment-lighting--distant-lightning {
+    background:
+        radial-gradient(ellipse 54% 42% at 73% 15%, rgba(177, 202, 228, 0.42) 0%, rgba(143, 171, 203, 0.14) 35%, transparent 100%),
+        linear-gradient(180deg, rgba(166, 192, 221, 0.11), transparent 48%);
+    opacity: 0;
+    animation: distantLightning 46s linear infinite;
+}
+
+.environment-lighting--rain-lanterns {
+    overflow: visible;
+}
+
+.environment-lighting--halloween-moonlight {
+    background:
+        radial-gradient(ellipse 31% 36% at 83% 16%, rgba(207, 195, 222, 0.19), rgba(166, 151, 190, 0.075) 48%, transparent 100%),
+        linear-gradient(180deg, rgba(174, 161, 198, 0.05), transparent 48%);
+}
+
+.environment-lighting--halloween-moonlight::before {
+    content: "";
+    position: absolute;
+    top: calc(16% - clamp(18px, 2.2vw, 27px));
+    right: calc(17% - clamp(18px, 2.2vw, 27px));
+    width: clamp(36px, 4.4vw, 54px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 33% 28%, rgba(255, 253, 247, 0.42) 0 12%, transparent 13%),
+        radial-gradient(circle at 66% 58%, rgba(131, 120, 148, 0.2) 0 8%, transparent 9%),
+        radial-gradient(circle at 39% 69%, rgba(131, 120, 148, 0.14) 0 10%, transparent 11%),
+        radial-gradient(circle, #e7e1ec 0%, #d8d1e0 68%, #c3b9cf 100%);
+    box-shadow:
+        0 0 12px rgba(235, 227, 245, 0.34),
+        0 0 34px rgba(202, 187, 222, 0.24),
+        0 0 88px rgba(176, 158, 202, 0.15);
+    opacity: 0.5;
+}
+
+.environment-lighting--halloween-moonlight::after {
+    content: "";
+    position: absolute;
+    top: calc(16% - 9px);
+    right: calc(17% - clamp(45px, 5vw, 66px));
+    width: clamp(90px, 10vw, 132px);
+    height: 18px;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 50% 50%, rgba(55, 52, 70, 0.48) 0%, rgba(81, 76, 98, 0.33) 45%, rgba(101, 95, 116, 0.1) 70%, transparent 100%);
+    filter: blur(3px);
+}
+
+.environment-effects.is-ambient-animated .environment-lighting--halloween-moonlight::after {
+    animation: halloweenMoonCloud 104s linear -68s infinite;
+    will-change: transform, opacity;
+}
+
+.halloween-cobweb {
+    opacity: 0.28;
+}
+
+.halloween-cobweb--flipped {
+    transform: translate(-50%, -50%) scaleX(-1);
+}
+
+.halloween-ground-decoration {
+    opacity: 0.94;
+    filter: drop-shadow(0 0 12px rgba(238, 142, 64, 0.16));
+}
+
+.halloween-ground-decoration-wrap {
+    position: absolute;
+    z-index: 3;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.halloween-ground-decoration-wrap::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    left: 50%;
+    bottom: 3px;
+    width: 72%;
+    height: 11px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.34);
+    filter: blur(2px);
+    transform: translateX(-50%);
+}
+
+.halloween-ground-decoration-wrap--pumpkin::after {
+    bottom: 10px;
+    left: calc(50% + 2px);
+}
+
+.halloween-ground-decoration-wrap--lantern::after {
+    bottom: 7px;
+    left: calc(50% + 69px);
+}
+
+.halloween-bat {
+    z-index: 2;
+    opacity: 0;
+    filter: drop-shadow(0 0 4px rgba(189, 156, 202, 0.62));
+}
+
+.environment-effects.is-ambient-animated .halloween-bat {
+    animation: halloweenBatFly 56s linear infinite;
+    will-change: transform, opacity;
+}
+
+.environment-lantern-glow {
+    position: absolute;
+    width: clamp(150px, 16vw, 280px);
+    height: clamp(180px, 29vh, 310px);
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 30% 11% at 50% 19%, rgba(255, 228, 190, 0.31) 0%, rgba(255, 208, 154, 0.13) 48%, transparent 100%),
+        radial-gradient(ellipse 53% 30% at 50% 28%, rgba(246, 195, 139, 0.1) 0%, rgba(240, 181, 121, 0.035) 58%, transparent 100%),
+        radial-gradient(ellipse 29% 54% at 50% 52%, rgba(236, 178, 118, 0.035) 0%, rgba(230, 167, 107, 0.012) 58%, transparent 100%);
+    opacity: 0.62;
+    animation: lanternPulse 11.2s ease-in-out infinite;
+}
+
+.environment-lantern-glow--left {
+    left: 12%;
+    top: 49%;
+    animation-duration: 12.8s;
+    animation-delay: -5.4s;
+}
+
+.environment-lantern-glow--center {
+    left: 50%;
+    top: 46%;
+    width: clamp(170px, 18vw, 310px);
+    height: clamp(200px, 32vh, 340px);
+    transform: translateX(-50%);
+    animation-duration: 15.2s;
+    animation-delay: -8.3s;
+}
+
+.environment-lantern-glow--right {
+    right: 12%;
+    top: 49%;
+    animation-duration: 11.7s;
+    animation-delay: -2.2s;
+}
+
+.environment-effects.is-motion-reduced .environment-lighting--distant-lightning {
+    animation: none !important;
+}
+
+@keyframes distantLightning {
+    0%, 60%, 100% { opacity: 0; }
+    61% { opacity: 0.72; }
+    61.5% { opacity: 0.16; }
+    62.1% { opacity: 0.46; }
+    62.8% { opacity: 0.14; }
+    64.2% { opacity: 0; }
+}
+
+@keyframes lanternPulse {
+    0%, 100% { opacity: 0.48; }
+    50% { opacity: 0.9; }
+}
+
+.environment-effects.is-page-hidden *,
+.environment-effects.is-desktop-occluded *,
+.environment-effects.is-page-hidden .environment-lantern-glow,
+.environment-effects.is-desktop-occluded .environment-lantern-glow {
+    animation-play-state: paused !important;
+}
+
+.environment-effects[data-intensity="low"] .environment-atmosphere--cloud-bank {
+    opacity: 0.82;
+}
+
+.environment-effects[data-intensity="high"] .environment-atmosphere--cloud-bank {
+    opacity: 1;
+}
+
+@keyframes cloudBankDrift {
+    from { transform: translate3d(-42px, -4px, 0) scale(1.01); }
+    to { transform: translate3d(54px, 10px, 0) scale(1.03); }
+}
+
+@keyframes christmasCloudDrift {
+    from { transform: translate3d(-2.5%, -3px, 0); }
+    to { transform: translate3d(2.5%, 6px, 0); }
+}
+
+@keyframes newYearsFirework {
+    0%, 55% { opacity: 0; transform: translate(-50%, -50%) scale(0.12); }
+    57% { opacity: 0.82; transform: translate(-50%, -50%) scale(0.92); }
+    60% { opacity: 0.94; transform: translate(-50%, -50%) scale(1); }
+    64% { opacity: 0.72; transform: translate(-50%, -50%) scale(1.14); }
+    69%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.3); }
+}
+
+@keyframes newYearsHorizonDrift {
+    0% { transform: translate3d(-1.2%, 0, 0); opacity: 0.58; }
+    100% { transform: translate3d(1.2%, -1%, 0); opacity: 0.72; }
+}
+
+@keyframes newYearsConfettiDrift {
+    0% { opacity: 0; transform: translate3d(0, 0, 0) rotate(-18deg); }
+    8% { opacity: 0.78; }
+    36% { opacity: 0.64; }
+    78% { opacity: 0.54; }
+    100% { opacity: 0; transform: translate3d(var(--confetti-drift, 0), calc(100vh + 80px), 0) rotate(540deg); }
+}
+
+@keyframes christmasStarTwinkle {
+    from { opacity: 0.62; transform: translate(-50%, -50%) scale(0.84); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+@keyframes halloweenMistDrift {
+    from { transform: translate3d(-2%, 0.4%, 0); opacity: 0.66; }
+    to { transform: translate3d(2%, -0.8%, 0); opacity: 0.76; }
+}
+
+@keyframes halloweenBatFly {
+    0%, 82% { opacity: 0; transform: translate3d(-130px, -50%, 0); }
+    84% { opacity: 0; transform: translate3d(-130px, -50%, 0); }
+    87% { opacity: 0.58; transform: translate3d(15vw, calc(-50% + var(--bat-rise, -12px)), 0); }
+    91% { opacity: 0.62; transform: translate3d(48vw, calc(-50% + var(--bat-dip, 14px)), 0); }
+    95% { opacity: 0.58; transform: translate3d(81vw, calc(-50% + var(--bat-rise, -12px)), 0); }
+    98%, 100% { opacity: 0; transform: translate3d(calc(100vw + 130px), -50%, 0); }
+}
+
+@keyframes halloweenMoonCloud {
+    0%, 66% { opacity: 0; transform: translateX(-120px) scale(0.78); }
+    69% { opacity: 0.34; transform: translateX(-58px) scale(0.94); }
+    73% { opacity: 0.58; transform: translateX(0) scale(1.08); }
+    77% { opacity: 0.3; transform: translateX(62px) scale(1); }
+    81%, 100% { opacity: 0; transform: translateX(126px) scale(0.82); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .environment-atmosphere--cloud-bank {
+        animation: none !important;
+    }
+
+    .environment-atmosphere--christmas-cloud-bank {
+        animation: none !important;
+    }
+
+    .environment-atmosphere--halloween-mist {
+        animation: none !important;
+    }
+
+    .halloween-bat {
+        display: none !important;
+    }
+
+    .environment-lighting--distant-lightning {
+        animation: none !important;
+    }
+
+    .environment-lighting--halloween-moonlight::after {
+        animation: none !important;
+        opacity: 0 !important;
+    }
+
+    .environment-lighting--rain-lanterns .environment-lantern-glow {
+        animation: none !important;
+        opacity: 0.62;
+    }
+}
+
+@media (max-width: 700px) {
+    .environment-select-row,
+    .environment-settings-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .environment-select-row > span {
+        min-width: 0;
+    }
+
+    .environment-suboptions {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+}
+
+/* Selects and controls inherit the active interface accent. */
+.environment-intensity {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}

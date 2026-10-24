@@ -1,5 +1,7 @@
 export function initTaskbarUtilities({ elements }) {
-    const { taskbar, startButton, startMenu, taskbarClock, taskbarTime, taskbarDate } = elements;
+    const { taskbar, startButton, startMenu, taskbarClock, taskbarTime, taskbarDate, fullscreenButton } = elements;
+    const fullscreenHint = document.querySelector(".fullscreen-hint");
+    let fullscreenHintDismissed = false;
     function positionStartMenu() {
         const rect = taskbar.getBoundingClientRect();
         startMenu.style.left = `${Math.max(8, rect.left)}px`;
@@ -62,29 +64,83 @@ export function initTaskbarUtilities({ elements }) {
 
     const timeFormatter = new Intl.DateTimeFormat(undefined, {
         hour: "2-digit",
-        minute: "2-digit"
+        minute: "2-digit",
+        hourCycle: "h23"
     });
     const dateFormatter = new Intl.DateTimeFormat(undefined, {
         dateStyle: "medium"
     });
+    let clockTimeout = 0;
     const updateClock = () => {
         const now = new Date();
-        taskbarClock.dateTime = now.toISOString();
+        taskbarClock.dateTime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}T${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
         taskbarTime.textContent = timeFormatter.format(now);
         taskbarDate.textContent = dateFormatter.format(now);
     };
-    updateClock();
-    window.setTimeout(() => {
+    const scheduleClock = () => {
+        window.clearTimeout(clockTimeout);
+        if (document.hidden) return;
         updateClock();
-        window.setInterval(updateClock, 60_000);
-    }, 60_000 - (Date.now() % 60_000));
+        clockTimeout = window.setTimeout(scheduleClock, 60_000 - (Date.now() % 60_000));
+    };
+    document.addEventListener("visibilitychange", scheduleClock);
+    scheduleClock();
+
+    const updateFullscreenButton = () => {
+        const fullscreen = Boolean(document.fullscreenElement);
+        fullscreenButton?.setAttribute("aria-label", fullscreen ? "Exit fullscreen" : "Enter fullscreen");
+        fullscreenButton?.classList.toggle("is-active", fullscreen);
+        if (fullscreenHint) {
+            const taskbarVisible = !taskbar.classList.contains("taskbar-hidden")
+                && Boolean(fullscreenButton?.getClientRects().length);
+            fullscreenHint.hidden = fullscreenHintDismissed || !fullscreen || !taskbarVisible;
+            if (fullscreen && taskbarVisible && fullscreenButton) {
+                const buttonRect = fullscreenButton.getBoundingClientRect();
+                const hintRect = fullscreenHint.getBoundingClientRect();
+                const left = Math.max(8, Math.min(buttonRect.left + buttonRect.width / 2 - hintRect.width / 2, window.innerWidth - hintRect.width - 8));
+                fullscreenHint.style.left = `${left}px`;
+                fullscreenHint.style.right = "auto";
+                const maxTop = Math.max(8, window.innerHeight - hintRect.height - 8);
+                if (taskbar.classList.contains("taskbar-top")) {
+                    const top = Math.max(8, buttonRect.bottom + 8);
+                    fullscreenHint.style.top = `${Math.min(top, maxTop)}px`;
+                } else {
+                    const top = buttonRect.top - hintRect.height - 8;
+                    fullscreenHint.style.top = `${Math.max(8, Math.min(top, maxTop))}px`;
+                }
+                fullscreenHint.style.bottom = "auto";
+            }
+        }
+    };
+    fullscreenHint?.addEventListener("click", () => {
+        fullscreenHintDismissed = true;
+        fullscreenHint.hidden = true;
+    });
+    fullscreenHint?.addEventListener("keydown", event => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        fullscreenHintDismissed = true;
+        fullscreenHint.hidden = true;
+    });
+    fullscreenButton?.addEventListener("click", async () => {
+        try {
+            if (document.fullscreenElement) await document.exitFullscreen();
+            else await document.documentElement.requestFullscreen();
+        } catch {
+            fullscreenButton.classList.add("fullscreen-failed");
+        }
+    });
+    document.addEventListener("fullscreenchange", updateFullscreenButton);
+    const taskbarObserver = new MutationObserver(updateFullscreenButton);
+    taskbarObserver.observe(taskbar, { attributes: true, attributeFilter: ["class"] });
+    updateFullscreenButton();
 
     window.addEventListener("resize", () => {
         if (!startMenu.hidden) {
             positionStartMenu();
         }
+        if (document.fullscreenElement) updateFullscreenButton();
     });
-
 
     return closeStartMenu;
 }

@@ -2,7 +2,8 @@
 	// ---------------------- Config ----------------------
 	const STORAGE_KEY = "readerSettings";
 	const RESUME_KEY_PREFIX = "storyProgress:"; // per-slug last chapter + scroll
-	const STORIES_INDEX = "/pages/collections/stories/stories.json"; // absolute from site root
+	const ARCHIVE_ROOT = new URL("../../", document.currentScript?.src || window.location.href);
+	const STORIES_INDEX = new URL("pages/collections/stories/stories.json", ARCHIVE_ROOT).href;
 	const RESUME_POPUP_THRESHOLD = 0.05; // don't show resume popup unless progress > 5%
 	
 	// ---------------------- State -----------------------
@@ -18,6 +19,10 @@
 		cozy: false,
 		scrollSaveTimer: null
 	};
+	let chapterRequestId = 0;
+	let chapterAbortController = null;
+	let resumeChoicePending = false;
+	let chapterReady = false;
 	
 	// ---------------------- DOM -------------------------
 	const $ = (s) => document.querySelector(s);
@@ -98,8 +103,10 @@
 	}
 
 	function saveResume(slug, index) {
+		if (resumeChoicePending || !chapterReady) return;
 		try {
-			const ratio = contentEl ? (contentEl.scrollTop / (contentEl.scrollHeight - contentEl.clientHeight)) : 0;
+			const max = contentEl ? contentEl.scrollHeight - contentEl.clientHeight : 0;
+			const ratio = max > 0 ? clamp(contentEl.scrollTop / max, 0, 1) : 0;
 			localStorage.setItem(resumeKey(slug), JSON.stringify({
 				chapterIndex: index,
 				scrollRatio: ratio
@@ -193,7 +200,7 @@
 		state.theme = theme === "day" || theme === "night" ? theme : "default";
 		if (!reader) return;
 
-		// ensure our style rules are present once
+		// ensure the style rules are present once
 		try { ensureThemeTextStyle(); } catch (_) {}
 
 		// reader-level classes (visual skin for reader container)
@@ -298,11 +305,10 @@
 	function makeItRain() {
 		if (!rainFront || !rainBack) return;
 		clearRain();
-		let increment = 0;
-		while (increment < 100) {
-			const gap = Math.floor(Math.random() * 4) + 2; // 2..5
-			increment += gap;
-			const offsetPct = increment;
+		const compact = window.matchMedia("(max-width: 700px), (pointer: coarse)").matches;
+		const dropCount = compact ? 10 : 18;
+		for (let index = 0; index < dropCount; index += 1) {
+			const offsetPct = ((index + 1) / (dropCount + 1)) * 100;
 			const delaySeconds = (Math.random() * 0.9 + 0.05).toFixed(2);
 			const durSeconds = (0.45 + Math.random() * 0.85).toFixed(2);
 
@@ -394,7 +400,7 @@
 		}
 		const inner = popupEl.querySelector(".popup-inner");
 		if (inner) inner.focus();
-		// while popup open, prevent page scroll (reader still scrolls)
+		// while popup open, prevent page scroll (reader still scrolls which might be an issue)
 		document.body.style.overflow = "hidden";
 	}
 
@@ -446,7 +452,7 @@
 		const chapterTitle = story.chapters[chapterIndex].title || `Chapter ${chapterIndex + 1}`;
 		const percent = Math.round((typeof scrollRatio === "number" ? scrollRatio : 0) * 100);
 
-		// build modal (no top-right X) with ARIA attributes
+		// build modal
 		const popup = document.createElement("div");
 		popup.className = "popup popup-resume";
 		popup.setAttribute("role", "dialog");
@@ -482,11 +488,11 @@
 			</div>
 		`;
 
-		// Insert into DOM and use your global modal helpers to inert/blur the background
+		// Insert into DOM and use global modal helpers to inert/blur the background
 		ensureModalBlurStyle();
 		document.body.appendChild(popup);
 
-		// Call your background-inert helper; fall back gracefully if missing.
+		// Call background-inert helper
 		try {
 			disableBackgroundFor(popup);
 		} catch (err) {
@@ -498,12 +504,12 @@
 		// Add resume-only blur class so other popups are not blurred
 		document.body.classList.add("resume-modal-open");
 
-		// Show and mark as open (mirrors your other popups)
+		// Show and mark as open
 		popup.style.display = "block";
 		popup.classList.add("open");
 		popup.setAttribute("aria-hidden", "false");
 
-		// make focus-trap active by using your global variables / handler if available
+		// make focus-trap active by using global variables
 		try {
 			currentPopup = popup;
 			lastToggle = null;
@@ -525,14 +531,21 @@
 		if (resumeBtn) resumeBtn.focus();
 
 		// closure to cleanly remove modal and restore background
-		const close = () => {
-			// remove our focus trap listener
+		let escHandler = null;
+		const close = (discardProgress = false) => {
+			resumeChoicePending = false;
+			if (discardProgress) saveResume(slug, state.chapterIndex);
+			if (escHandler) {
+				document.removeEventListener("keydown", escHandler);
+				escHandler = null;
+			}
+			// remove listener
 			try { document.removeEventListener("keydown", trapFocus); } catch (_) {}
 
 			// remove resume-specific blur class
 			document.body.classList.remove("resume-modal-open");
 
-			// restore inert/background (use your helper if present)
+			// restore inert/background
 			try {
 				restoreBackground();
 			} catch (err) {
@@ -563,12 +576,12 @@
 			renderChapter(idx, 0);
 		};
 
-		// Close on ESC if user presses it (one-time listener)
-		const escHandler = (e) => { if (e.key === "Escape") { close(); } };
-		document.addEventListener("keydown", escHandler, { once: true });
+		// Close on ESC if user presses it
+		escHandler = (e) => { if (e.key === "Escape") close(true); };
+		document.addEventListener("keydown", escHandler);
 
 		// Click outside to close
-		popup.addEventListener("click", (e) => { if (e.target === popup) close(); });
+		popup.addEventListener("click", (e) => { if (e.target === popup) close(true); });
 	}
 
 	// ---------------------- Story Loading ---------------
@@ -630,7 +643,8 @@
 		// Show popup if resume data exists and meets threshold
 		const resumeData = loadResume(slug);
 		if (resumeData && state.story && typeof resumeData.scrollRatio === "number" && resumeData.scrollRatio > RESUME_POPUP_THRESHOLD) {
-			// Load the saved chapter first, then offer popup to resume within it (so can extract the chapter name).
+			resumeChoicePending = true;
+			// Load the saved chapter first, then offer popup to resume within it (to extract the chapter name).
 			renderChapter(resumeData.chapterIndex, 0).then(() => {
 				showResumePopup(slug, resumeData);
 			});
@@ -648,10 +662,22 @@
 		));
 	}
 
+	function renderMarkdownSafely(markdown, html) {
+		if (window.DOMPurify && typeof window.DOMPurify.sanitize === 'function') {
+			return window.DOMPurify.sanitize(html);
+		}
+		return escapeHtml(markdown).replace(/\r?\n/g, '<br>');
+	}
+
 	// ---------------------- Render Chapter ----------------
 	async function renderChapter(index, scrollRatio = 0) {
 		if (!titleEl || !contentEl || !state.story) return;
+		chapterReady = false;
 
+		const requestId = ++chapterRequestId;
+		chapterAbortController?.abort();
+		const controller = new AbortController();
+		chapterAbortController = controller;
 		state.chapterIndex = clamp(index, 0, state.story.chapters.length - 1);
 		const chapter = state.story.chapters[state.chapterIndex];
 
@@ -664,14 +690,18 @@
 		// Load markdown -> text
 		let mdText = "";
 		try {
-			const res = await fetch(chapter.file, { cache: "no-cache" });
+			const res = await fetch(chapter.file, { cache: "no-cache", signal: controller.signal });
 			if (!res.ok) throw new Error(`Failed to load chapter (${res.status})`);
 			mdText = await res.text();
 		} catch (err) {
+			if (requestId !== chapterRequestId || err?.name === "AbortError") return;
+			if (chapterAbortController === controller) chapterAbortController = null;
 			renderError(`Could not load chapter content.<br><small>${escapeHtml(String(err.message || err))}</small>`);
 			clearExistingNav();
 			return;
 		}
+		if (requestId !== chapterRequestId) return;
+		if (chapterAbortController === controller) chapterAbortController = null;
 
 		// Detect and strip first markdown heading (# or ##)
 		let mdTextAdjusted = mdText;
@@ -698,20 +728,24 @@
 		}
 
 		// Purify and inject content
-		contentEl.innerHTML = `<div class="prose">${DOMPurify.sanitize(html)}</div>`;
+		contentEl.innerHTML = `<div class="prose">${renderMarkdownSafely(mdTextAdjusted, html)}</div>`;
 		buildEndNav();
 
 		// Restore scroll position (after paint for accuracy)
 		requestAnimationFrame(() => {
+			if (requestId !== chapterRequestId) return;
+			// CSS smooth scrolling must not animate restoration or persist an
+			// intermediate position before the requested offset is reached.
+			const previousScrollBehavior = contentEl.style.scrollBehavior;
+			contentEl.style.scrollBehavior = "auto";
 			contentEl.scrollTop = Math.round(
-				scrollRatio * (contentEl.scrollHeight - contentEl.clientHeight)
+				clamp(Number(scrollRatio) || 0, 0, 1) * Math.max(0, contentEl.scrollHeight - contentEl.clientHeight)
 			);
+			contentEl.style.scrollBehavior = previousScrollBehavior;
+			chapterReady = true;
+			updateProgress();
+			saveResume(state.story.slug, state.chapterIndex);
 		});
-
-		updateProgress();
-
-		// Persist progress
-		saveResume(state.story.slug, state.chapterIndex);
 	}
 
 	function clearExistingNav() {
@@ -755,6 +789,14 @@
 
 	// ---------------------- Events ----------------------
 	if (contentEl) contentEl.addEventListener("scroll", updateProgress, { passive: true });
+	window.addEventListener("pagehide", () => {
+		clearTimeout(state.scrollSaveTimer);
+		state.scrollSaveTimer = null;
+		if (state.story) saveResume(state.story.slug, state.chapterIndex);
+		chapterRequestId += 1;
+		chapterAbortController?.abort();
+		chapterAbortController = null;
+	});
 	window.addEventListener("resize", () => { updateProgress(); if (state.cozy) { makeItRain(); } });
 
 	if (btnFontInc) btnFontInc.addEventListener("click", () => setFontSize(state.fontSize + 1));
@@ -810,7 +852,7 @@
 			(infoPopup && infoPopup.contains(event.target));
 		if (!clickedToggle && !clickedInsidePopup) {
 			if (settingsPopup) settingsPopup.style.display = settingsPopup.classList.contains("open") ? "block" : settingsPopup.style.display;
-			// We keep close logic in toggle/closePopup; user clicks outside are handled below by checking containment:
+			// Close logic in toggle/closePopup
 			if (settingsPopup && settingsPopup.classList.contains("open") && !settingsPopup.contains(event.target)) closePopup(settingsPopup);
 			if (infoPopup && infoPopup.classList.contains("open") && !infoPopup.contains(event.target)) closePopup(infoPopup);
 		}
@@ -844,7 +886,6 @@
 	
 	// ---------------------- Sync with per-page reader-mode (sessionStorage) ----------------
 	// If the inline page script sets a session-local reader mode (storiesReaderMode),
-	// make sure stories.js respects it (so the frame text color follows time-of-day).
 	try {
 		const savedReaderMode = (function() { try { return sessionStorage.getItem('storiesReaderMode'); } catch (_) { return null; } })();
 		if (savedReaderMode === 'day' || savedReaderMode === 'night') {

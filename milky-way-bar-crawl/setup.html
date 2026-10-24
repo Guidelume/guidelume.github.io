@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 
 	<title>MWBC | Setup</title>
 	<meta property="og:title" content="Milky Way Bar Crawl">
@@ -21,6 +21,7 @@
 	<link rel="stylesheet" href="../engine/css/guide.css" />
     <link rel="stylesheet" href="../engine/css/accessible-fonts.css" />
 	<link rel="stylesheet" href="./custom/css/me1.css" />
+    <script src="./custom/js/metadata.js" defer></script>
 	<style>
 	:root {
 		--accent-r: 230;   /* darker orange */
@@ -116,7 +117,7 @@
 			
 			<div class="nav-updated" role="contentinfo">
 				Last Updated:<br>
-				August 2026 · v2.1
+				<span data-guide-updated>October 2026 · v2.2</span>
 			</div>
 			
 		</aside>
@@ -140,7 +141,7 @@
 
 					<!-- Panel 0 -->
 					<section id="preamble" class="panel open" data-index="0">
-						<header class="panel-header" role="button" aria-expanded="true">
+						<header class="panel-header" role="button" tabindex="0" aria-expanded="true">
 							<h3>Preparing the Games</h3>
 							<div class="caret">▾</div>
 						</header>
@@ -257,7 +258,7 @@
 
 					<!-- Panel 1 -->
 					<section id="requirements" class="panel" data-index="1">
-						<header class="panel-header" role="button" aria-expanded="false">
+						<header class="panel-header" role="button" tabindex="0" aria-expanded="false">
 							<h3>Preparing the Mod Manager</h3>
 							<div class="caret">▸</div>
 						</header>
@@ -310,7 +311,7 @@
 
 					<!-- Panel 2 -->
 					<section id="installing" class="panel" data-index="2">
-						<header class="panel-header" role="button" aria-expanded="false">
+						<header class="panel-header" role="button" tabindex="0" aria-expanded="false">
 							<h3>Installing Mods</h3>
 							<div class="caret">▸</div>
 						</header>
@@ -439,7 +440,7 @@
 					
 					<!-- Panel 3 -->
 					<section id="route" class="panel" data-index="3">
-						<header class="panel-header" role="button" aria-expanded="false">
+						<header class="panel-header" role="button" tabindex="0" aria-expanded="false">
 							<h3>Choosing Your Route</h3>
 							<div class="caret">▸</div>
 						</header>
@@ -492,7 +493,7 @@
 
 					<!-- Panel 4 -->
 					<section id="launcher" class="panel" data-index="4">
-						<header class="panel-header" role="button" aria-expanded="false">
+						<header class="panel-header" role="button" tabindex="0" aria-expanded="false">
 							<h3>Aperitif: Launcher</h3>
 							<div class="caret">▸</div>
 						</header>

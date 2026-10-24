@@ -1,7 +1,8 @@
 (() => {
 	// ---------------------- Config ----------------------
 	const STORAGE_KEY = "readerSettings";
-	const STORIES_INDEX = "/pages/collections/basement/data.json"; // absolute from site root (adjust if needed)
+	const ARCHIVE_ROOT = new URL("../../", document.currentScript?.src || window.location.href);
+	const STORIES_INDEX = new URL("pages/collections/basement/data.json", ARCHIVE_ROOT).href;
 	
 	// ---------------------- State -----------------------
 	const state = {
@@ -255,11 +256,10 @@
 	function makeItRain() {
 		if (!rainFront || !rainBack) return;
 		clearRain();
-		let increment = 0;
-		while (increment < 100) {
-			const gap = Math.floor(Math.random() * 4) + 2; // 2..5
-			increment += gap;
-			const offsetPct = increment;
+		const compact = window.matchMedia("(max-width: 700px), (pointer: coarse)").matches;
+		const dropCount = compact ? 10 : 18;
+		for (let index = 0; index < dropCount; index += 1) {
+			const offsetPct = ((index + 1) / (dropCount + 1)) * 100;
 			const delaySeconds = (Math.random() * 0.9 + 0.05).toFixed(2);
 			const durSeconds = (0.45 + Math.random() * 0.85).toFixed(2);
 
@@ -407,6 +407,13 @@
 			{ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]
 		));
 	}
+
+	function renderMarkdownSafely(markdown, html) {
+		if (window.DOMPurify && typeof window.DOMPurify.sanitize === 'function') {
+			return window.DOMPurify.sanitize(html);
+		}
+		return escapeHtml(markdown).replace(/\r?\n/g, '<br>');
+	}
 	
 	// ---------------------- Render Entry ----------------------
 	async function renderEntry() {
@@ -417,7 +424,11 @@
 		let mdText = "";
 
 		try {
-			const res = await fetch(`/pages/collections/basement/${state.entry.id}/entry.md`, {
+			const entryUrl = new URL(
+				`pages/collections/basement/${encodeURIComponent(state.entry.id)}/entry.md.txt`,
+				ARCHIVE_ROOT
+			).href;
+			const res = await fetch(entryUrl, {
 				cache: "no-cache"
 			});
 
@@ -449,7 +460,7 @@
 			${metadata}
 
 			<div id="entry-body" class="prose">
-				${DOMPurify.sanitize(html)}
+				${renderMarkdownSafely(mdText, html)}
 			</div>
 		`;
 		
@@ -467,6 +478,11 @@
 	}
 	
 	function buildMetadata(entry) {
+		const thumbnailUrl = new URL(
+			`pages/collections/basement/${encodeURIComponent(entry.id)}/thumbnail.webp`,
+			ARCHIVE_ROOT
+		).href;
+		const fallbackThumbnailUrl = new URL("custom/img/thumb-fallback.png", ARCHIVE_ROOT).href;
 
 		const tags = (entry.tags || [])
 			.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`)
@@ -477,8 +493,9 @@
 
 			<div class="entry-thumb">
 				<img
-					src="/pages/collections/basement/${entry.id}/thumbnail.webp"
-					alt="${escapeHtml(entry.title)}">
+					 src="${thumbnailUrl}"
+					 alt="${escapeHtml(entry.title)}"
+					 onerror="this.onerror=null;this.src='${fallbackThumbnailUrl}'">
 			</div>
 
 			<div class="entry-summary">

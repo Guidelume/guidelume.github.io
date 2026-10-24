@@ -1,0 +1,114 @@
+.looking-glass-window .glass-content,
+.looking-glass-window.is-maximized .glass-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+    font-size: calc(16px * var(--text-size-scale));
+}
+.glass-content [hidden] { display: none !important; }
+.glass-toolbar, .glass-address-form, .glass-editor, .glass-editor-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    flex-wrap: wrap;
+}
+.glass-toolbar { padding: 0.3em 0.5em; border-bottom: 1px solid var(--text-muted); }
+.glass-address-form { flex: 1 1 25em; }
+.glass-address-form label { font-weight: 700; font-size: 0.9em; }
+.glass-address-form input { flex: 1 1 13em; min-width: 5em; }
+.glass-content input {
+    font: inherit;
+    background: var(--bg-mid);
+    color: var(--text-primary);
+    border: 1px solid var(--text-secondary);
+    padding: 0.55em 0.65em;
+    border-radius: 3px;
+    min-width: 0;
+}
+.glass-content input[aria-invalid="true"] { border-color: var(--accent-strong); }
+.glass-content button, .glass-external {
+    font: inherit;
+    padding: 0.5em 0.75em;
+    border: 1px solid var(--frame-dark);
+    border-radius: 3px;
+    box-shadow: var(--ui-shadow);
+    background: linear-gradient(var(--button-light), var(--button-dark));
+    color: #101010;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+}
+.glass-content button:hover, .glass-external:hover { background: var(--accent-light); }
+.glass-content button:disabled { opacity: 0.5; cursor: default; }
+.glass-toolbar button, .glass-toolbar .glass-external, .glass-toolbar input {
+    padding: 0.25em 0.5em;
+}
+.glass-toolbar button, .glass-toolbar .glass-external { white-space: nowrap; }
+.glass-unload { display: inline-flex; align-items: center; justify-content: center; gap: 0.3em; }
+.glass-unload svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
+.glass-content .glass-status { margin: 0; padding: 0.35em 0.85em 0.6em; color: var(--text-secondary); }
+.glass-status[data-state="error"] { color: var(--accent-light); }
+.glass-editor { padding: 0.75em; border-bottom: 1px solid var(--text-muted); background: var(--bg-mid); }
+.glass-editor h2 { width: 100%; margin: 0; font-size: 1em; }
+.glass-editor label { display: flex; flex: 1 1 13em; flex-direction: column; gap: 0.3em; }
+.glass-layout { display: flex; flex: 1; min-height: 0; overflow: hidden; }
+.glass-sidebar {
+    flex: 0 0 18em;
+    max-width: 35%;
+    min-width: 12em;
+    overflow: auto;
+    padding: 1em;
+    border-right: 1px solid var(--text-muted);
+    background: var(--bg-mid);
+    overflow-wrap: anywhere;
+}
+.glass-sidebar h2 { margin: 0 0 0.4em; font-size: 1.1em; color: var(--accent-light); }
+.glass-sidebar h2:not(:first-child) { margin-top: 1.5em; }
+.glass-sidebar h3 { font-size: 1em; margin: 1em 0 0.5em; }
+.glass-hint { color: var(--text-secondary); font-size: 0.9em; }
+.glass-collection ul { list-style: none; margin: 0; padding: 0; }
+.glass-collection li { margin-bottom: 0.65em; }
+.glass-content .glass-bookmark {
+    width: 100%;
+    text-align: left;
+    font-weight: 400;
+    background: var(--window-content-top);
+    color: var(--text-primary);
+    border: 1px solid var(--text-muted);
+    box-shadow: none;
+    overflow-wrap: anywhere;
+}
+.glass-content .glass-bookmark:hover, .glass-content .glass-bookmark.is-selected {
+    background: var(--window-content-top);
+    border-color: var(--accent-strong);
+    color: var(--accent-light);
+}
+.glass-bookmark-actions { display: flex; gap: 0.4em; margin-top: 0.35em; }
+.glass-bookmark-actions button { font-size: 0.85em; }
+.glass-view { flex: 1; min-width: 0; min-height: 0; overflow: auto; display: flex; flex-direction: column; }
+.glass-empty { margin: auto; padding: 2em; max-width: 34em; text-align: center; }
+.glass-empty img { width: 4em; height: 4em; }
+.glass-empty h1 { font-size: 1.6em; color: var(--accent-light); }
+.glass-empty p { line-height: 1.6; }
+.glass-stage {
+    flex: 1 0 auto;
+    min-height: min-content;
+    width: 100%;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.glass-player { display: block; flex: none; border: 0; width: 100%; height: auto; aspect-ratio: 16 / 9; }
+@media (max-width: 700px) {
+    .glass-layout { flex-direction: column; overflow: auto; }
+    .glass-sidebar { flex: 0 0 auto; max-width: none; max-height: 12em; min-width: 0; border-right: 0; border-bottom: 1px solid var(--text-muted); }
+    .glass-view { flex: 1 0 20em; overflow: visible; }
+    .glass-address-form { flex-basis: 100%; }
+    .glass-status { font-size: 0.9em; }
+}
+@media (max-height: 650px) {
+    .looking-glass-window.is-maximized .glass-content { overflow: auto; }
+    .glass-layout { flex: 1 0 22em; }
+}

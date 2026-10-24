@@ -300,15 +300,15 @@
 	border-radius: 999px;
 	display: inline-grid;
 	place-items: center;
-	background: var(--btn-frost-bg);
-	border: 1px solid var(--btn-frost-border);
-	backdrop-filter: blur(12px) saturate(160%);
-	-webkit-backdrop-filter: blur(12px) saturate(160%);
-	box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+	background: var(--surface-bg);
+	border: 1px solid var(--surface-border);
+	backdrop-filter: var(--surface-backdrop);
+	-webkit-backdrop-filter: var(--surface-backdrop);
+	box-shadow: var(--surface-shadow);
 	transition: transform 0.14s ease, background 0.12s ease, border-color 0.12s ease, left 120ms ease, top 120ms ease;
 	z-index: 1202;
 	text-decoration: none;
-	color: #ffffff;
+	color: var(--surface-color);
 	font-weight: 600;
 	font-size: 0.95rem;
 	white-space: nowrap;
@@ -328,15 +328,8 @@
 /* hover/active behavior preserved */
 .topbar-back-btn:hover {
 	transform: translateY(-3px);
-	background: rgba(255,255,255,0.14);
-	border-color: rgba(255,255,255,0.44);
-}
-
-/* adapt to day theme (darker surface to keep contrast) */
-body.theme-day .topbar-back-btn {
-	background: var(--btn-day-bg);
-	border: 1px solid var(--btn-day-border);
-	box-shadow: 0 12px 36px rgba(0,0,0,0.45);
+	background: var(--surface-hover-bg);
+	border-color: var(--surface-hover-border);
 }
 
 /* ensure the floating back control hides on very small screens (optional)

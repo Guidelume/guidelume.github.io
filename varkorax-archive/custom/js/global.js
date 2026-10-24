@@ -1,17 +1,132 @@
-// File: custom/js/global.js
+// Archive Global JS
+
+/* ---------- Embedded-page resource lifecycle ---------- */
+const lifecycleModuleUrl = new URL("../../../engine/js/resource-lifecycle.js", document.currentScript.src);
+void import(lifecycleModuleUrl.href).catch(() => {});
 
 /* ---------- Initial load ---------- */
 window.addEventListener("load", () => {
 	document.body.classList.add("ready");
 });
 
+function readStoredValue(key, scope = "local") {
+	try {
+		const storage = scope === "session" ? window.sessionStorage : window.localStorage;
+		return storage.getItem(key);
+	} catch (_) {
+		return null;
+	}
+}
+
+function writeStoredValue(key, value, scope = "local") {
+	try {
+		const storage = scope === "session" ? window.sessionStorage : window.localStorage;
+		storage.setItem(key, value);
+		return true;
+	} catch (_) {
+		return false;
+	}
+}
+
+function removeStoredValue(key, scope = "local") {
+	try {
+		const storage = scope === "session" ? window.sessionStorage : window.localStorage;
+		storage.removeItem(key);
+		return true;
+	} catch (_) {
+		return false;
+	}
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 	ensureA11yStatus();
-	setBackgroundAndText();
 	scheduleUpdates();
 	applyInitialFontAccessibleState();
+	initTimeOfDayMenu();
 	wirePopupButtons();
 });
+
+/* ---------- Shared Guidelume time-of-day control ---------- */
+function initTimeOfDayMenu() {
+	const toggle = document.getElementById("settings-toggle");
+	if (!toggle) return;
+	toggle.dataset.timeMenu = "true";
+	toggle.setAttribute("aria-label", "Time of day settings");
+	toggle.setAttribute("aria-haspopup", "true");
+	toggle.setAttribute("aria-controls", "time-of-day-menu");
+	toggle.setAttribute("data-tooltip", "Time of day");
+	const icon = toggle.querySelector("img");
+	if (icon) icon.alt = "Time of day";
+
+	// The old panel is redundant now that the three existing display modes are directly available.
+	document.getElementById("settings-popup")?.remove();
+
+	const menu = document.createElement("div");
+	menu.id = "time-of-day-menu";
+	menu.className = "time-of-day-menu";
+	menu.setAttribute("role", "radiogroup");
+	menu.setAttribute("aria-label", "Time of day");
+	menu.hidden = true;
+	menu.innerHTML = `
+		<p class="time-of-day-heading">Time of day</p>
+		<button type="button" role="radio" data-time-mode="default">Auto (Default)</button>
+		<button type="button" role="radio" data-time-mode="day">Always Day</button>
+		<button type="button" role="radio" data-time-mode="night">Always Night</button>`;
+	document.body.append(menu);
+
+	function syncMenu() {
+		const savedMode = readStoredValue("userMode");
+		const mode = savedMode === "day" || savedMode === "night" ? savedMode : null;
+		menu.querySelectorAll("[data-time-mode]").forEach(option => {
+			const selected = (mode === null && option.dataset.timeMode === "default") || mode === option.dataset.timeMode;
+			option.setAttribute("aria-checked", String(selected));
+			option.classList.toggle("selected", selected);
+		});
+	}
+	function closeMenu(returnFocus = false) {
+		menu.hidden = true;
+		toggle.setAttribute("aria-expanded", "false");
+		if (returnFocus) toggle.focus();
+	}
+	toggle.addEventListener("click", event => {
+		event.preventDefault();
+		event.stopPropagation();
+		menu.hidden = !menu.hidden;
+		toggle.setAttribute("aria-expanded", String(!menu.hidden));
+		if (!menu.hidden) {
+			syncMenu();
+			menu.querySelector('[aria-checked="true"]')?.focus();
+		}
+	});
+	menu.addEventListener("click", event => {
+		const option = event.target.closest("[data-time-mode]");
+		if (!option) return;
+		setMode(option.dataset.timeMode === "default" ? null : option.dataset.timeMode);
+		syncMenu();
+		closeMenu(true);
+	});
+	menu.addEventListener("keydown", event => {
+		if (event.key === "Escape") {
+			event.preventDefault();
+			closeMenu(true);
+		} else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+			event.preventDefault();
+			const options = [...menu.querySelectorAll("[data-time-mode]")];
+			const current = options.indexOf(document.activeElement);
+			options[(current + (event.key === "ArrowDown" ? 1 : options.length - 1)) % options.length].focus();
+		}
+	});
+	document.addEventListener("click", event => {
+		if (!menu.hidden && !menu.contains(event.target) && !toggle.contains(event.target)) closeMenu();
+	}, true);
+	document.addEventListener("keydown", event => {
+		if (event.key === "Escape" && !menu.hidden) closeMenu(true);
+	});
+	window.addEventListener("storage", event => {
+		if (event.key === "userMode") syncMenu();
+	});
+	syncMenu();
+}
 
 /* ---------- Base Path & helpers ---------- */
 let BASE_PATH = "./";
@@ -27,9 +142,9 @@ if (path.includes("/pages/stories/") || path.includes("/pages/collections/") || 
 }
 
 function joinPath(base, relative) {
-	base = base.replace(/\/+$/, "");
-	relative = relative.replace(/^\/+/, "");
-	return base + "/" + relative;
+	const archiveRoot = new URL(base, window.location.href);
+	const archiveRelative = relative.replace(/^(?:\.\.?\/)+/, "");
+	return new URL(archiveRelative, archiveRoot).href;
 }
 
 /* auto-resolve data-link and data-src */
@@ -58,24 +173,17 @@ const images = [
 	`${BASE_PATH}custom/img/bg/bg12.png`
 ];
 
-// Preload images
-const preloaded = [];
-images.forEach(src => {
-	const img = new Image();
-	img.src = src;
-	preloaded.push(img);
-});
-
 const bg1 = document.getElementById("bg1");
 const bg2 = document.getElementById("bg2");
 let activeLayer = bg1 || null;
 
 function setBackgroundAndText() {
-	// Respect Cozy mode: don't change background while cozy is active
-	if (localStorage.getItem("isCozy") === "true") return;
+	// Cozy mode freezes the scenery and page theme, but shared control surfaces
+	// still need to follow any day/night preference changes.
+	const isCozy = readStoredValue("isCozy") === "true";
 
 	const hasBackground = bg1 && bg2 && activeLayer;
-	const userMode = localStorage.getItem("userMode"); // 'day' | 'night' | null
+	const userMode = readStoredValue("userMode"); // 'day' | 'night' | null
 	const hour = new Date().getHours();
 	const index = Math.floor(hour / 2);
 	const isNightByClock = (hour >= 22 || hour < 6);
@@ -97,7 +205,7 @@ function setBackgroundAndText() {
 		themeClass = isNightByClock ? "theme-night" : "theme-day";
 	}
 
-	if (hasBackground) {
+	if (hasBackground && !isCozy) {
 		const nextLayer = (activeLayer === bg1) ? bg2 : bg1;
 		nextLayer.style.backgroundImage = `url(${imageToShow})`;
 		void nextLayer.offsetWidth;
@@ -107,18 +215,31 @@ function setBackgroundAndText() {
 	}
 	
 	// Update readable text color for main content (but modals remain white)
-	document.querySelectorAll(".content:not(.popup .content), .readable-panel").forEach(el => {
-		el.style.color = textColor;
-	});
+	if (!isCozy) {
+		document.querySelectorAll(".content:not(.popup .content), .readable-panel").forEach(el => {
+			el.style.color = textColor;
+		});
+	}
 
 	// Set theme class on body (used by CSS) BUT skip this on story pages.
 	// Story pages manage theme locally
-	if (!IS_STORIES_PAGE) {
+	if (!IS_STORIES_PAGE && !isCozy) {
 		document.body.classList.remove("theme-day", "theme-night", "theme-default");
 		if (themeClass) document.body.classList.add(themeClass);
 	}
 
-	// sync modal text too (modals are forced white in CSS, but keep this for completion)
+	// Surface styling follows the effective site theme, while an explicit reader
+	// theme stays local to that reader page.
+	let surfaceTheme = themeClass === "theme-night" ? "night" : "day";
+	if (IS_STORIES_PAGE) {
+		if (document.body.classList.contains("theme-day")) surfaceTheme = "day";
+		else if (document.body.classList.contains("theme-night")) surfaceTheme = "night";
+	}
+	if (document.body.dataset.surfaceTheme !== surfaceTheme) {
+		document.body.dataset.surfaceTheme = surfaceTheme;
+	}
+
+	// sync modal text too 
 	updateModalTextColors();
 }
 
@@ -141,16 +262,16 @@ function scheduleUpdates() {
 /* expose function to change mode from settings */
 function setMode(mode) {
 	if (mode === "day" || mode === "night") {
-		localStorage.setItem("userMode", mode);
+		writeStoredValue("userMode", mode);
 	} else {
-		localStorage.removeItem("userMode");
+		removeStoredValue("userMode");
 	}
 	setBackgroundAndText();
 }
 
 /* make sure popup/modal text inherits white (CSS handles with !important) */
 function updateModalTextColors() {
-	// Content inside .popup is forced white through CSS; nothing required here.
+	// Content inside .popup is forced white through CSS
 }
 
 /* ---------- Accessibility helpers ---------- */
@@ -192,12 +313,19 @@ function showToast(text, ms = 1800) {
 	container.appendChild(t);
 	announce(text);
 	requestAnimationFrame(() => t.classList.add("show"));
+	let removalTimer = null;
+	const removeToast = () => {
+		if (removalTimer !== null) clearTimeout(removalTimer);
+		if (t.parentNode) t.parentNode.removeChild(t);
+	};
 	setTimeout(() => {
 		t.classList.remove("show");
 		t.classList.add("hide");
-		t.addEventListener("transitionend", () => {
-			try { container.removeChild(t); } catch {}
+		t.addEventListener("transitionend", (event) => {
+			if (event.target === t) removeToast();
 		}, { once: true });
+		// Reduced-motion styles can remove transitions, so transitionend is not guaranteed.
+		removalTimer = setTimeout(removeToast, 300);
 	}, ms);
 }
 
@@ -205,7 +333,7 @@ function showToast(text, ms = 1800) {
 /* Apply the stored accessible-font preference (button now lives in settings iframe) */
 function applyInitialFontAccessibleState() {
 	try {
-		const saved = localStorage.getItem("fontAccessible") === "true";
+		const saved = localStorage.getItem("accessibleFonts") === "true";
 		if (saved) document.body.classList.add("font-accessible");
 		else document.body.classList.remove("font-accessible");
 	} catch (e) {
@@ -218,8 +346,8 @@ window.addEventListener("storage", (e) => {
 	if (e.key === "userMode" || e.key === "isCozy" || e.key === "cozyMode") {
 		setBackgroundAndText();
 	}
-	if (e.key === "fontAccessible") {
-		const enabled = localStorage.getItem("fontAccessible") === "true";
+	if (e.key === "accessibleFonts") {
+		const enabled = readStoredValue("accessibleFonts") === "true";
 		if (enabled) document.body.classList.add("font-accessible");
 		else document.body.classList.remove("font-accessible");
 		const fontToggle = document.getElementById("font-toggle");
@@ -243,6 +371,7 @@ let inertedElements = [];
 // A simple queue for popup requests
 const modalQueue = []; // items: { popup, toggle, priority }
 let _processingQueue = false;
+const pendingPopupCloses = new WeakMap();
 
 // When a toggle is clicked briefly suppress the global document click handler
 // to avoid the "open then immediately close" race.
@@ -383,7 +512,7 @@ function openPopup(popup, toggle) {
 			}
 			// now proceed to open the high-priority popup below
 		} else {
-			// New popup <= current priority → queue it and return (in theory)
+			// New popup <= current priority -> queue it and return (in theory)
 			modalQueue.push({ popup, toggle, priority: newPriority });
 			showToast("Panel queued", 900);
 			return;
@@ -426,6 +555,8 @@ function openPopup(popup, toggle) {
 
 /* finalize close after animation or force-close (now also triggers processing the queue) */
 function finalizeClose(popup, toggle) {
+	pendingPopupCloses.get(popup)?.();
+	if (currentPopup !== popup) return;
 	// Defensive: handle case where popup is already hidden
 	try { popup.style.display = "none"; } catch {}
 	popup.classList.remove("open");
@@ -474,15 +605,38 @@ function closePopup(popup, toggle) {
 		return;
 	}
 
+	if (pendingPopupCloses.has(popup)) return;
+	let timer;
+	let finished = false;
+	const cleanup = () => {
+		finished = true;
+		clearTimeout(timer);
+		popup.removeEventListener("animationend", onEnd);
+		popup.removeEventListener("animationcancel", onEnd);
+		pendingPopupCloses.delete(popup);
+	};
+	const finish = () => {
+		if (finished) return;
+		cleanup();
+		finalizeClose(popup, toggle);
+	};
+	const onEnd = ev => {
+		if (ev.target === popup && ev.animationName === "modal-out") finish();
+	};
+	pendingPopupCloses.set(popup, cleanup);
+	popup.addEventListener("animationend", onEnd);
+	popup.addEventListener("animationcancel", onEnd);
 	popup.classList.remove("open");
 	popup.classList.add("closing");
 
-	const onEnd = (ev) => {
-		if (ev.target !== popup) return;
-		popup.removeEventListener("animationend", onEnd);
-		finalizeClose(popup, toggle);
-	};
-	popup.addEventListener("animationend", onEnd);
+	const style = getComputedStyle(popup);
+	const milliseconds = value => (parseFloat(value) || 0) * (value.trim().endsWith("ms") ? 1 : 1000);
+	const durations = style.animationDuration.split(",").map(milliseconds);
+	const delays = style.animationDelay.split(",").map(milliseconds);
+	const wait = Math.max(0, ...style.animationName.split(",").map((name, index) =>
+		name.trim() === "none" ? 0 : durations[index % durations.length] + delays[index % delays.length]));
+	if (wait === 0) finish();
+	else timer = setTimeout(finish, wait + 50);
 }
 
 /* hide all popups (animated close if open) also clears the queued items */
@@ -519,7 +673,7 @@ function wirePopupButtons() {
 			togglePopupFor(creditsToggle, creditsPopup);
 		});
 	}
-	if (settingsToggle && settingsPopup) {
+	if (settingsToggle && settingsPopup && !settingsToggle.dataset.timeMenu) {
 		settingsToggle.addEventListener("click", (e) => {
 			try { e.stopImmediatePropagation(); } catch (err) {}
 			e.preventDefault();
@@ -658,12 +812,10 @@ window.setBackgroundAndText = setBackgroundAndText;
 	}
 
 	function accept(remember) {
-		try {
-			if (remember) localStorage.setItem(MATURE_KEY, "true");
-			else sessionStorage.setItem(MATURE_KEY, "true");
-		} catch (err) {
-			console.warn("Could not persist mature acknowledgement:", err);
-		}
+		const persisted = remember
+			? writeStoredValue(MATURE_KEY, "true")
+			: writeStoredValue(MATURE_KEY, "true", "session");
+		if (!persisted) console.warn("Could not persist mature acknowledgement.");
 		hideMatureModal();
 		showToast("Thanks! Enjoy the site", 1400);
 		announce("Mature content acknowledged. Welcome.");
@@ -704,8 +856,8 @@ window.setBackgroundAndText = setBackgroundAndText;
 	
 	// Show modal on load if not accepted (localStorage OR sessionStorage)
 	document.addEventListener("DOMContentLoaded", () => {
-		const acceptedPersist = localStorage.getItem(MATURE_KEY) === "true";
-		const acceptedSession = sessionStorage.getItem(MATURE_KEY) === "true";
+		const acceptedPersist = readStoredValue(MATURE_KEY) === "true";
+		const acceptedSession = readStoredValue(MATURE_KEY, "session") === "true";
 		if (!acceptedPersist && !acceptedSession) {
 			setTimeout(() => {
 				showMatureModal();

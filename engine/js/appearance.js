@@ -1,126 +1,71 @@
-export function initAppearance({ memory, queueSave, saveMemory, elements, experienceKey, getWindowMemory, closeWindow, openWindow, completeOnboarding, isOnboardingInProgress }) {
-    const { taskbar, themeButtons, backgroundButtons, taskbarButtons, finishButton } = elements;
-    /*
-     * Appearance system
-     */
-    let selectedTheme = memory.settings.theme;
-    let selectedBackground = memory.settings.background || "midnight";
-    let selectedTaskbar = memory.settings.taskbar;
+import {
+    backgroundName,
+    backgroundPalettes,
+    isSupportedBackground,
+    isSupportedTheme,
+    themePalettes,
+    themeName,
+    updateAppearanceChoiceState
+} from "./appearance-palettes.js";
+
+export function initAppearance({ memory, queueSave, elements }) {
+    const { taskbar, themeButtons, backgroundButtons, taskbarButtons } = elements;
+    const themeSummary = document.querySelector("[data-current-theme]");
+    const backgroundSummary = document.querySelector("[data-current-background]");
+    const themeSummarySwatch = document.querySelector("[data-current-theme-swatch]");
+    const backgroundSummarySwatch = document.querySelector("[data-current-background-swatch]");
+
+    function syncChoices() {
+        const themePalette = themePalettes.find(palette => palette.id === memory.settings.theme) || themePalettes[0];
+        const backgroundPalette = backgroundPalettes.find(palette => palette.id === memory.settings.background) || backgroundPalettes[0];
+        updateAppearanceChoiceState(document, memory.settings.theme, memory.settings.background);
+        if (themeSummary) themeSummary.textContent = themeName(memory.settings.theme);
+        if (backgroundSummary) backgroundSummary.textContent = backgroundName(memory.settings.background);
+        if (themeSummarySwatch) themeSummarySwatch.style.backgroundColor = `var(--palette-${themePalette.id}-strong)`;
+        if (backgroundSummarySwatch) backgroundSummarySwatch.style.backgroundColor = `var(--background-${backgroundPalette.id}-swatch)`;
+    }
 
     function applyTheme(theme) {
-        if (!theme) {
-            return;
-        }
-        selectedTheme = theme;
-        memory.settings.theme = theme;
-        document.documentElement.dataset.theme = theme;
-        themeButtons.forEach(button => {
-            button.classList.toggle(
-                "selected",
-                button.dataset.color === theme
-            );
-        });
+        const selectedTheme = isSupportedTheme(theme) ? theme : "amber";
+        memory.settings.theme = selectedTheme;
+        document.documentElement.dataset.theme = selectedTheme;
+        syncChoices();
         queueSave();
     }
 
     function applyTaskbarPosition(position) {
-        if (!taskbar || !position) {
-            return;
-        }
-        selectedTaskbar = position;
+        if (!taskbar || !["top", "bottom"].includes(position)) return;
         memory.settings.taskbar = position;
         taskbar.classList.remove("taskbar-top", "taskbar-bottom");
         taskbar.classList.add(`taskbar-${position}`);
         taskbarButtons.forEach(button => {
-            button.classList.toggle(
-                "selected",
-                button.dataset.taskbar === position
-            );
+            const selected = button.dataset.taskbar === position;
+            button.classList.toggle("selected", selected);
+            button.setAttribute("aria-pressed", String(selected));
         });
         queueSave();
     }
 
     function applyBackground(background) {
-        const availableBackgrounds = ["midnight", "slate", "plum", "forest"];
-        if (!availableBackgrounds.includes(background)) {
-            background = "midnight";
-        }
-        selectedBackground = background;
-        memory.settings.background = background;
-        document.documentElement.dataset.background = background;
-        backgroundButtons.forEach(button => {
-            button.classList.toggle("selected", button.dataset.background === background);
-        });
+        const selectedBackground = isSupportedBackground(background) ? background : "midnight";
+        memory.settings.background = selectedBackground;
+        document.documentElement.dataset.background = selectedBackground;
+        syncChoices();
         queueSave();
     }
 
-    /*
-     * Restore saved appearance
-     */
-    applyTheme(selectedTheme);
-    applyTaskbarPosition(selectedTaskbar);
-    applyBackground(selectedBackground);
+    applyTheme(memory.settings.theme);
+    applyTaskbarPosition(memory.settings.taskbar);
+    applyBackground(memory.settings.background);
+    themeButtons.forEach(button => button.addEventListener("click", () => applyTheme(button.dataset.color)));
+    backgroundButtons.forEach(button => button.addEventListener("click", () => applyBackground(button.dataset.background)));
+    taskbarButtons.forEach(button => button.addEventListener("click", () => applyTaskbarPosition(button.dataset.taskbar)));
 
-    /*
-     * Theme buttons
-     */
-    themeButtons.forEach(button => {
-        button.addEventListener(
-            "click",
-            () => {
-                applyTheme(button.dataset.color);
-            }
-        );
-    });
-
-    backgroundButtons.forEach(button => {
-        button.addEventListener("click", () => applyBackground(button.dataset.background));
-    });
-
-    /*
-     * Taskbar buttons
-     */
-    taskbarButtons.forEach(button => {
-        button.addEventListener(
-            "click",
-            () => {
-                applyTaskbarPosition(button.dataset.taskbar);
-            }
-        );
-    });
-
-    /*
-     * Enable setup completion
-     */
-    if (finishButton) {
-        finishButton.disabled = false;
-    }
-
-    /*
-     * Finish setup
-     */
-    if (finishButton) {
-        finishButton.addEventListener(
-            "click",
-            () => {
-                if (!selectedTheme) {
-                    return;
-                }
-                memory.settings.experience = "interactive";
-                localStorage.setItem(experienceKey, "interactive");
-                saveMemory();
-                if (isOnboardingInProgress()) {
-                    document.documentElement.dataset.onboardingStage = "tutorial";
-                }
-                closeWindow("appearance");
-                openWindow("onboarding");
-            }
-        );
-    }
-
-    document.getElementById("finishOnboarding")?.addEventListener("click", () => {
-        getWindowMemory("onboarding").open = false;
-        completeOnboarding("interactive");
-        closeWindow("onboarding");
-    });
+    return {
+        applyRestoredSettings(settings) {
+            if (settings.theme !== undefined) applyTheme(settings.theme);
+            if (settings.background !== undefined) applyBackground(settings.background);
+            if (settings.taskbar !== undefined) applyTaskbarPosition(settings.taskbar);
+        }
+    };
 }

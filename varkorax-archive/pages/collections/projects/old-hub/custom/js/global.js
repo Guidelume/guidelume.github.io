@@ -65,7 +65,15 @@ function updateExclusionRects() {
 	});
 }
 updateExclusionRects();
-setInterval(updateExclusionRects, 350);
+let pageEffectsActive = false;
+let exclusionInterval = 0;
+let rainFrame = 0;
+let typingInterval = 0;
+let bounceInterval = 0;
+let bounceTimeout = 0;
+let bounceRestoreTimeout = 0;
+let jitterTimeout = 0;
+let jitterResetTimeout = 0;
 
 function isExcluded(x, y) {
 	for (let i = 0; i < exclusionRects.length; i++) {
@@ -77,9 +85,10 @@ function isExcluded(x, y) {
 
 ctx.textBaseline = 'top';
 ctx.globalCompositeOperation = 'source-over';
-if (!prefersReduced) requestAnimationFrame(drawRain);
 
 function drawRain() {
+	rainFrame = 0;
+	if (!pageEffectsActive || prefersReduced) return;
 	ctx.clearRect(0, 0, W, H);
 	if (Math.random() < SPAWN_CHANCE) spawnStreak();
 
@@ -115,7 +124,7 @@ function drawRain() {
 
 	ctx.globalAlpha = 1;
 	ctx.shadowBlur = 0;
-	if (!prefersReduced) requestAnimationFrame(drawRain);
+	if (pageEffectsActive && !prefersReduced) rainFrame = requestAnimationFrame(drawRain);
 }
 
 /* ---------------- header / jitter / bounce ---------------- */
@@ -124,41 +133,80 @@ const fullText = "Varkorax";
 let idx = fullText.length;
 let typingForward = false;
 
-if (!prefersReduced) setInterval(() => {
-	if (Math.random() < 0.06) typingForward = !typingForward;
-	if (typingForward) idx = Math.min(fullText.length, idx + 1);
-	else idx = Math.max(3, idx - 1);
-	vText.textContent = fullText.slice(0, idx);
-}, 240);
+const crt = document.getElementById('crt');
 
-if (!prefersReduced) {
-	setInterval(() => {
+function runJitter() {
+	if (!pageEffectsActive || prefersReduced) return;
+	const x = (Math.random() * 2 - 1) * 0.7;
+	const y = (Math.random() * 2 - 1) * 0.7;
+	crt.style.transform = `translate(${x}px, ${y}px)`;
+	jitterResetTimeout = window.setTimeout(() => {
+		crt.style.transform = 'translate(0,0)';
+	}, 120 + Math.random() * 160);
+	jitterTimeout = window.setTimeout(runJitter, 800 + Math.random() * 2200);
+}
+
+function startPageEffects() {
+	if (pageEffectsActive || document.hidden) return;
+	pageEffectsActive = true;
+	updateExclusionRects();
+	exclusionInterval = window.setInterval(updateExclusionRects, 350);
+	if (prefersReduced) return;
+	rainFrame = requestAnimationFrame(drawRain);
+	typingInterval = window.setInterval(() => {
+		if (Math.random() < 0.06) typingForward = !typingForward;
+		if (typingForward) idx = Math.min(fullText.length, idx + 1);
+		else idx = Math.max(3, idx - 1);
+		vText.textContent = fullText.slice(0, idx);
+	}, 240);
+	bounceInterval = window.setInterval(() => {
 		if (Math.random() < 0.12) {
-			const orig = vText.textContent;
 			vText.textContent = 'Var';
 			vText.classList.add('bounce-brief');
-			setTimeout(() => {
+			bounceTimeout = window.setTimeout(() => {
 				vText.classList.remove('bounce-brief');
 				vText.textContent = fullText.slice(0, Math.max(3, idx));
-				setTimeout(() => {
+				bounceRestoreTimeout = window.setTimeout(() => {
 					vText.textContent = fullText;
 					idx = fullText.length;
 				}, 260);
 			}, 620);
 		}
 	}, 4200);
+	runJitter();
 }
 
-const crt = document.getElementById('crt');
-if (!prefersReduced) {
-	(function jitter() {
-		const x = (Math.random() * 2 - 1) * 0.7;
-		const y = (Math.random() * 2 - 1) * 0.7;
-		crt.style.transform = `translate(${x}px, ${y}px)`;
-		setTimeout(() => { crt.style.transform = 'translate(0,0)'; }, 120 + Math.random() * 160);
-		setTimeout(jitter, 800 + Math.random() * 2200);
-	})();
+function stopPageEffects() {
+	if (!pageEffectsActive) return;
+	pageEffectsActive = false;
+	window.clearInterval(exclusionInterval);
+	window.clearInterval(typingInterval);
+	window.clearInterval(bounceInterval);
+	window.clearTimeout(bounceTimeout);
+	window.clearTimeout(bounceRestoreTimeout);
+	window.clearTimeout(jitterTimeout);
+	window.clearTimeout(jitterResetTimeout);
+	if (rainFrame) cancelAnimationFrame(rainFrame);
+	rainFrame = 0;
+	vText.classList.remove('bounce-brief');
+	vText.textContent = fullText.slice(0, Math.max(3, idx));
+	crt.style.transform = 'translate(0,0)';
 }
+
+function syncPageEffects() {
+	let parentState = 'active';
+	try { parentState = window.frameElement?.dataset.resourceState || 'active'; } catch (e) { }
+	const state = document.documentElement.dataset.resourceState || parentState;
+	if (state === 'active' && !document.hidden) startPageEffects();
+	else stopPageEffects();
+}
+
+const lifecycleObserver = new MutationObserver(syncPageEffects);
+lifecycleObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-resource-state'] });
+document.addEventListener('visibilitychange', syncPageEffects);
+window.addEventListener('pageshow', syncPageEffects);
+window.addEventListener('pagehide', stopPageEffects);
+syncPageEffects();
 
 /* ---------------- Project wheel ---------------- */
 const projectEls = Array.from(document.querySelectorAll('.project'));

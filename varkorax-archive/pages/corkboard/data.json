@@ -5,7 +5,7 @@
         "date": "2026-07-18",
         "title": "More than a year on a project",
         "featured": false,
-        "md": "corkboard/entries/thought-1.md"
+        "md": "./entries/thought-1.md"
     },
 	{
         "id": "bookmark-1",
@@ -13,7 +13,7 @@
         "date": "2026-07-18",
         "title": "Game Preservation Reminder",
         "featured": false,
-        "md": "corkboard/entries/bookmark-1.md"
+        "md": "./entries/bookmark-1.md"
     },
     {
         "id": "update-1",
@@ -21,6 +21,6 @@
         "date": "2026-07-18",
         "title": "Major Update Complete!",
         "featured": true,
-        "md": "corkboard/entries/update-1.md"
+        "md": "./entries/update-1.md"
     }
 ]
