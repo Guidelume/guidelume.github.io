@@ -18,13 +18,17 @@
 .mod-feature-list li::marker { color: var(--accent-light); }
 .mod-overview .mod-overview-options { color: var(--text-secondary); font-size: .85em; }
 .mod-download { display: grid; gap: 10px; padding-top: 18px; border-top: 1px solid color-mix(in srgb, var(--accent-strong), transparent 55%); }
+.mod-download-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .mod-download small { color: var(--text-secondary); font-size: .7em; }
 
 .mod-download-button,
 .mod-download-button:visited {
     display: flex;
+    flex: 1 1 auto;
     align-items: center;
     justify-content: center;
+    width: auto;
+    min-width: 0;
     min-height: 44px;
     color: var(--chrome-text);
     font: inherit;

@@ -478,7 +478,7 @@ html[data-reduced-motion="true"] .setup-window.window-closing {
 :root[data-seasonal-theme="christmas"] .setup-content h1,
 :root[data-seasonal-theme="christmas"] .setup-content h2,
 :root[data-seasonal-theme="christmas"] .setup-content h3 {
-    font-family: "Berkshire Swash", cursive;
+    font-family: var(--font-berkshire, "Berkshire Swash"), cursive;
 }
 
 .virtual-folder-content {

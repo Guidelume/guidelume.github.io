@@ -8,7 +8,7 @@ const particleCounts = {
 
 const safeLayerName = name => /^[a-z0-9-]+$/i.test(name) ? name : "default";
 
-export function createEnvironmentEffectManager({ container }) {
+export function createEnvironmentEffectManager({ container, fontManager }) {
     let settings = normalizeEnvironmentSettings();
     let activeWeather = [];
     let rainEmergesFromClouds = false;
@@ -578,7 +578,16 @@ export function createEnvironmentEffectManager({ container }) {
     }
 
     function applySettings(nextSettings) {
-        settings = normalizeEnvironmentSettings(nextSettings);
+        const next = normalizeEnvironmentSettings(nextSettings);
+        if (fontManager && document.documentElement.dataset.restorationState === "ready") {
+            const { seasonalTheme } = composeEnvironment(next);
+            return fontManager.transition("environment", { seasonalTheme }, () => commitSettings(next));
+        }
+        commitSettings(next);
+    }
+
+    function commitSettings(nextSettings) {
+        settings = nextSettings;
         window.clearTimeout(weatherRotationTimer);
         weatherRotationTimer = 0;
         weatherRotationIndex = -1;
@@ -653,6 +662,7 @@ export function createEnvironmentEffectManager({ container }) {
     return {
         applySettings,
         destroy() {
+            fontManager?.cancelTransitions?.("environment");
             window.removeEventListener("resize", queueResizeRender);
             document.removeEventListener("visibilitychange", handleVisibilityChange);
             compactScreen.removeEventListener?.("change", render);

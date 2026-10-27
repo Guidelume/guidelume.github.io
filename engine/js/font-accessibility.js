@@ -3,6 +3,14 @@
     const easterFontKey = "easterEggFont";
     const toggles = document.querySelectorAll("[data-accessible-font-toggle], #fontToggle");
     const easterFontToggle = document.querySelector("[data-easter-egg-font-toggle]");
+    let wantedAccessible;
+
+    function transitionFonts(channel, overrides, apply) {
+        if (window.guidelumeFonts && document.documentElement.dataset.restorationState === "ready") {
+            return window.guidelumeFonts.transition(channel, overrides, apply);
+        }
+        apply();
+    }
 
     function readPreference() {
         try {
@@ -40,16 +48,20 @@
     }
 
     function savePreference(enabled) {
-        applyPreference(enabled);
-        try {
-            localStorage.setItem(preferenceKey, String(enabled));
-        } catch {
-            // Keep the preference active in this document if storage is unavailable.
-        }
-        window.dispatchEvent(new CustomEvent("guidelume:accessible-fonts-changed", { detail: { enabled } }));
+        wantedAccessible = enabled;
+        return transitionFonts("accessible-fonts", { accessibleFonts: enabled }, () => {
+            applyPreference(enabled);
+            try {
+                localStorage.setItem(preferenceKey, String(enabled));
+            } catch {
+                // Keep the preference active in this document if storage is unavailable.
+            }
+            window.dispatchEvent(new CustomEvent("guidelume:accessible-fonts-changed", { detail: { enabled } }));
+        });
     }
 
-    applyPreference(readPreference());
+    wantedAccessible = readPreference();
+    applyPreference(wantedAccessible);
 
     function applyEasterFontPreference(enabled) {
         document.documentElement.dataset.easterEggFont = String(enabled);
@@ -57,12 +69,14 @@
     }
 
     function saveEasterFontPreference(enabled) {
-        applyEasterFontPreference(enabled);
-        try {
-            localStorage.setItem(easterFontKey, String(enabled));
-        } catch {
-            // Keep the preference active in this document if storage is unavailable.
-        }
+        return transitionFonts("easter-font", { easterEggFont: enabled }, () => {
+            applyEasterFontPreference(enabled);
+            try {
+                localStorage.setItem(easterFontKey, String(enabled));
+            } catch {
+                // Keep the preference active in this document if storage is unavailable.
+            }
+        });
     }
 
     applyEasterFontPreference(readEasterFontPreference());
@@ -73,7 +87,7 @@
 
     toggles.forEach(toggle => {
         toggle.addEventListener("click", () => {
-            savePreference(document.documentElement.dataset.accessibleFonts !== "true");
+            savePreference(!wantedAccessible);
         });
     });
 
@@ -84,12 +98,16 @@
     window.addEventListener("storage", event => {
         if (event.key === preferenceKey) {
             const enabled = event.newValue === "true";
-            applyPreference(enabled);
-            // Update desktop backup state without writing back to the other page.
-            window.dispatchEvent(new CustomEvent("guidelume:accessible-fonts-changed", { detail: { enabled } }));
+            wantedAccessible = enabled;
+            transitionFonts("accessible-fonts", { accessibleFonts: enabled }, () => {
+                applyPreference(enabled);
+                // Update desktop backup state without writing back to the other page.
+                window.dispatchEvent(new CustomEvent("guidelume:accessible-fonts-changed", { detail: { enabled } }));
+            });
         }
         if (event.key === easterFontKey) {
-            applyEasterFontPreference(event.newValue === "true");
+            const enabled = event.newValue === "true";
+            transitionFonts("easter-font", { easterEggFont: enabled }, () => applyEasterFontPreference(enabled));
         }
     });
 })();

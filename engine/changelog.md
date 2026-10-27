@@ -1,6 +1,12 @@
 # Changelog
 
-## 2026-10-24 · 1.0 Update | Turian Horosk
+## 2026-10-26 · 1.1 | Mystery Drink
+
+- Reworked how CSS files are loaded for future stability
+- Added a few safeties for slow or timed-out connections
+- Fixed bugs all across the project
+
+## 2026-10-24 · 1.0 | Turian Horosk
 
 - Replaced selectable desktop modes with one interactive desktop and optional **Setup**, including local names, avatars, and an Appearance walkthrough. Guides remain available before Setup is complete.
 
@@ -8,7 +14,7 @@
 - Reworked **Rainy Evening** and added **Halloween**, **Christmas**, and **New Year’s** scenes with themed scenery, weather, and icons, plus fireworks and a New Year’s countdown.
 
 - Added **Documents** and **System** folders, moved **Readme** to the desktop, and added **Credits** and a locally editable **Progress-Report-01**.
-- Added **Mods**, with an overview and download for **One for the Road**, a Witcher 3 mod.
+- Added **Mods**, with an overview, direct download, and Nexus Mods link for **One On The House**, a Witcher 3 mod.
 - Added **Looking Glass**, a YouTube viewer with collections and personal bookmarks. It joins **The Warden’s Field Guide** prototype and the **Sound Mixer** placeholder in **System → Unfinished**.
 - Added a read-only **Terminal** with a fictional text tree and playful **Blackwall** incident responses.
 
@@ -29,7 +35,7 @@
 - Expanded Environmental Controls with separate sections for weather, environment presets, seasonal decorations, and seasonal themes.
 - Added the taskbar-aware Dagaz test decoration and optional weather rotation.
 
-## Previous Beta Updates · Batarian Ale, Uncut
+## Previous Beta Updates | Batarian Ale, Uncut
 
 - Introduced **Reader Mode** and **Interactive Mode**, with adjustable appearance and accessibility settings.
 - Added taskbar window buttons, a clock and date, and window maximize and minimize controls.

@@ -117,12 +117,24 @@
 		.entry-meta{
 
 			display:grid;
-			grid-template-columns:150px minmax(320px,1fr) 220px;
+			grid-template-columns:150px minmax(0,1fr) 220px;
 			gap:2rem;
 
 			align-items:start;
 
 			margin-bottom:2rem;
+		}
+		.entry-meta > * { min-width: 0; }
+		@media (max-width: 1000px) {
+			.entry-meta { grid-template-columns: 150px minmax(0, 1fr); }
+			.entry-meta .entry-index { grid-column: 1 / -1; padding-left: 0; border-left: 0; }
+		}
+		@media (max-width: 600px) {
+			.entry-meta { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+			.entry-thumb { max-width: 150px; }
+			.entry-meta .meta-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+			.entry-meta .meta-dots { display: none; }
+			.entry-meta .meta-value { min-width: 0; white-space: normal; overflow-wrap: anywhere; text-align: right; }
 		}
 
 		.entry-thumb img{
@@ -441,7 +453,7 @@
 				const btnDefault = document.getElementById('btn-default');
 				const btnDay = document.getElementById('btn-day');
 				const btnNight = document.getElementById('btn-night');
-				const reader = document.getElementById('reader');
+
 				const body = document.body;
 				const readReaderMode = () => {
 					try { return sessionStorage.getItem('storiesReaderMode'); } catch (_) { return null; }
@@ -474,6 +486,7 @@
 
 				/* ---------- READER THEME (local to #reader only) ---------- */
 				function applyReaderTheme(mode) {
+					const reader = document.getElementById('reader');
 					if (!reader) return;
 
 					// reader container classes (visual only)
@@ -507,6 +520,8 @@
 				if (btnDay) btnDay.addEventListener('click', (e) => { e.preventDefault(); setReaderTheme('day'); });
 				if (btnNight) btnNight.addEventListener('click', (e) => { e.preventDefault(); setReaderTheme('night'); });
 				if (btnDefault) btnDefault.addEventListener('click', (e) => { e.preventDefault(); setReaderTheme(null); });
+
+				window.addEventListener('archive:reader-ready', () => applyReaderTheme(readReaderMode()));
 
 				// Initial reader theme
 				const savedReader = readReaderMode();

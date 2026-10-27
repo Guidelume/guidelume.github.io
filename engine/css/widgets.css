@@ -177,7 +177,7 @@
 .calendar-compact-card.has-holiday::after { position: absolute; top: 8px; right: 10px; color: var(--calendar-control-ink); font-size: 13px; content: "✦"; }
 
 /* Sticky notes are paper first; keep their typography steady across seasonal themes. */
-.widget-note { --note-paper-a: #fff6b8; --note-paper-b: #edda82; border-color: rgba(72,56,23,.5); color: #342d20; background: linear-gradient(138deg, var(--note-paper-a), var(--note-paper-b)); font-family: "Quicksand", sans-serif; box-shadow: 0 11px 28px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.7); }
+.widget-note { --note-paper-a: #fff6b8; --note-paper-b: #edda82; border-color: rgba(72,56,23,.5); color: #342d20; background: linear-gradient(138deg, var(--note-paper-a), var(--note-paper-b)); font-family: var(--font-quicksand, "Quicksand"), sans-serif; box-shadow: 0 11px 28px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.7); }
 .widget-note .widget-titlebar { min-height: 31px; border-bottom-color: rgba(70,52,19,.16); color: rgba(52,45,32,.64); text-shadow: none; }
 .widget-note .widget-title-mark { color: #5d5237; }
 .widget-note .widget-grip { color: rgba(52,45,32,.38); }
@@ -198,7 +198,7 @@
 .widget-note[data-note-palette="new-years"][data-note-color="rose"] { --note-paper-a: #f1ccd4; --note-paper-b: #d9a5b5; }
 .widget-note[data-note-palette="new-years"][data-note-color="lavender"] { --note-paper-a: #ded8ef; --note-paper-b: #b8add8; }
 .widget-note.widget-appearance-solid { backdrop-filter: none; }
-.sticky-note-text { box-sizing: border-box; width: 100%; min-height: 145px; max-height: calc(100vh - 58px); flex: 1; resize: none; overflow-x: hidden; overflow-y: auto; padding: 14px 15px 16px; border: 0; outline: 0; background: transparent; color: #342d20; font: 500 14px/1.55 "Quicksand", sans-serif; white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; scrollbar-color: color-mix(in srgb, var(--note-paper-b), #342d20 34%) color-mix(in srgb, var(--note-paper-a), transparent 22%); scrollbar-width: thin; }
+.sticky-note-text { box-sizing: border-box; width: 100%; min-height: 145px; max-height: calc(100vh - 58px); flex: 1; resize: none; overflow-x: hidden; overflow-y: auto; padding: 14px 15px 16px; border: 0; outline: 0; background: transparent; color: #342d20; font: 500 14px/1.55 var(--font-quicksand, "Quicksand"), sans-serif; white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; scrollbar-color: color-mix(in srgb, var(--note-paper-b), #342d20 34%) color-mix(in srgb, var(--note-paper-a), transparent 22%); scrollbar-width: thin; }
 .sticky-note-text::-webkit-scrollbar { width: 10px; }
 .sticky-note-text::-webkit-scrollbar-track { border-radius: 6px; background: color-mix(in srgb, var(--note-paper-a), transparent 22%); }
 .sticky-note-text::-webkit-scrollbar-thumb { border: 2px solid var(--note-paper-a); border-radius: 6px; background: color-mix(in srgb, var(--note-paper-b), #342d20 34%); }

@@ -386,7 +386,7 @@ function renderCard(entry) {
             src="./basement/${entry.id}/thumbnail.webp"
             alt="${entry.title}"
             loading="lazy"
-            onerror="this.src='../../custom/img/thumb-fallback.png';">
+            onerror="this.onerror=null;this.src='../../custom/img/thumb-fallback.png';">
 
         <div class="archive-overlay">
 

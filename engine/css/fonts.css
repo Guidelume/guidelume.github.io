@@ -1,4 +1,16 @@
 /* Shared font declarations. */
+/* Desktop faces are published only after font-manager.js finishes loading them.
+   Independent guide/Archive pages retain their existing font behavior. */
+html[data-font-managed] {
+    --font-quicksand: sans-serif;
+    --font-lexend: sans-serif;
+    --font-baskerville: serif;
+    --font-mochiy: sans-serif;
+    --font-cormorant: Georgia, serif;
+    --font-berkshire: cursive;
+    --font-poiret: sans-serif;
+}
+
 @font-face {
     font-family: 'ZenDots';
     src: url('../fonts/ZenDots-Regular.ttf') format('truetype');

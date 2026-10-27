@@ -48,6 +48,11 @@ button {
     cursor: pointer;
 }
 
+html[data-guidelume-embedded] [data-guide-header] {
+    visibility: hidden;
+    pointer-events: none;
+}
+
 .landing-header {
     min-height: 62px;
     display: flex;

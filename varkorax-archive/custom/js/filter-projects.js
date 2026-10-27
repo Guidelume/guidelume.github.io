@@ -320,24 +320,26 @@ function getOrdinal(n) {
 
 function formatDate(dateString, style = "long") {
 
+    if (dateString === null || dateString === undefined || dateString === "") return "";
     const date = new Date(dateString);
+    if (!Number.isFinite(date.getTime())) return "";
 
     switch (style) {
 
         case "year":
-            return date.getFullYear();
+            return String(date.getUTCFullYear());
 
         case "short":
-            return date.toLocaleDateString("en-GB");
+            return date.toLocaleDateString("en-GB", { timeZone: "UTC" });
 
         case "long": {
-            const day = getOrdinal(date.getDate());
+            const day = getOrdinal(date.getUTCDate());
 
             const month = date.toLocaleString("en-GB", {
-                month: "long"
+                month: "long", timeZone: "UTC"
             });
 
-            const year = date.getFullYear();
+            const year = date.getUTCFullYear();
 
             return `${day} ${month} ${year}`;
 
@@ -357,20 +359,21 @@ function renderCard(entry) {
         `./projects/${encodeURIComponent(entry.slug)}/index.html`;
 	
 	card.target = "_blank";
+	const year = formatDate(entry.releaseDate, "year") || formatDate(entry.added, "year");
 	
     card.innerHTML = `
 
         <img
-            src="./projects/${entry.slug}/thumbnail.webp"
+            src="./projects/${encodeURIComponent(entry.slug)}/thumbnail.webp"
             alt="${entry.title}"
             loading="lazy"
-            onerror="this.src='../../../custom/img/thumb-fallback.png';">
+            onerror="this.onerror=null;this.src='../../custom/img/thumb-fallback.png';">
 
         <div class="archive-overlay">
 
             <h3>${escapeHTML(entry.title)}</h3>
 
-            <p>${entry.category} • ${formatDate(entry.date, "year")}</p>
+            <p>${entry.category}${year ? ` • ${year}` : ""}</p>
 
             <span>${entry.status}</span>
 

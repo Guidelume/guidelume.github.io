@@ -657,7 +657,7 @@
     max-width: calc(100% - 24px);
     transform: translateX(-50%);
     color: #e8e1ed;
-    font-family: "Poiret One", "Quicksand", sans-serif;
+    font-family: var(--font-poiret, "Poiret One"), var(--font-quicksand, "Quicksand"), sans-serif;
     text-align: center;
     text-shadow: 0 0 12px rgba(201, 193, 228, 0.26), 0 1px 3px rgba(5, 7, 18, 0.9);
     pointer-events: none;
@@ -929,7 +929,7 @@ html[data-seasonal-theme="halloween"] .desktop-icon[data-folder-icon="true"]::af
 }
 
 :root[data-seasonal-theme="halloween"] .taskbar-clock {
-    font-family: "Quicksand", sans-serif;
+    font-family: var(--font-quicksand, "Quicksand"), sans-serif;
     font-weight: 600;
 }
 
@@ -942,18 +942,18 @@ html[data-seasonal-theme="halloween"] .desktop-icon[data-folder-icon="true"]::af
 }
 
 :root[data-seasonal-theme="christmas"] .taskbar-clock {
-    font-family: "Quicksand", sans-serif;
+    font-family: var(--font-quicksand, "Quicksand"), sans-serif;
     font-weight: 600;
 }
 
 :root[data-seasonal-theme="new-years"] .taskbar-clock {
-    font-family: "Quicksand", sans-serif;
+    font-family: var(--font-quicksand, "Quicksand"), sans-serif;
     font-weight: 600;
 }
 
 :root[data-seasonal-theme="new-years"] .desktop-icon,
 :root[data-seasonal-theme="new-years"] .virtual-folder-entry {
-    font-family: "Poiret One", "Quicksand", sans-serif;
+    font-family: var(--font-poiret, "Poiret One"), var(--font-quicksand, "Quicksand"), sans-serif;
 }
 
 :root[data-seasonal-theme="new-years"] .taskbar {

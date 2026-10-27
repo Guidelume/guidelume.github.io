@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='utf-8'?>
+<UserConfig>
+    <Group id="OFTR" displayName="Mods.oftr">
+        <VisibleVars>
+            
+			<!-- Corvo Bianco renovations -->
+            <Var id="OFTRInvestmentsSection" displayName="oftr_section_investments" displayType="SEPARATOR" />
+			
+            <Var id="OFTRCorvoChoice" displayName="oftr_corvo_bianco" displayType="OPTIONS">
+                <OptionsArray>
+                    <Option id="0" displayName="oftr_affordable">
+                        <Entry varId="CorvoBiancoVanilla" value="false" />
+                    </Option>
+                    <Option id="1" displayName="oftr_original">
+                        <Entry varId="CorvoBiancoVanilla" value="true" />
+                    </Option>
+                </OptionsArray>
+            </Var>
+			
+            <!-- Runewright investments -->
+            <Var id="OFTRRunewrightChoice" displayName="oftr_runewright" displayType="OPTIONS">
+                <OptionsArray>
+                    <Option id="0" displayName="oftr_affordable">
+                        <Entry varId="RunewrightVanilla" value="false" />
+                    </Option>
+                    <Option id="1" displayName="oftr_original">
+                        <Entry varId="RunewrightVanilla" value="true" />
+                    </Option>
+                </OptionsArray>
+            </Var>
+			
+            <!-- Alchemy inventory mode -->
+            <Var id="OFTRAlchemySection" displayName="oftr_section_alchemy" displayType="SEPARATOR" />
+			
+            <Var id="OFTRAlchemyChoice" displayName="oftr_alchemy" displayType="OPTIONS">
+                <OptionsArray>
+                    <!-- IDs and backing values follow display order. -->
+                    <Option id="0" displayName="oftr_curated">
+                        <Entry varId="AlchemyMode" value="0" />
+                    </Option>
+                    <Option id="1" displayName="oftr_extended">
+                        <Entry varId="AlchemyMode" value="1" />
+                    </Option>
+                    <Option id="2" displayName="oftr_disabled">
+                        <Entry varId="AlchemyMode" value="2" />
+                    </Option>
+                </OptionsArray>
+            </Var>
+			
+            <!-- Display-only warning: deliberately separate from OFTRAlchemyChoice.
+                 Prototype: test whether the menu accepts an Option without Entry.
+            <Var id="OFTRAlchemyLockNotice" displayName="oftr_alchemy_lock_notice" displayType="OPTIONS">
+                <OptionsArray>
+                    <Option id="0" displayName="oftr_alchemy_lock_message">
+                        <Entry varId="" value="" />
+                    </Option>
+                </OptionsArray>
+            </Var> -->
+			
+            <!-- Merchant purse replenishment -->
+            <Var id="OFTRMerchantsSection" displayName="oftr_section_merchants" displayType="SEPARATOR" />
+			
+            <Var id="OFTRMerchantFundsChoice" displayName="oftr_merchant_funds" displayType="OPTIONS">
+                <OptionsArray>
+                    <Option id="0" displayName="oftr_enhanced">
+                        <Entry varId="MerchantFundsMode" value="0" />
+                    </Option>
+                    <Option id="1" displayName="oftr_fixed">
+                        <Entry varId="MerchantFundsMode" value="1" />
+                    </Option>
+                    <Option id="2" displayName="oftr_vanilla">
+                        <Entry varId="MerchantFundsMode" value="2" />
+                    </Option>
+                </OptionsArray>
+            </Var>
+			
+        </VisibleVars>
+    </Group>
+</UserConfig>

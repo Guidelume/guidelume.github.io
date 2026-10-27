@@ -5,7 +5,7 @@ Guidelume brings its guides and archives together on one interactive desktop. Yo
 ## Finding your way around
 
 - Open **Milky Way Bar Crawl** or **Varkorax Archive** from the desktop.
-- Open **Mods** for small standalone projects. **The Witcher 3** entry introduces **One for the Road** and includes its download.
+- Open **Mods** for small standalone projects. **The Witcher 3** entry introduces **One On The House** with a direct download and a Nexus Mods link.
 - Open **Readme** for this introduction, or visit **Documents** for the Changelog, **Progress-Report-01**, and Credits.
 - Use **Setup** to choose a local display name and avatar on your first visit. Finishing Setup reveals the rest of the desktop, but does not change how the guides work.
 - Find desktop utilities in **System**, including Widgets, Environmental Controls, and the Terminal. **System → Unfinished** contains Looking Glass, The Warden's Field Guide, and the Sound Mixer placeholder.

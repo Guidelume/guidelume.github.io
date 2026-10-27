@@ -191,6 +191,8 @@ body.cozy-active {
 
 .content {
 	flex: 1 1 auto;
+	min-width: 0;
+	min-height: 0;
 	overflow: auto;
 	padding: 1.25rem 2rem 2.5rem 2rem;
 	scroll-behavior: smooth;
@@ -229,6 +231,10 @@ body.cozy-active {
 
 .progress { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(255, 255, 255, 0.25); overflow: hidden; pointer-events: none; }
 .progress-bar { height: 100%; width: 0%; background: var(--progress-color); transition: width 80ms linear; }
+
+body[data-reader-state="error"] .side-controls { display: none; }
+.reader-error-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.reader-error-actions .control-btn { color: inherit; text-decoration: none; font: inherit; }
 
 /* ---------- Frame-side control stacks (v5) ---------- */
 .control-btn {
@@ -375,20 +381,51 @@ body.cozy-active #rain-layer { opacity: 1; }
 }
 
 /* Responsive tweaks */
-@media (max-width: 1180px) {
-	.frame-wrap { --frame-padding: 2rem; }
-	.side-controls-left { left: calc(var(--frame-padding) - var(--control-outset)); }
-	.side-controls-right { right: calc(var(--frame-padding) - var(--control-outset)); }
-	.content { padding-left: 4.25rem; padding-right: 4.25rem; }
+@media (max-width: 1500px) {
+	.frame-wrap {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		grid-template-rows: auto minmax(0, 1fr);
+		grid-template-areas: "font-controls theme-controls" "reader reader";
+		gap: 8px;
+		height: calc(100vh - 96px);
+		height: calc(100dvh - 96px);
+		margin: 88px auto 8px;
+		padding: 0 12px;
+	}
+	#reader-main { grid-area: reader; min-width: 0; min-height: 0; }
+	.frame { height: 100%; min-height: 0; }
+	.side-controls {
+		position: static;
+		flex-direction: row;
+		justify-content: center;
+		gap: 8px;
+		padding: 0;
+	}
+	.side-controls-left { grid-area: font-controls; }
+	.side-controls-right { grid-area: theme-controls; justify-self: end; }
+	.control-stack { flex-direction: row; gap: 4px; }
+	.control-stack + .control-stack { margin-top: 0; }
+	.side-controls .control-btn { width: 44px; height: 44px; min-width: 44px; padding: 0; }
+	.content { padding-left: 1.5rem; padding-right: 1.5rem; }
+	body[data-reader-state="error"] .frame-wrap {
+		grid-template-rows: minmax(0, 1fr);
+		grid-template-areas: "reader reader";
+	}
 }
-@media (max-width: 560px) {
-	.frame-wrap { --frame-padding: 1rem; padding: 0 var(--frame-padding); }
+@media (max-width: 600px) {
+	.frame-wrap {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: auto auto minmax(0, 1fr);
+		grid-template-areas: "font-controls" "theme-controls" "reader";
+	}
+	.side-controls-right { justify-self: center; }
 	.chapter-header, .content { padding-left: 1rem; padding-right: 1rem; }
 	#cozy-player.open { left: 12px; }
-	.content { padding-left: 3.5rem; padding-right: 3.5rem; }
 	.cozy-outside { right: 12px; }
 	.popup { max-width: calc(100% - 32px); height: auto; max-height: 80vh; }
 	.popup .popup-inner iframe { height: calc(60vh - 48px); }
+	body[data-reader-state="error"] .frame-wrap { grid-template-areas: "reader"; }
 }
 
 @media (prefers-reduced-motion: reduce) {

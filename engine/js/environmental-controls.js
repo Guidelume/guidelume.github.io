@@ -183,7 +183,9 @@ export function initEnvironmentalControls({ memory, queueSave, effectManager, el
     window.addEventListener("resize", syncApplyDockPosition);
     effectManager.applySettings(current);
 
-    applyButton?.addEventListener("click", () => {
+    let applyRevision = 0;
+    applyButton?.addEventListener("click", async () => {
+        const revision = ++applyRevision;
         const preset = selectedPreset();
         const themes = selectedThemes();
         const weather = weatherToggles
@@ -229,10 +231,14 @@ export function initEnvironmentalControls({ memory, queueSave, effectManager, el
             }
         });
         memory.settings.environment = current;
-        effectManager.applySettings(current);
+        const applied = effectManager.applySettings(current);
         queueSave();
         syncDisabledState();
-        if (applyStatus) applyStatus.textContent = "Environmental settings applied.";
+        if (applied && typeof applied.then === "function") {
+            if (applyStatus) applyStatus.textContent = "Preparing environmental settings…";
+            if (await applied === false) return;
+        }
+        if (revision === applyRevision && applyStatus) applyStatus.textContent = "Environmental settings applied.";
     });
 
     return {

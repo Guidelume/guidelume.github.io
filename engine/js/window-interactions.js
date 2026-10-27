@@ -8,22 +8,21 @@ export function initWindowInteractions({ windows, queueSave, closeStartMenu, win
         .forEach(button => {
             button.addEventListener(
                 "click",
-                () => {
+                async () => {
                     const closeCurrent = button.dataset.closeCurrent;
                     if (closeCurrent) closeWindow(closeCurrent);
                     const targetWindow = getWindow(button.dataset.openWindow);
-                    openWindow(button.dataset.openWindow, {
+                    const opened = openWindow(button.dataset.openWindow, {
                         width: button.dataset.windowWidth,
                         height: button.dataset.windowHeight
                     });
+                    if (button.dataset.closeStartMenu === "true") closeStartMenu();
+                    await opened;
                     if (button.dataset.scrollTop === "true" && targetWindow) {
                         window.requestAnimationFrame(() => {
                             const content = targetWindow.querySelector(".setup-content");
                             if (!targetWindow.hidden && content) content.scrollTop = 0;
                         });
-                    }
-                    if (button.dataset.closeStartMenu === "true") {
-                        closeStartMenu();
                     }
                 }
             );

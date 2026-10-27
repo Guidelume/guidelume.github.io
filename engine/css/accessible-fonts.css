@@ -3,15 +3,15 @@
 :root[data-accessible-fonts="true"] body :not(svg):not(svg *),
 body.accessible-fonts,
 body.accessible-fonts :not(svg):not(svg *) {
-    font-family: "Lexend", sans-serif !important;
+    font-family: var(--font-lexend, "Lexend"), sans-serif !important;
 }
 
 :root[data-accessible-fonts="true"] body :is(h1, h2, h3, h4, h5, h6, [role="heading"]),
 body.accessible-fonts :is(h1, h2, h3, h4, h5, h6, [role="heading"]) {
-    font-family: "Libre Baskerville", Georgia, serif !important;
+    font-family: var(--font-baskerville, "Libre Baskerville"), Georgia, serif !important;
 }
 
 :root[data-easter-egg-font="true"] body,
 :root[data-easter-egg-font="true"] body :not(svg):not(svg *) {
-    font-family: "Mochiy Pop One", sans-serif !important;
+    font-family: var(--font-mochiy, "Mochiy Pop One"), sans-serif !important;
 }

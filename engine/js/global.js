@@ -21,8 +21,13 @@ import { initLookingGlass } from "./looking-glass.js";
 import { renderAppearanceChoices } from "./appearance-palettes.js";
 import { initConfirmationDialog } from "./confirmation-dialog.js";
 import { initToastNotifications } from "./toast-notifications.js";
+import { cssManager, desktopStylesReady, fontManager } from "./css-bootstrap.js";
+import { windowStyleGroups } from "./stylesheet-registry.js";
+import { composeEnvironment } from "./environment-presets.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    await desktopStylesReady;
+    window.guidelumeStartup?.progress(true);
 
     const tabsController = initTabs(document);
     renderAppearanceChoices(document);
@@ -52,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /*
-      Global.js V7 - We'll Take Everything
+      Global.js V8 - We'll Take Everything
      */
 
     const desktopState = createDesktopState();
@@ -68,6 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
     window.dispatchEvent(new CustomEvent("guidelume:apply-accessible-fonts", {
         detail: { enabled: memory.settings.accessibleFonts === true }
     }));
+    const initialSeasonalTheme = composeEnvironment(memory.settings.environment).seasonalTheme;
+    if (initialSeasonalTheme) document.documentElement.dataset.seasonalTheme = initialSeasonalTheme;
+    const initialFontsReady = fontManager.prepare({ seasonalTheme: initialSeasonalTheme });
 	
 	/* 
 	  const ui = {element: everything everywhere all at once}
@@ -147,6 +155,19 @@ document.addEventListener("DOMContentLoaded", () => {
         saveMemory,
         elements: { windows, taskbarWindows, taskbar },
         canCloseWindow: notepadController.canCloseWindow,
+        prepareWindowOpen: id => {
+            const group = windowStyleGroups[id];
+            const prepareFonts = () => {
+                if (document.documentElement.dataset.restorationState === "ready" && !fontManager.isPrepared()) return fontManager.prepare();
+            };
+            if (group && !cssManager.isGroupLoaded(group)) return cssManager.loadGroup(group).then(prepareFonts);
+            return prepareFonts();
+        },
+        onWindowOpenError: (error, id) => {
+            console.error(`Guidelume could not prepare window "${id}".`, error);
+            const title = document.querySelector(`[data-window="${id}"] .titlebar-left span`)?.textContent.trim() || "Application";
+            toast.show(`${title} could not load its styles. Try opening it again.`, "error");
+        },
         confirmOpenWindow: id => id !== "twfg" || confirmAction({
             title: "An early peek?",
             message: "The Warden’s Field Guide is an early prototype. There isn’t much here yet, and plenty of the website is still unfinished.\n\nYou’re welcome to take a peek - just don’t expect a complete guide yet.",
@@ -219,6 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function resetToDefaults(options = {}) {
+        fontManager.cancelTransitions?.();
         notepadController.setResetInProgress(true);
         clearSavedGuidelumeState();
         removeStoredValue("accessibleFonts");
@@ -240,6 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })) return;
 
         window.guidelumeFullResetInProgress = true;
+        fontManager.cancelTransitions?.();
         notepadController.setResetInProgress(true);
         try {
             localStorage.clear();
@@ -322,12 +345,13 @@ document.addEventListener("DOMContentLoaded", () => {
         ...savedWindowOrder.filter(id => restoredWindows.includes(id)),
         ...restoredWindows.filter(id => !savedWindowOrder.includes(id))
     ];
-    restoreOrder.forEach(id => openWindow(id, {}, { focus: false }));
+    await windowManager.restoreWindows(restoreOrder, initialFontsReady);
+    window.guidelumeStartup?.progress();
     restoreFocusedWindow();
 
     if (nexusGuideRequested) {
         if (firstNexusGuideVisit) {
-            openWindow("readme");
+            await openWindow("readme");
             windowManager.setTemporaryTaskbarHidden(nexusGuideId, true);
         }
         // Open the guide last so it sits above the Readme on first visits.
@@ -360,7 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
         independentSizeOptions: ui.independentSizeOptions,
         reducedMotionToggle
     } });
-    const environmentEffects = createEnvironmentEffectManager({ container: ui.environmentLayer });
+    const environmentEffects = createEnvironmentEffectManager({ container: ui.environmentLayer, fontManager });
     const environmentController = initEnvironmentalControls({
         memory,
         queueSave,
@@ -468,8 +492,12 @@ document.addEventListener("DOMContentLoaded", () => {
         updateSettingsAvailability();
     } });
 
-    document.documentElement.dataset.restorationState = "ready";
-    document.getElementById("bootState")?.setAttribute("hidden", "");
+    await fontManager.prepare();
+    if (window.guidelumeStartup) window.guidelumeStartup.complete();
+    else {
+        document.documentElement.dataset.restorationState = "ready";
+        document.getElementById("bootState")?.setAttribute("hidden", "");
+    }
     if (resetNoticeMessages[pendingResetNotice]) toast.show(resetNoticeMessages[pendingResetNotice]);
 
 });

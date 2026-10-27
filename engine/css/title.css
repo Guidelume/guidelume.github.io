@@ -74,6 +74,11 @@ nav {
 
 /* Glass header */
 
+html[data-guidelume-embedded] [data-guide-header] {
+    visibility: hidden;
+    pointer-events: none;
+}
+
 .site-header {
     position: fixed;
     top: 0;

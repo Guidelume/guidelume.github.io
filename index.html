@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" data-onboarding-complete="false" data-restoration-state="loading">
+<html lang="en" data-onboarding-complete="false" data-restoration-state="loading" data-styles-state="loading" data-font-managed>
 <!--
- Index.html V12
+ Index.html V13
 -->
 <head>
     <meta charset="UTF-8">
@@ -20,22 +20,88 @@
 	
     <link rel="shortcut icon" href="./engine/dagaz.svg">
 	
-    <link rel="stylesheet" href="./engine/css/global-v2.css">
-    <link rel="stylesheet" href="./engine/css/taskbar.css">
-    <link rel="stylesheet" href="./engine/css/windows.css">
-    <link rel="stylesheet" href="./engine/css/notepad.css">
-    <link rel="stylesheet" href="./engine/css/backup-restore.css">
-    <link rel="stylesheet" href="./engine/css/developer-vault.css">
-    <link rel="stylesheet" href="./engine/css/terminal.css">
-    <link rel="stylesheet" href="./engine/css/blackwall.css">
-    <link rel="stylesheet" href="./engine/css/setup-options.css">
-    <link rel="stylesheet" href="./engine/css/environment.css">
-    <link rel="stylesheet" href="./engine/css/widgets.css">
-    <link rel="stylesheet" href="./engine/css/mods.css">
-    <link rel="stylesheet" href="./engine/css/looking-glass.css">
-    <link rel="stylesheet" href="./engine/css/tabs.css">
-    <link rel="stylesheet" href="./engine/css/fonts.css">
-    <link rel="stylesheet" href="./engine/css/accessible-fonts.css">
+    <!-- Only the startup paint gate lives here; stylesheet paths live in the registry. -->
+    <style>
+        html[data-styles-state="loading"] { background: #080a10; }
+        html[data-styles-state="loading"] body { visibility: hidden; }
+        html[data-styles-state="error"] #crt > :not(.boot-state) { display: none !important; }
+        html[data-styles-state="error"] .boot-state {
+            position: fixed; inset: 0; display: flex; align-items: center;
+            justify-content: center; flex-direction: column; gap: 16px;
+            padding: 24px; background: #080a10; color: #eee; font: 16px/1.5 system-ui, sans-serif;
+        }
+    </style>
+    <!-- Recovery deliberately has no script/module dependencies. -->
+    <script>
+        (() => {
+            let timer;
+            let completed = false;
+            let recoveryVisible = false;
+            let fatalFailure = false;
+            function waiting() { clearTimeout(timer); }
+            function fail(message, fatal = false) {
+                if (completed) return;
+                fatalFailure ||= fatal;
+                waiting();
+                recoveryVisible = true;
+                document.documentElement.dataset.stylesState = "error";
+                function show() {
+                    const status = document.getElementById("bootState");
+                    if (!status) return;
+                    status.hidden = false;
+                    status.setAttribute("role", "alert");
+                    const retry = document.createElement("button");
+                    retry.type = "button";
+                    retry.textContent = "Reload Guidelume";
+                    retry.addEventListener("click", () => window.location.reload());
+                    status.replaceChildren(message, retry);
+                }
+                show();
+                if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", show, { once: true });
+            }
+            function progress(initializing = false) {
+                // Only global.js can acknowledge that its complete module graph
+                // and critical CSS recovered; an unrelated late sheet cannot.
+                if (initializing && !completed) {
+                    fatalFailure = false;
+                    recoveryVisible = false;
+                    document.documentElement.dataset.stylesState = "ready";
+                    const status = document.getElementById("bootState");
+                    if (status) {
+                        status.setAttribute("role", "status");
+                        status.replaceChildren("Restoring your workspace…");
+                    }
+                }
+                if (completed || fatalFailure) return;
+                waiting();
+                if (recoveryVisible) {
+                    recoveryVisible = false;
+                    document.documentElement.dataset.stylesState = "loading";
+                }
+                timer = setTimeout(() => fail("Guidelume is taking too long to start. Check your connection and reload. "), 30000);
+            }
+            window.guidelumeStartup = {
+                progress, waiting,
+                isRecovering: () => recoveryVisible,
+                hasFailed: () => fatalFailure,
+                complete() {
+                    completed = true;
+                    waiting();
+                    document.documentElement.dataset.stylesState = "ready";
+                    document.documentElement.dataset.restorationState = "ready";
+                    document.getElementById("bootState").hidden = true;
+                }
+            };
+            document.addEventListener("error", event => {
+                if (event.target?.matches?.("script[data-startup-module]")) fail("Guidelume could not download its startup files. Check your connection and reload. ", true);
+            }, true);
+            window.addEventListener("unhandledrejection", () => {
+                if (!completed) fail("Guidelume could not finish starting. Please reload to try again. ", true);
+            });
+            progress();
+        })();
+    </script>
+    <script type="module" src="./engine/js/css-bootstrap.js" data-startup-module></script>
 	
     <script src="./engine/js/font-accessibility.js" defer></script>
     <!-- Nexus guide links use ?from=nexus&guide=mwbc or ?from=nexus&guide=twfg. -->
@@ -51,7 +117,7 @@
             document.documentElement.dataset.onboardingComplete = "false";
         }
     </script>
-    <script src="./engine/js/global.js" type="module"></script>
+    <script src="./engine/js/global.js" type="module" data-startup-module></script>
 </head>
 <body>
     <div id="crt">
@@ -436,7 +502,7 @@
 
             <section class="setup-window" data-window="mod-one-for-the-road" data-window-width="720px" data-window-height="640px" hidden aria-labelledby="one-for-the-road-title">
                 <div class="setup-titlebar window-drag-handle">
-                    <div class="titlebar-left"><img class="title-icon" src="./engine/dagaz.svg" alt=""><span id="one-for-the-road-title">One for the Road</span></div>
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/dagaz.svg" alt=""><span id="one-for-the-road-title">One On The House</span></div>
                     <div class="window-controls">
                         <button type="button" class="window-minimize" data-minimize-window="mod-one-for-the-road" aria-label="Minimize window">−</button>
                         <button type="button" class="window-maximize" data-maximize-window="mod-one-for-the-road" aria-label="Maximize window" aria-pressed="false">□</button>
@@ -445,7 +511,7 @@
                 </div>
                 <article class="setup-content mod-overview">
                     <p class="mod-overview-eyebrow">THE WITCHER 3 · A MOD BY VARKORAX</p>
-                    <h1>One for the Road</h1>
+                    <h1>One On The House</h1>
                     <p>A small quality-of-life mod that smooths out a few personal frustrations with upgrade costs, alchemy supplies, and merchant funds.</p>
                     <h2>What it changes</h2>
                     <ul class="mod-feature-list">
@@ -455,7 +521,10 @@
                     </ul>
                     <p class="mod-overview-options">Configuration options let you adjust these changes or keep the original upgrade prices and merchant funds.</p>
                     <div class="mod-download">
-                        <a class="setup-button mod-download-button" href="./engine/files/modOneForTheRoad.zip" download="modOneForTheRoad.zip">Download One for the Road</a>
+                        <div class="mod-download-actions">
+                            <a class="setup-button mod-download-button" href="./engine/files/modOneOnTheHouse.zip" download="modOneOnTheHouse.zip">Download One On The House</a>
+                            <a class="setup-button mod-download-button" href="https://www.nexusmods.com/games/witcher3/mods/14918" target="_blank" rel="noopener noreferrer">Nexus Mods ↗</a>
+                        </div>
                         <small>ZIP archive · mod, DLC, and configuration files included</small>
                     </div>
                 </article>

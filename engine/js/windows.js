@@ -1,10 +1,12 @@
 import { clampWindowPosition, getDesktopBounds } from "./desktop-bounds.js";
 
-export function initWindowManager({ memory, saveMemory, elements, canCloseWindow = () => true, confirmOpenWindow = () => true }) {
+export function initWindowManager({ memory, saveMemory, elements, canCloseWindow = () => true, confirmOpenWindow = () => true,
+    prepareWindowOpen = () => {}, onWindowOpenError = error => console.error(error) }) {
     const { windows, taskbarWindows, taskbar } = elements;
     const defaultWindowSize = { width: "760px", height: "560px" };
     let zIndex = 110;
     let focusedWindow = null;
+    let activationRevision = 0;
     let overflowButton = null;
     let overflowMenu = null;
     let taskbarContextMenu = null;
@@ -13,7 +15,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
     const temporaryTaskbarHiddenWindows = new Set();
     const closeAnimationHandlers = new WeakMap();
     const trackedFrames = new WeakSet();
-    const pendingWindowOpens = new Set();
+    const pendingWindowOpens = new Map();
 
     function getRestorableFrameUrl(frame) {
         try {
@@ -782,6 +784,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
 
     function focusWindow(windowEl) {
         if (!windowEl || windowEl.hidden) return;
+        activationRevision += 1;
         const alreadyFocused = focusedWindow === windowEl && windowEl.classList.contains("is-focused");
         focusedWindow = windowEl;
         const id = windowEl.dataset.window;
@@ -1021,34 +1024,98 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         saveMemory();
     }
 
-    function openWindow(id, size = {}, { focus = true } = {}) {
-        if (id === "developer-vault" && memory.settings.developerVaultDiscovered !== true) return;
-        if (id === "easter-eggs" && memory.settings.easterEggsUnlocked !== true) return;
-        const windowEl = getWindow(id);
-        if (!windowEl) {
-            return;
-        }
-        const windowMemory = getWindowMemory(id);
-        // Saved windows restore quietly; deliberate fresh launches can ask first.
-        if (!windowMemory.open && focus) {
-            if (pendingWindowOpens.has(id)) return;
-            const confirmation = confirmOpenWindow(id);
-            if (confirmation && typeof confirmation.then === "function") {
-                pendingWindowOpens.add(id);
-                return confirmation.then(accepted => {
-                    if (accepted) {
-                        completeWindowOpen(windowEl, size, focus);
-                        const focusTarget = windowEl.querySelector("iframe") || windowEl.querySelector("button, input, [tabindex]");
-                        if (focus) focusTarget?.focus({ preventScroll: true });
-                    }
-                }).finally(() => pendingWindowOpens.delete(id));
-            }
-            if (confirmation === false) return;
-        }
-        completeWindowOpen(windowEl, size, focus);
+    function canOpenWindow(id) {
+        return (id !== "developer-vault" || memory.settings.developerVaultDiscovered === true)
+            && (id !== "easter-eggs" || memory.settings.easterEggsUnlocked === true);
     }
 
-    function completeWindowOpen(windowEl, size, focus) {
+    function cancelPendingWindowOpen(id) {
+        const request = pendingWindowOpens.get(id);
+        if (request) request.cancelled = true;
+        pendingWindowOpens.delete(id);
+    }
+
+    function openWindow(id, size = {}, { focus = true } = {}) {
+        if (!canOpenWindow(id)) return;
+        const windowEl = getWindow(id);
+        if (!windowEl) return;
+        if (pendingWindowOpens.has(id)) {
+            const pending = pendingWindowOpens.get(id);
+            if (focus) {
+                pending.focusRequested = true;
+                pending.activation = ++activationRevision;
+            }
+            return pending.promise;
+        }
+        const windowMemory = getWindowMemory(id);
+        const request = { cancelled: false, promise: null, focusRequested: focus,
+            activation: focus ? ++activationRevision : activationRevision };
+        const complete = focusContent => {
+            // A close, minimize or discovery reset may happen while CSS is loading.
+            if (request.cancelled || !canOpenWindow(id)) return false;
+            const shouldFocus = request.focusRequested && request.activation === activationRevision;
+            completeWindowOpen(windowEl, size, shouldFocus, request.focusRequested && !shouldFocus);
+            if (shouldFocus && focusContent) {
+                const target = windowEl.querySelector("iframe") || windowEl.querySelector("button, input, [tabindex]");
+                target?.focus({ preventScroll: true });
+            }
+            return true;
+        };
+        const prepare = focusContent => {
+            if (request.cancelled || !canOpenWindow(id)) return false;
+            const ready = prepareWindowOpen(id);
+            return ready && typeof ready.then === "function"
+                ? ready.then(() => complete(focusContent))
+                : complete(focusContent);
+        };
+        try {
+            // Saved windows restore quietly; deliberate fresh launches can ask first.
+            const confirmation = !windowMemory.open && focus ? confirmOpenWindow(id) : true;
+            const result = confirmation && typeof confirmation.then === "function"
+                ? confirmation.then(accepted => accepted ? prepare(true) : false)
+                : confirmation === false ? false : prepare(false);
+            if (!result || typeof result.then !== "function") return result;
+            request.promise = result.catch(error => {
+                if (!request.cancelled) onWindowOpenError(error, id);
+                return false;
+            }).finally(() => {
+                if (pendingWindowOpens.get(id) === request) pendingWindowOpens.delete(id);
+            });
+            pendingWindowOpens.set(id, request);
+            return request.promise;
+        } catch (error) {
+            onWindowOpenError(error, id);
+            return false;
+        }
+    }
+
+    async function restoreWindows(ids, beforeOpen = Promise.resolve()) {
+        // Start every eligible request together, then commit windows in saved order.
+        const [prepared] = await Promise.all([Promise.all(ids.map(async id => {
+            if (!canOpenWindow(id) || !getWindow(id)) return false;
+            try { await prepareWindowOpen(id); return true; }
+            catch (error) { onWindowOpenError(error, id); return false; }
+        })), beforeOpen]);
+        for (let index = 0; index < ids.length; index++) {
+            if (prepared[index]) await openWindow(ids[index], {}, { focus: false });
+        }
+    }
+
+    function placeBehindFocusedWindow(windowEl) {
+        if (!focusedWindow || focusedWindow === windowEl || focusedWindow.hidden) return;
+        const ordered = windows.filter(candidate => !candidate.hidden && candidate !== windowEl)
+            .sort((a, b) => Number(a.style.zIndex) - Number(b.style.zIndex));
+        ordered.splice(ordered.indexOf(focusedWindow), 0, windowEl);
+        ordered.forEach((candidate, index) => { candidate.style.zIndex = String(111 + index); });
+        zIndex = 110 + ordered.length;
+        const order = (memory.windowOrder || []).filter(id => id !== windowEl.dataset.window);
+        const index = order.indexOf(focusedWindow.dataset.window);
+        order.splice(Math.max(0, index), 0, windowEl.dataset.window);
+        memory.windowOrder = order;
+        saveMemory();
+    }
+
+    function completeWindowOpen(windowEl, size, focus, background = false) {
         const id = windowEl.dataset.window;
         const windowMemory = getWindowMemory(id);
         if (windowEl.dataset.fixedMaximized === "true") {
@@ -1070,6 +1137,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         if (!memory.taskbarOrder.includes(id)) memory.taskbarOrder.push(id);
         saveMemory();
         applyMaximizedStyles(windowEl, windowMemory.maximized);
+        if (background) placeBehindFocusedWindow(windowEl);
         if (focus) focusWindow(windowEl);
         else updateTaskbar();
         if (id === "looking-glass") windowEl.dispatchEvent(new CustomEvent("windowopened"));
@@ -1136,6 +1204,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
     }
 
     function minimizeWindow(id) {
+        cancelPendingWindowOpen(id);
         const windowEl = getWindow(id);
         if (!windowEl || windowEl.classList.contains("window-closing")) {
             return;
@@ -1173,6 +1242,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
             return;
         }
         if (!canCloseWindow(id)) return;
+        cancelPendingWindowOpen(id);
         windowEl.dispatchEvent(new CustomEvent("windowclosing"));
         const state = getWindowMemory(id);
         const wasMaximized = state.maximized;
@@ -1266,7 +1336,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
 
 
     return {
-        getWindowMemory, getWindow, openWindow, openMilkyWayBarCrawl, setTemporaryTaskbarHidden, setMaximized, restoreFocusedWindow,
+        getWindowMemory, getWindow, openWindow, restoreWindows, openMilkyWayBarCrawl, setTemporaryTaskbarHidden, setMaximized, restoreFocusedWindow,
         closeWindow, minimizeWindow, focusWindow, updateTaskbar, applyWindowSize, restoreWindowPosition, constrainWindowPosition,
         refreshRestoredLayout() {
             windows.forEach(windowEl => {
