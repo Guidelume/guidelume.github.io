@@ -10,6 +10,7 @@ import {
     validateWidgetState
 } from "./widgets-data.js";
 import { clampIconPosition, getDesktopBounds } from "./desktop-bounds.js";
+import { nativeContextMenuRequested } from "./desktop-shortcuts-data.js";
 
 const colors = [
     ["sunlight", "Sunlight"],
@@ -72,8 +73,8 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
 
     const instances = () => memory.widgets.instances;
     const findWidget = id => instances().find(widget => widget.id === id);
-    const save = () => {
-        const saved = typeof saveMemory === "function" ? saveMemory() : (queueSave(), true);
+    const save = async () => {
+        const saved = typeof saveMemory === "function" ? await saveMemory() : (queueSave(), true);
         if (saved !== true) setStatus("This change remains available in this session, but browser storage could not save it.");
         return saved === true;
     };
@@ -509,12 +510,15 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
             const current = findWidget(widget.id);
             if (!current) return;
             current.settings.text = textarea.value.slice(0, MAX_NOTE_LENGTH);
+            // Capture the dirty field immediately, including its base revision.
+            // The session journal protects a reload before the async commit.
+            queueSave();
             if (textarea.value.length > MAX_NOTE_LENGTH) textarea.value = current.settings.text;
             updateNoteCounter();
             window.clearTimeout(noteSaveTimers.get(widget.id));
-            noteSaveTimers.set(widget.id, window.setTimeout(() => {
+            noteSaveTimers.set(widget.id, window.setTimeout(async () => {
                 noteSaveTimers.delete(widget.id);
-                const saved = typeof saveMemory === "function" ? saveMemory() : true;
+                const saved = typeof saveMemory === "function" ? await saveMemory() : true;
                 const message = saved === true ? "" : "Not saved";
                 node.querySelector(".widget-save-state").textContent = message;
                 if (saved !== true) setStatus("This note remains available in this session, but browser storage could not save it.");
@@ -541,6 +545,7 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
             } else if (widget.type === "clock") buildClock(widget, node);
             else buildCalendar(widget, node);
             node.addEventListener("contextmenu", event => {
+                if (nativeContextMenuRequested(event, memory)) { closeContextMenu(); return; }
                 if (event.target.closest("textarea, input, select, button, a")) return;
                 event.preventDefault();
                 showContextMenu(widget, event.clientX, event.clientY);
@@ -574,11 +579,13 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
     }
 
     function showContextMenu(widget, x, y) {
+        if (memory.settings.desktopContextMenus === "browser") return;
         closeContextMenu();
         const menu = element("div", "widget-context-menu");
         menu.setAttribute("role", "menu");
         menu.setAttribute("aria-label", `${widgetTypes[widget.type].label} options`);
         contextMenu = { menu, widgetId: widget.id };
+        window.dispatchEvent(new CustomEvent("guidelume:context-menu-open", { detail: { menu } }));
         if (widget.type === "clock") {
             makeMenuButton(menu, `${widget.settings.showSeconds ? "✓" : "　"} Show seconds hand`, () => {
                 widget.settings.showSeconds = !widget.settings.showSeconds;
@@ -960,7 +967,6 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
     window.addEventListener("pagehide", () => {
         noteSaveTimers.forEach(timer => window.clearTimeout(timer));
         noteSaveTimers.clear();
-        if (typeof saveMemory === "function") saveMemory();
         clearTimers(clockTimers);
         clearTimers(calendarTimers);
         document.body.style.userSelect = "";
@@ -977,6 +983,8 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
     renderManager();
     refreshAvailability();
 
+    window.addEventListener("guidelume:context-menu-preference", closeContextMenu);
+    window.addEventListener("guidelume:context-menu-open", event => { if (event.detail?.menu !== contextMenu?.menu) closeContextMenu(); });
     return { render: applyRestoredState, applyRestoredState, refreshAvailability };
 }
 

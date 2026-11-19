@@ -24,6 +24,10 @@ export function initLookingGlass({ memory, saveMemory, windowElement: root }) {
     let libraryLoading = false;
     let editingId = null;
     let editingUrl = null;
+    let editorSession = 0;
+    let editRevision = 0;
+    const savingSessions = new Set();
+    const saveBookmarkButton = editor.querySelector('[type="submit"]');
     let statusTimer = null;
     memory.lookingGlass = normalizeLookingGlassState(memory.lookingGlass);
 
@@ -42,11 +46,9 @@ export function initLookingGlass({ memory, saveMemory, windowElement: root }) {
         }
     }
 
-    function persist(next) {
-        const previous = memory.lookingGlass;
+    async function persist(next) {
         memory.lookingGlass = next;
-        if (saveMemory() === true) return true;
-        memory.lookingGlass = previous;
+        try { if (await saveMemory() === true) return true; } catch { /* Keep the draft available for retry. */ }
         setStatus("Changes could not be saved. Check browser storage and try again.", true);
         return false;
     }
@@ -59,9 +61,11 @@ export function initLookingGlass({ memory, saveMemory, windowElement: root }) {
     }
 
     function cancelEditor({ focus = true } = {}) {
+        editorSession++;
         editor.hidden = true;
         editingId = null;
         editingUrl = null;
+        if (saveBookmarkButton) saveBookmarkButton.disabled = false;
         if (focus) bookmarkButton.focus();
     }
 
@@ -104,6 +108,9 @@ export function initLookingGlass({ memory, saveMemory, windowElement: root }) {
 
     function openEditor(bookmark = null) {
         if (!bookmark && !current) return;
+        editorSession++;
+        editRevision = 0;
+        if (saveBookmarkButton) saveBookmarkButton.disabled = false;
         editingId = bookmark?.id || null;
         editingUrl = bookmark?.url || current.externalUrl;
         title.value = bookmark?.title || `YouTube · ${current.id}`;
@@ -146,12 +153,15 @@ export function initLookingGlass({ memory, saveMemory, windowElement: root }) {
                 remove.type = "button";
                 remove.textContent = "Remove";
                 remove.setAttribute("aria-label", `Remove ${bookmark.title}`);
-                remove.addEventListener("click", () => {
-                    if (!persist({ ...memory.lookingGlass, bookmarks: memory.lookingGlass.bookmarks.filter(entry => entry.id !== bookmark.id) })) return;
-                    if (editingId === bookmark.id) cancelEditor({ focus: false });
+                remove.addEventListener("click", async () => {
+                    const session = editorSession, revision = editRevision;
+                    if (!await persist({ ...memory.lookingGlass, bookmarks: memory.lookingGlass.bookmarks.filter(entry => entry.id !== bookmark.id) })) return;
+                    if (session === editorSession && revision === editRevision && editingId === bookmark.id) cancelEditor({ focus: false });
                     renderPersonal();
-                    setStatus(`Removed “${bookmark.title}” from your bookmarks.`);
-                    find("personal-heading").focus();
+                    if (editor.hidden) {
+                        setStatus(`Removed “${bookmark.title}” from your bookmarks.`);
+                        find("personal-heading").focus();
+                    }
                 });
                 actions.append(edit, remove);
                 row.append(actions);
@@ -217,15 +227,15 @@ export function initLookingGlass({ memory, saveMemory, windowElement: root }) {
         event.preventDefault();
         selectContent(address.value);
     });
-    sidebarToggle.addEventListener("click", () => {
-        if (persist({ ...memory.lookingGlass, sidebarOpen: !memory.lookingGlass.sidebarOpen })) updateSidebar();
+    sidebarToggle.addEventListener("click", async () => {
+        if (await persist({ ...memory.lookingGlass, sidebarOpen: !memory.lookingGlass.sidebarOpen })) updateSidebar();
     });
     bookmarkButton.addEventListener("click", () => openEditor());
-    unloadButton.addEventListener("click", () => {
+    unloadButton.addEventListener("click", async () => {
         clearSelection();
         // Stop playback even if storage is unavailable, and keep this session cleared.
         memory.lookingGlass = { ...memory.lookingGlass, lastUrl: "" };
-        if (saveMemory() !== true) {
+        if (await saveMemory() !== true) {
             setStatus("Video unloaded, but the cleared selection could not be saved. The previous video may return after reloading.", true);
         }
         address.focus();
@@ -239,14 +249,19 @@ export function initLookingGlass({ memory, saveMemory, windowElement: root }) {
             cancelEditor();
         }
     });
-    editor.addEventListener("submit", event => {
+    editor.addEventListener("submit", async event => {
         event.preventDefault();
+        if (savingSessions.has(editorSession)) return;
         if (!title.value.trim() || !collection.value.trim()) {
             setStatus("Enter a title and collection name for this bookmark.", true);
             (!title.value.trim() ? title : collection).focus();
             return;
         }
         const bookmarks = memory.lookingGlass.bookmarks;
+        if (editingId && !bookmarks.some(bookmark => bookmark.id === editingId)) {
+            setStatus("This bookmark was removed. Your unfinished changes remain here; use Bookmark to create a new entry.", true);
+            return;
+        }
         if (!editingId && bookmarks.length >= MAX_BOOKMARKS) {
             setStatus(`Your library can hold ${MAX_BOOKMARKS} personal bookmarks. Remove one before adding another.`, true);
             return;
@@ -254,13 +269,34 @@ export function initLookingGlass({ memory, saveMemory, windowElement: root }) {
         const content = resolveLookingGlassUrl(editingUrl);
         if (!content) return;
         const id = editingId || `bookmark-${crypto.randomUUID()}`;
+        const session = editorSession, revision = editRevision;
+        const submittedTitle = title.value, submittedCollection = collection.value;
         const entry = { id, title: title.value.trim(), collection: collection.value.trim(), provider: content.provider, url: content.externalUrl };
         const next = editingId ? bookmarks.map(bookmark => bookmark.id === editingId ? entry : bookmark) : [...bookmarks, entry];
-        if (!persist({ ...memory.lookingGlass, bookmarks: next })) return;
+        // A failed write still retains the staged item for retry. Reuse its ID
+        // rather than adding another bookmark on the next submission.
+        editingId = id;
+        find("editor-heading").textContent = "Edit bookmark";
+        savingSessions.add(session);
+        if (saveBookmarkButton) saveBookmarkButton.disabled = true;
+        const saved = await persist({ ...memory.lookingGlass, bookmarks: next });
+        savingSessions.delete(session);
+        if (session === editorSession && saveBookmarkButton) saveBookmarkButton.disabled = false;
+        if (!saved) return;
         renderPersonal();
+        if (session !== editorSession) return;
+        // A newly saved bookmark becomes an edit even if typing continued during
+        // persistence. A later submission must update it rather than duplicate it.
+        editingId = id;
+        find("editor-heading").textContent = "Edit bookmark";
+        if (revision !== editRevision || title.value !== submittedTitle || collection.value !== submittedCollection) {
+            setStatus("Bookmark saved; your newer edits are unsaved.");
+            return;
+        }
         cancelEditor();
         setStatus(`Saved “${entry.title}” in ${entry.collection}.`);
     });
+    editor.addEventListener("input", () => { editRevision++; });
     player.addEventListener("error", () => setStatus("The player could not load. Use Open on YouTube to watch this video.", true));
     root.addEventListener("windowopened", opened);
     function releasePlayer() {
@@ -286,7 +322,7 @@ export function initLookingGlass({ memory, saveMemory, windowElement: root }) {
     updateSidebar();
     renderPersonal();
 
-    return { applyRestoredState() {
+    return { refreshSharedState() { renderPersonal(); }, applyRestoredState() {
         memory.lookingGlass = normalizeLookingGlassState(memory.lookingGlass);
         clearSelection();
         updateSidebar();

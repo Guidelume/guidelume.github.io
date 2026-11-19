@@ -6,11 +6,13 @@ export const stylesheets = [
     { id: "global", href: cssUrl("global-v2.css"), dependencies: ["fonts", "accessible-fonts"] },
     { id: "taskbar", href: cssUrl("taskbar.css"), dependencies: ["global"] },
     { id: "windows", href: cssUrl("windows.css"), dependencies: ["global"] },
+    { id: "desktop-objects", href: cssUrl("desktop-objects.css"), dependencies: ["windows", "taskbar"] },
     { id: "notepad", href: cssUrl("notepad.css"), dependencies: ["windows"] },
     { id: "backup-restore", href: cssUrl("backup-restore.css"), dependencies: ["windows"] },
     { id: "developer-vault", href: cssUrl("developer-vault.css"), dependencies: ["windows"] },
     { id: "terminal", href: cssUrl("terminal.css"), dependencies: ["windows", "blackwall"] },
     { id: "blackwall", href: cssUrl("blackwall.css"), dependencies: ["global"] },
+    { id: "session-lock", href: cssUrl("session-lock.css"), dependencies: ["global"] },
     { id: "setup-options", href: cssUrl("setup-options.css"), dependencies: ["windows"] },
     { id: "environment", href: cssUrl("environment.css"), dependencies: ["global"] },
     { id: "widgets", href: cssUrl("widgets.css"), dependencies: ["windows", "setup-options"] },
@@ -24,7 +26,7 @@ export const stylesheets = [
 export const stylesheetGroups = {
     // Blackwall can open from desktop actions without Terminal. Controls, tabs,
     // widgets and environment rules are shared by startup UI and saved settings.
-    desktop: ["global", "taskbar", "windows", "blackwall", "setup-options", "environment", "widgets", "tabs", "fonts", "accessible-fonts"],
+    desktop: ["global", "taskbar", "windows", "desktop-objects", "blackwall", "session-lock", "setup-options", "environment", "widgets", "tabs", "fonts", "accessible-fonts"],
     documents: ["notepad"],
     "backup-restore": ["backup-restore"],
     "developer-vault": ["developer-vault"],

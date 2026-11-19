@@ -8,7 +8,7 @@ Guidelume brings its guides and archives together on one interactive desktop. Yo
 - Open **Mods** for small standalone projects. **The Witcher 3** entry introduces **One On The House** with a direct download and a Nexus Mods link.
 - Open **Readme** for this introduction, or visit **Documents** for the Changelog, **Progress-Report-01**, and Credits.
 - Use **Setup** to choose a local display name and avatar on your first visit. Finishing Setup reveals the rest of the desktop, but does not change how the guides work.
-- Find desktop utilities in **System**, including Widgets, Environmental Controls, and the Terminal. **System → Unfinished** contains Looking Glass, The Warden's Field Guide, and the Sound Mixer placeholder.
+- Find desktop utilities in **System**, including Widgets, Environmental Controls, the Terminal, and **Blackwall**. **System → Unfinished** contains Looking Glass, The Warden's Field Guide, and the Sound Mixer placeholder.
 
 The Start menu has accessibility controls, CRT and logo toggles, and your local profile. Select your profile there whenever you want to change your name or avatar. These details stay in this browser; they are not an account.
 

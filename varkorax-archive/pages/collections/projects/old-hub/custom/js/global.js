@@ -407,8 +407,8 @@ function makeDraggable(el) {
 
 /* mapping */
 const pageMap = {
-	'my-site': 'my-site/index.html',
-	'milky-way-bar-crawl': 'milky-way-bar-crawl/index.html'
+	'my-site': '../../../../../index.html',
+	'milky-way-bar-crawl': '../../../../../index-mwbc.html'
 };
 
 // returns the first sensible focusable inside `el`

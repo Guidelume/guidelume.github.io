@@ -13,17 +13,21 @@ import { normalizeLookingGlassState, validateLookingGlassState } from "./looking
 import { discoveryFlagForIcon, findDiscovery } from "./discovery-registry.js";
 import { backgroundIds, themeIds } from "./appearance-palettes.js";
 import { binaryStringToBytes } from "./base64.js";
+import { lockTimeouts, defaultBlackwallPreferences, normalizeBlackwallPreferences } from "./blackwall-preferences.js";
+import { normalizeDesktopShortcuts, validateDesktopShortcuts, normalizeDesktopContextMenus } from "./desktop-shortcuts-data.js";
 
-export const CONFIGURATION_VERSION = 6;
-export const CONFIGURATION_PREFIX = "GUIDELUME-6:";
-const LEGACY_CONFIGURATION_PREFIXES = ["GUIDELUME-5:", "GUIDELUME-4:", "GUIDELUME-3:", "GUIDELUME-2:", "GUIDELUME-1:"];
+export const CONFIGURATION_VERSION = 8;
+export const CONFIGURATION_PREFIX = "GUIDELUME-8:";
+const LEGACY_CONFIGURATION_PREFIXES = ["GUIDELUME-7:", "GUIDELUME-6:", "GUIDELUME-5:", "GUIDELUME-4:", "GUIDELUME-3:", "GUIDELUME-2:", "GUIDELUME-1:"];
 export const MAX_CONFIGURATION_BYTES = 256 * 1024;
 
 export const configurationCategories = Object.freeze([
     { id: "appearance", label: "Appearance" },
     { id: "accessibility", label: "Accessibility" },
     { id: "environment", label: "Environment" },
+    { id: "blackwall", label: "Blackwall & Session" },
     { id: "desktopLayout", label: "Desktop layout" },
+    { id: "shortcuts", label: "Shortcuts & Recycle Bin", restoreWarning: "Restoring Shortcuts & Recycle Bin replaces all current guide shortcuts, deleted shortcuts, their positions, and the desktop context-menu preference." },
     { id: "windowLayout", label: "Window layout" },
     { id: "taskbar", label: "Taskbar" },
     { id: "widgets", label: "Widgets" },
@@ -75,6 +79,8 @@ configurationMigrations.set(3, value => {
 });
 configurationMigrations.set(4, value => ({ ...value, formatVersion: 5 }));
 configurationMigrations.set(5, value => ({ ...value, formatVersion: 6 }));
+configurationMigrations.set(6, value => ({ ...value, formatVersion: 7 }));
+configurationMigrations.set(7, value => ({ ...value, formatVersion: 8 }));
 const themes = new Set(themeIds);
 const backgrounds = new Set(backgroundIds);
 const sizes = new Set(["small", "default", "large", "extra-large"]);
@@ -151,6 +157,16 @@ function validateConfiguration(value, knownIcons, knownWindows) {
         for (const key of ["textSize", "iconSize"]) if (own(data.accessibility, key)) enumValue(data.accessibility[key], sizes, key);
     }
     if (own(data, "environment")) validateEnvironment(data.environment);
+    if (own(data, "blackwall")) {
+        assertKeys(data.blackwall, Object.keys(defaultBlackwallPreferences), "Blackwall preferences");
+        for (const key of Object.keys(data.blackwall)) {
+            if (key === "lockAfterMinutes") {
+                if (!lockTimeouts.includes(data.blackwall[key])) throw new Error("Lock timeout has an unsupported value.");
+            }
+            else if (!bool(data.blackwall[key])) throw new Error(`${key} must be a boolean.`);
+        }
+        data.blackwall = normalizeBlackwallPreferences(data.blackwall);
+    }
     if (own(data, "desktopLayout")) {
         assertKeys(data.desktopLayout, knownIcons, "Desktop layout");
         Object.values(data.desktopLayout).forEach(position => {
@@ -207,6 +223,11 @@ function validateConfiguration(value, knownIcons, knownWindows) {
     }
     if (own(data, "documents")) data.documents = validateDocumentOverrides(data.documents);
     if (own(data, "lookingGlass")) data.lookingGlass = validateLookingGlassState(data.lookingGlass);
+    if (own(data, "shortcuts")) {
+        assertKeys(data.shortcuts, ["items", "contextMenus"], "Shortcuts & Recycle Bin");
+        data.shortcuts.items = validateDesktopShortcuts(data.shortcuts.items);
+        enumValue(data.shortcuts.contextMenus, new Set(["guidelume", "browser"]), "Desktop context menus");
+    }
     if (Object.keys(data).length === 0) throw new Error("Choose at least one category to import.");
     return value;
 }
@@ -249,6 +270,7 @@ export function createConfiguration(memory, selectedCategories, knownIcons, know
         accessibleFonts: memory.settings.accessibleFonts === true
     };
     if (selected.has("environment")) categories.environment = normalizeEnvironmentSettings(memory.settings.environment);
+    if (selected.has("blackwall")) categories.blackwall = normalizeBlackwallPreferences(memory.settings.blackwall);
     if (selected.has("desktopLayout")) {
         categories.desktopLayout = Object.fromEntries(exportableIcons(knownIcons, memory).map(icon => [icon.id, {
             x: Math.max(0, Math.min(1, Number.isFinite(memory.icons[icon.id]?.x) ? memory.icons[icon.id].x : icon.x)),
@@ -280,6 +302,7 @@ export function createConfiguration(memory, selectedCategories, knownIcons, know
     if (selected.has("profile")) categories.profile = normalizeUserProfile(memory.profile || DEFAULT_PROFILE);
     if (selected.has("documents")) categories.documents = normalizeDocumentOverrides(memory.documents);
     if (selected.has("lookingGlass")) categories.lookingGlass = normalizeLookingGlassState(memory.lookingGlass);
+    if (selected.has("shortcuts")) categories.shortcuts = { items: normalizeDesktopShortcuts(memory.shortcuts), contextMenus: normalizeDesktopContextMenus(memory.settings.desktopContextMenus) };
     const configuration = { formatVersion: CONFIGURATION_VERSION, categories };
     validateConfiguration(configuration, knownExportableIcons(knownIcons).map(icon => icon.id), knownWindows);
     return configuration;
@@ -354,6 +377,7 @@ export function configurationPreview(configuration, memory) {
         .filter(key => data.accessibility[key] !== memory.settings[key])
         .map(key => accessibilityLabels[key] || key);
     if (data.environment) changes.environment = ["Environmental preferences"];
+    if (data.blackwall) changes.blackwall = ["Automatic lock, inactivity policy, advance warnings, and duplicate-session notices"];
     if (data.desktopLayout) changes.desktopLayout = ["Desktop icon positions"];
     if (data.windowLayout) changes.windowLayout = ["Window positions and sizes"];
     if (data.taskbar) changes.taskbar = ["Taskbar position and pinned items"];
@@ -383,6 +407,11 @@ export function configurationPreview(configuration, memory) {
         `${data.lookingGlass.bookmarks.length} personal bookmarks`,
         "Last selected video and library visibility"
     ];
+    if (data.shortcuts) {
+        const values = Object.values(data.shortcuts.items);
+        changes.shortcuts = [`${values.filter(item => item.deletedAt === null).length} desktop shortcuts`,
+            `${values.filter(item => item.deletedAt !== null).length} deleted shortcuts`, "Shortcut positions and desktop context menus"];
+    }
     return changes;
 }
 
@@ -392,12 +421,13 @@ export function applyConfiguration(memory, configuration, selectedCategories, { 
     // Untouched objects are still used by live widget handlers. Keep their
     // identity and stage only the categories being changed.
     const next = { ...memory };
-    if (["appearance", "accessibility", "environment", "taskbar"].some(id => selected.has(id) && data[id])) {
+    if (["appearance", "accessibility", "environment", "taskbar", "blackwall", "shortcuts"].some(id => selected.has(id) && data[id])) {
         next.settings = { ...memory.settings };
     }
     if (selected.has("appearance") && data.appearance) Object.assign(next.settings, data.appearance);
     if (selected.has("accessibility") && data.accessibility) Object.assign(next.settings, data.accessibility);
     if (selected.has("environment") && data.environment) next.settings.environment = normalizeEnvironmentSettings(data.environment);
+    if (selected.has("blackwall") && data.blackwall) next.settings.blackwall = normalizeBlackwallPreferences(data.blackwall);
     if (selected.has("desktopLayout") && data.desktopLayout) {
         next.icons = { ...memory.icons };
         const placed = [];
@@ -476,5 +506,9 @@ export function applyConfiguration(memory, configuration, selectedCategories, { 
     if (selected.has("profile") && data.profile) next.profile = normalizeUserProfile(data.profile);
     if (selected.has("documents") && data.documents) next.documents = normalizeDocumentOverrides(data.documents);
     if (selected.has("lookingGlass") && data.lookingGlass) next.lookingGlass = normalizeLookingGlassState(data.lookingGlass);
+    if (selected.has("shortcuts") && data.shortcuts) {
+        next.shortcuts = normalizeDesktopShortcuts(data.shortcuts.items);
+        next.settings.desktopContextMenus = data.shortcuts.contextMenus;
+    }
     Object.assign(memory, next);
 }

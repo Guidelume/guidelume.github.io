@@ -1,5 +1,11 @@
 // Archive Global JS
 
+// Reader scripts replace this once their asynchronous content is available.
+window.guidelumeGetBookmarkState = () => window.location.pathname.endsWith("/reader.html") ? null : {
+	href: window.location.href,
+	title: document.querySelector("#filter-head h1")?.textContent || document.title
+};
+
 /* ---------- Embedded-page resource lifecycle ---------- */
 const lifecycleModuleUrl = new URL("../../../engine/js/resource-lifecycle.js", document.currentScript.src);
 void import(lifecycleModuleUrl.href).catch(() => {});

@@ -1,4 +1,5 @@
 import { clampWindowPosition, getDesktopBounds } from "./desktop-bounds.js";
+import { nativeContextMenuRequested } from "./desktop-shortcuts-data.js";
 
 export function initWindowManager({ memory, saveMemory, elements, canCloseWindow = () => true, confirmOpenWindow = () => true,
     prepareWindowOpen = () => {}, onWindowOpenError = error => console.error(error) }) {
@@ -29,17 +30,17 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         }
     }
 
-    function rememberFrameUrl(windowEl, frame) {
+    function rememberFrameUrl(windowEl, frame, persist = true) {
         if (!frame) return;
         const url = getRestorableFrameUrl(frame);
         if (!url) return;
         const state = getWindowMemory(windowEl.dataset.window);
         if (state.iframeUrl === url) return;
         state.iframeUrl = url;
-        saveMemory();
+        if (persist) saveMemory();
     }
 
-    function rememberFrameState(windowEl, frame) {
+    function rememberFrameState(windowEl, frame, persist = true) {
         if (!frame) return;
         try {
             const currentUrl = getRestorableFrameUrl(frame);
@@ -51,12 +52,12 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
             if (!snapshot || typeof snapshot !== "object") {
                 if (state.iframePageState) {
                     delete state.iframePageState;
-                    saveMemory();
+                    if (persist) saveMemory();
                 }
                 return;
             }
             state.iframePageState = snapshot;
-            saveMemory();
+            if (persist) saveMemory();
         } catch {
             // A cross-origin or navigating frame cannot provide an in-page snapshot.
         }
@@ -183,12 +184,12 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         windows.forEach(windowEl => updateWindowResourceState(windowEl));
     }
 
-    function unloadWindowFrame(windowEl) {
+    function unloadWindowFrame(windowEl, { persist = true } = {}) {
         const frame = windowEl.querySelector("iframe");
         if (!frame) return;
         // Capture the current same-origin URL before releasing the child browsing context.
-        rememberFrameUrl(windowEl, frame);
-        rememberFrameState(windowEl, frame);
+        rememberFrameUrl(windowEl, frame, persist);
+        rememberFrameState(windowEl, frame, persist);
         frame.dataset.resourceState = "unloaded";
         frame.removeAttribute("src");
     }
@@ -239,7 +240,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         return fallback;
     }
 
-    function applyWindowSize(windowEl, requestedSize = {}) {
+    function applyWindowSize(windowEl, requestedSize = {}, { persist = true } = {}) {
         const state = getWindowMemory(windowEl.dataset.window);
         ["width", "height"].forEach(dimension => {
             const datasetKey = `window${dimension[0].toUpperCase()}${dimension.slice(1)}`;
@@ -250,14 +251,13 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
                 settings: { width: "780px" }
             };
             const previousDefault = previousDefaults[windowEl.dataset.window]?.[dimension];
-            if (previousDefault && normalizeWindowDimension(state[dimension], fallback) === previousDefault) {
-                // Advance saved defaults while keeping other remembered sizes.
-                state[dimension] = fallback;
-            }
-            state[dimension] = requestedSize[dimension] !== undefined
+            const saved = previousDefault && normalizeWindowDimension(state[dimension], fallback) === previousDefault
+                ? fallback : state[dimension];
+            const value = requestedSize[dimension] !== undefined
                 ? normalizeWindowDimension(requestedSize[dimension], fallback)
-                : normalizeWindowDimension(state[dimension], fallback);
-            windowEl.style[dimension] = state[dimension];
+                : normalizeWindowDimension(saved, fallback);
+            if (persist) state[dimension] = value;
+            windowEl.style[dimension] = value;
         });
     }
 
@@ -482,7 +482,9 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
     }
 
     function openTaskbarContextMenu(button, event) {
+        if (nativeContextMenuRequested(event, memory)) return;
         ensureTaskbarContextMenu();
+        window.dispatchEvent(new CustomEvent("guidelume:context-menu-open", { detail: { menu: taskbarContextMenu } }));
         contextMenuTarget = button;
         const id = button.dataset.taskbarWindow;
         renderTaskbarContextMenu(id);
@@ -546,6 +548,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         button.addEventListener("pointerup", releasePointer);
         button.addEventListener("pointercancel", releasePointer);
         button.addEventListener("contextmenu", event => {
+            if (nativeContextMenuRequested(event, memory)) { closeTaskbarContextMenu(); return; }
             event.preventDefault();
             const touchContext = event.pointerType === "touch" || activePointerId !== null;
             if (longPressOpened && taskbarContextMenu && !taskbarContextMenu.hidden) return;
@@ -788,6 +791,8 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         const alreadyFocused = focusedWindow === windowEl && windowEl.classList.contains("is-focused");
         focusedWindow = windowEl;
         const id = windowEl.dataset.window;
+        const sharedFocusChanged = !["developer-vault", "easter-eggs-password"].includes(id) && memory.focusedWindow !== id;
+        if (sharedFocusChanged) memory.focusedWindow = id;
         const currentOrder = Array.isArray(memory.windowOrder) ? memory.windowOrder : [];
         const orderChanged = currentOrder.at(-1) !== id;
         if (orderChanged) {
@@ -797,7 +802,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         windowEl.dispatchEvent(new CustomEvent("windowfocus"));
         // Keep activation hooks (profile, setup, vault) without rebuilding the
         // taskbar or consuming another stacking layer for an ordinary content click.
-        if (alreadyFocused && !orderChanged) return;
+        if (alreadyFocused && !orderChanged && !sharedFocusChanged) return;
         windows.forEach(candidate => {
             const focused = candidate === windowEl;
             candidate.classList.toggle("is-focused", focused);
@@ -805,7 +810,8 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
                 candidate.style.zIndex = nextZIndex();
             }
         });
-        if (orderChanged) saveMemory();
+        if (!document.querySelector("dialog[open]")) getFocusTarget(document.activeElement)?.focus({ preventScroll: true });
+        if (orderChanged || sharedFocusChanged) saveMemory();
         updateTaskbar();
         updateWindowResourceStates();
     }
@@ -816,7 +822,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
             return state.open && !state.minimized && !windowEl.hidden;
         });
         const order = Array.isArray(memory.windowOrder) ? memory.windowOrder : [];
-        const candidate = [...order].reverse()
+        const candidate = visible.find(windowEl => windowEl.dataset.window === memory.focusedWindow) || [...order].reverse()
             .map(id => visible.find(windowEl => windowEl.dataset.window === id))
             .find(Boolean) || visible.at(-1);
         if (candidate) focusWindow(candidate);
@@ -839,7 +845,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         }
     }
 
-    function prepareWindow(windowEl, size) {
+    function prepareWindow(windowEl, size, { persist = true } = {}) {
         const lazyFrame = windowEl.querySelector("iframe[data-src]");
         let frameSource = null;
         if (lazyFrame && !lazyFrame.hasAttribute("src")) {
@@ -876,7 +882,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
             closeAnimationHandlers.delete(windowEl);
         }
 
-        applyWindowSize(windowEl, size);
+        applyWindowSize(windowEl, size, { persist });
         restoreWindowPosition(windowEl);
         windowEl.hidden = false;
         windowEl.classList.remove("window-opening", "window-closing");
@@ -987,7 +993,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         return label;
     }
 
-    function applyMaximizedStyles(windowEl, maximized) {
+    function applyMaximizedStyles(windowEl, maximized, { persist = true } = {}) {
         windowEl.classList.toggle("is-maximized", maximized);
         windowEl.querySelector("[data-maximize-window]")?.setAttribute("aria-pressed", String(maximized));
         const hideTaskbar = ensureTaskbarToggle(windowEl);
@@ -996,7 +1002,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
             const navigationControls = hideTaskbar.closest(".iframe-window-controls");
             if (navigationControls) navigationControls.hidden = !maximized;
             const state = getWindowMemory(windowEl.dataset.window);
-            if (!maximized) state.hideTaskbar = false;
+            if (!maximized && persist) state.hideTaskbar = false;
             hideTaskbar.querySelector("input").checked = maximized
                 && (state.hideTaskbar || temporaryTaskbarHiddenWindows.has(windowEl.dataset.window));
         }
@@ -1101,7 +1107,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         }
     }
 
-    function placeBehindFocusedWindow(windowEl) {
+    function placeBehindFocusedWindow(windowEl, { persist = true } = {}) {
         if (!focusedWindow || focusedWindow === windowEl || focusedWindow.hidden) return;
         const ordered = windows.filter(candidate => !candidate.hidden && candidate !== windowEl)
             .sort((a, b) => Number(a.style.zIndex) - Number(b.style.zIndex));
@@ -1112,7 +1118,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         const index = order.indexOf(focusedWindow.dataset.window);
         order.splice(Math.max(0, index), 0, windowEl.dataset.window);
         memory.windowOrder = order;
-        saveMemory();
+        if (persist) saveMemory();
     }
 
     function completeWindowOpen(windowEl, size, focus, background = false) {
@@ -1219,6 +1225,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         state.minimized = true;
         if (focusedWindow === windowEl) {
             focusedWindow = null;
+            if (memory.focusedWindow === id) memory.focusedWindow = null;
             windowEl.classList.remove("is-focused");
             focusMostRecentWindow(windowEl);
         }
@@ -1269,6 +1276,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         }
         if (focusedWindow === windowEl) {
             focusedWindow = null;
+            if (memory.focusedWindow === id) memory.focusedWindow = null;
             windowEl.classList.remove("is-focused");
             focusMostRecentWindow(windowEl);
         }
@@ -1335,11 +1343,99 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
     updateWindowResourceStates();
 
 
+    async function applySharedState(ids, { isProtected = () => false } = {}) {
+        const deferredPaths = [];
+        await Promise.all(ids.map(async id => {
+            const windowEl = getWindow(id);
+            if (!windowEl) return;
+            const path = ["windows", id];
+            if (isProtected(path)) { deferredPaths.push(path); return; }
+            let state = getWindowMemory(id);
+            if (state.open && !state.minimized && canOpenWindow(id) && windowEl.hidden) {
+                try { await prepareWindowOpen(id); }
+                catch (error) { onWindowOpenError(error, id); throw error; }
+            }
+            // Interaction can begin while application CSS is loading. Retain
+            // presentation work until it can finish without replacing that edit.
+            if (isProtected(path)) { deferredPaths.push(path); return; }
+            state = getWindowMemory(id);
+            cancelPendingWindowOpen(id);
+            const closing = closeAnimationHandlers.get(windowEl);
+            if (closing) {
+                windowEl.removeEventListener("animationend", closing);
+                closeAnimationHandlers.delete(windowEl);
+            }
+            const wasVisible = !windowEl.hidden;
+            if (!canOpenWindow(id)) {
+                state.open = false; state.minimized = false; state.maximized = false;
+            }
+            if (!state.open || state.minimized) {
+                if (!state.open && wasVisible) windowEl.dispatchEvent(new CustomEvent("windowclosing"));
+                if (!state.open) unloadWindowFrame(windowEl, { persist: false });
+                windowEl.hidden = true;
+                windowEl.classList.remove("window-opening", "window-closing");
+                applyMaximizedStyles(windowEl, false, { persist: false });
+                if (focusedWindow === windowEl) {
+                    focusedWindow = null;
+                    windowEl.classList.remove("is-focused");
+                }
+            } else {
+                if (!wasVisible || windowEl.classList.contains("window-closing")) {
+                    prepareWindow(windowEl, {}, { persist: false });
+                    placeBehindFocusedWindow(windowEl, { persist: false });
+                    if (id === "looking-glass") windowEl.dispatchEvent(new CustomEvent("windowopened"));
+                }
+                applyWindowSize(windowEl, {}, { persist: false });
+                applyMaximizedStyles(windowEl, state.maximized, { persist: false });
+                if (!state.maximized) restoreWindowPosition(windowEl);
+            }
+        }));
+        updateTaskbar();
+        updateWindowResourceStates();
+        return { deferredPaths };
+    }
+
+    function getFocusTarget(previous) {
+        const windowEl = focusedWindow && !focusedWindow.hidden ? focusedWindow : null;
+        if (!windowEl) return document.querySelector(".start-button");
+        if (previous?.isConnected && windowEl.contains(previous) && previous.getClientRects().length) return previous;
+        windowEl.tabIndex = -1;
+        return windowEl;
+    }
+
+    function applySharedFocus({ isProtected = () => false } = {}) {
+        if (isProtected(["focusedWindow"])) return { deferredPaths: [["focusedWindow"]] };
+        const visible = windows.filter(windowEl => !windowEl.hidden && !windowEl.classList.contains("window-closing")
+            && getWindowMemory(windowEl.dataset.window).open && !getWindowMemory(windowEl.dataset.window).minimized);
+        const requested = getWindow(memory.focusedWindow);
+        if (requested && getWindowMemory(memory.focusedWindow).open && !getWindowMemory(memory.focusedWindow).minimized && requested.hidden) {
+            return { deferredPaths: [["focusedWindow"]] };
+        }
+        const order = memory.windowOrder || [];
+        const target = visible.includes(requested) ? requested : [...order].reverse()
+            .map(id => visible.find(windowEl => windowEl.dataset.window === id)).find(Boolean) || visible.at(-1);
+        const previous = document.activeElement;
+        if (target && (focusedWindow !== target || !target.classList.contains("is-focused"))) {
+            target.dispatchEvent(new CustomEvent("windowfocus"));
+            target.style.zIndex = String(nextZIndex());
+            memory.windowOrder = [...order.filter(id => id !== target.dataset.window), target.dataset.window];
+        }
+        focusedWindow = target || null;
+        windows.forEach(windowEl => windowEl.classList.toggle("is-focused", windowEl === target));
+        // Native dialogs retain keyboard focus until dismissal. The notice asks
+        // getFocusTarget again afterwards, rather than restoring a hidden button.
+        if (!document.querySelector("dialog[open]")) getFocusTarget(previous)?.focus({ preventScroll: true });
+        updateTaskbar(); updateWindowResourceStates();
+        return { deferredPaths: [] };
+    }
+
+    window.addEventListener("guidelume:context-menu-preference", () => closeTaskbarContextMenu());
+    window.addEventListener("guidelume:context-menu-open", event => { if (event.detail?.menu !== taskbarContextMenu) closeTaskbarContextMenu(); });
     return {
-        getWindowMemory, getWindow, openWindow, restoreWindows, openMilkyWayBarCrawl, setTemporaryTaskbarHidden, setMaximized, restoreFocusedWindow,
+        getWindowMemory, getWindow, openWindow, restoreWindows, applySharedState, applySharedFocus, getFocusTarget, openMilkyWayBarCrawl, setTemporaryTaskbarHidden, setMaximized, restoreFocusedWindow,
         closeWindow, minimizeWindow, focusWindow, updateTaskbar, applyWindowSize, restoreWindowPosition, constrainWindowPosition,
-        refreshRestoredLayout() {
-            windows.forEach(windowEl => {
+        refreshRestoredLayout(ids = null) {
+            windows.filter(windowEl => !ids || ids.includes(windowEl.dataset.window)).forEach(windowEl => {
                 applyWindowSize(windowEl, {});
                 restoreWindowPosition(windowEl);
                 if (windowEl.classList.contains("is-maximized")) {

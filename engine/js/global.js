@@ -11,6 +11,7 @@ import { initEnvironmentalControls } from "./environmental-controls.js";
 import { createEnvironmentEffectManager } from "./environment-effect-manager.js";
 import { initTerminal } from "./terminal.js";
 import { initBlackwall } from "./blackwall.js";
+import { initBlackwallApp } from "./blackwall-app.js";
 import { initEasterEggs } from "./easter-eggs.js";
 import { initConfigurationBackup } from "./configuration-backup-ui.js";
 import { initNotepad } from "./notepad.js";
@@ -24,6 +25,8 @@ import { initToastNotifications } from "./toast-notifications.js";
 import { cssManager, desktopStylesReady, fontManager } from "./css-bootstrap.js";
 import { windowStyleGroups } from "./stylesheet-registry.js";
 import { composeEnvironment } from "./environment-presets.js";
+import { createSyncInteractionGuard } from "./desktop-sync-interactions.js";
+import { initDesktopShortcuts } from "./desktop-shortcuts.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     await desktopStylesReady;
@@ -33,6 +36,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderAppearanceChoices(document);
     const confirmAction = initConfirmationDialog();
     const toast = initToastNotifications();
+    let storageNotice = null;
+    window.addEventListener("guidelume:storage-status", event => {
+        const reason = event.detail?.reason;
+        storageNotice = reason === "versionchange"
+            ? "Saved data is being upgraded. Your edits remain here; reload this tab before saving again."
+            : reason === "blocked" ? "Waiting for another Guidelume tab to release saved data. Close an older tab to continue."
+                : reason === "journal" ? "This browser cannot retain pending edits across reloads. Keep this tab open until changes finish saving."
+                : reason === "deleted" ? "This item was removed in another session. Copy your retained text into a new item to keep it."
+                    : "Browser storage is unavailable. Unsaved changes remain in this tab; please try saving again.";
+        if (document.documentElement.dataset.restorationState === "ready") toast.show(storageNotice, "error", { duration: 0 });
+        else if (reason === "blocked") document.getElementById("bootState")?.replaceChildren(storageNotice);
+    });
     const resetNoticeKey = "guidelume_reset_notice";
     const resetNoticeMessages = {
         defaults: "Defaults restored.",
@@ -61,12 +76,15 @@ document.addEventListener("DOMContentLoaded", async () => {
      */
 
     const desktopState = createDesktopState();
+    await desktopState.initializePersistence();
     const {
         memory, defaultMemory, queueSave, saveMemory,
         clearSavedGuidelumeState, nexusGuideId, nexusGuideRequested, firstNexusGuideVisit, freshVisitor
     } = desktopState;
     let onboardingInProgress = desktopState.onboardingInProgress;
+    tabsController.connectState({ memory, saveMemory });
     window.addEventListener("guidelume:accessible-fonts-changed", event => {
+        if (memory.settings.accessibleFonts === (event.detail?.enabled === true)) return;
         memory.settings.accessibleFonts = event.detail?.enabled === true;
         queueSave();
     });
@@ -185,11 +203,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         icon: ui.easterEggIcon
     });
     const terminalWindow = document.querySelector('[data-window="terminal"]');
+    let blackwallApp;
     const blackwall = initBlackwall({
         brandingElement: document.querySelector("[data-blackwall-branding]"),
         protectedFileElement: document.querySelector("[data-blackwall-protected-file]"),
         notify: toast.show,
         onLockChange: locked => {
+            if (locked) blackwallApp?.recordEvent("Blackwall incident response activated.");
             const input = terminalWindow?.querySelector(".terminal-input");
             if (input) input.disabled = locked;
         }
@@ -223,12 +243,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    function completeOnboarding() {
+    async function completeOnboarding() {
         if (memory.onboarding.completed === true) return true;
         onboardingInProgress = false;
         memory.onboarding.completed = true;
         document.documentElement.dataset.onboardingComplete = "true";
-        if (saveMemory() !== true) {
+        if (await saveMemory() !== true) {
             memory.onboarding.completed = false;
             onboardingInProgress = true;
             document.documentElement.dataset.onboardingComplete = "false";
@@ -239,17 +259,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         return true;
     }
 
-    function resetToDefaults(options = {}) {
+    async function resetToDefaults(options = {}) {
         fontManager.cancelTransitions?.();
         notepadController.setResetInProgress(true);
-        clearSavedGuidelumeState();
-        removeStoredValue("accessibleFonts");
-        removeStoredValue("easterEggFont");
-        restoreDesktopDefaults(memory, defaultMemory, options);
-        if (saveMemory() === true) reloadWithResetNotice("defaults");
+        if (await desktopState.replaceSavedState(next => restoreDesktopDefaults(next, defaultMemory, options), { discardLocal: () => true })) {
+            clearSavedGuidelumeState();
+            removeStoredValue("accessibleFonts");
+            removeStoredValue("easterEggFont");
+            window.guidelumeFullResetInProgress = true;
+            reloadWithResetNotice("defaults");
+        }
         else {
-            toast.show("Defaults could not be saved. The desktop will reload with the available state.", "error");
-            window.setTimeout(() => window.location.reload(), 1800);
+            notepadController.setResetInProgress(false);
+            toast.show("Defaults could not be saved. Your current desktop remains available; please try again.", "error");
         }
     }
 
@@ -261,6 +283,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             confirmLabel: "Reset everything"
         })) return;
 
+        if (!await desktopState.replaceSavedState(next => {
+            for (const key of Object.keys(next)) delete next[key];
+            Object.assign(next, structuredClone(defaultMemory));
+        }, { discardLocal: () => true, fullReset: true })) {
+            toast.show("Guidelume could not reset saved data. Please try again.", "error");
+            return;
+        }
         window.guidelumeFullResetInProgress = true;
         fontManager.cancelTransitions?.();
         notepadController.setResetInProgress(true);
@@ -423,12 +452,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     initWindowInteractions({ windows, queueSave, closeStartMenu, windowManager });
-    const desktopIconController = initDesktopIcons({ desktop, desktopIcons, memory, queueSave, openWindow });
+    let shortcutsController;
+    const desktopIconController = initDesktopIcons({ desktop, desktopIcons, memory, queueSave, openWindow,
+        onDrop: (icon, event) => shortcutsController?.handleDrop(icon, event) || false,
+        openShortcut: id => shortcutsController?.openShortcut(id) });
+    shortcutsController = initDesktopShortcuts({ desktop, memory, saveMemory, iconController: desktopIconController, windowManager, toast, confirmAction,
+        onDeleteRecycleBin: () => blackwallApp?.denyRecycleBinDeletion() });
     const widgetsController = initWidgets({ memory, queueSave, saveMemory, openWindow, activateTab: tabsController.activateTab });
     async function restoreDefaults() {
         if (!await confirmAction({
             title: "Restore default settings?",
-            message: "This restores appearance, environmental preferences, accessibility, desktop layout, taskbar, and widgets. Sticky Notes and their text are removed. Your profile, discoveries, and personal Looking Glass bookmarks stay."
+            message: "This restores appearance, environmental preferences, session preferences, accessibility, desktop layout, taskbar, and widgets. Sticky Notes and their text are removed. Your profile, discoveries, guide shortcuts, Recycle Bin contents, and personal Looking Glass bookmarks stay."
                 + (notepadController.hasUnsavedChanges() ? "\n\nYour unsaved document edits will also be discarded; saved document edits stay." : ""),
             confirmLabel: "Restore defaults"
         })) return;
@@ -440,18 +474,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             message: "This hides the Developer Vault and Easter Eggs until they are discovered again. Their desktop positions and your other settings stay.",
             confirmLabel: "Reset discoveries"
         })) return;
-        resetDiscoveryFlags(memory);
+        if (!await desktopState.replaceSavedState(next => resetDiscoveryFlags(next))) {
+            toast.show("The discovery reset could not be saved. Please try again.", "error");
+            return;
+        }
         if (ui.easterEggIcon) ui.easterEggIcon.hidden = true;
         if (ui.developerVaultIcon) ui.developerVaultIcon.hidden = true;
         developerVaultController.lock();
         closeWindow("developer-vault");
         closeWindow("easter-eggs");
         closeWindow("easter-eggs-password");
-        if (saveMemory() !== true) {
-            toast.show("The discovery reset could not be saved. Reloading to restore the saved state.", "error");
-            window.setTimeout(() => window.location.reload(), 1800);
-            return;
-        }
         backupController?.refreshCategories();
         toast.show("Discoveries reset.");
     }
@@ -461,6 +493,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const appearanceController = initAppearance({ memory, queueSave, elements: { taskbar, themeButtons, backgroundButtons, taskbarButtons } });
 
     const knownIcons = Array.from(document.querySelectorAll(".desktop-icon[data-icon]"))
+        .filter(icon => icon.dataset.resourceType !== "shortcut")
         .map(icon => ({
             id: icon.dataset.icon,
             exportable: true,
@@ -471,7 +504,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }));
     const knownWindows = windows.map(windowEl => windowEl.dataset.window)
         .filter(id => !["setup", "easter-eggs-password", "developer-vault"].includes(id));
-    const backupController = initConfigurationBackup({ memory, saveMemory, knownIcons, knownWindows, applyLiveConfiguration(selected) {
+    const backupController = initConfigurationBackup({ memory, saveMemory, replaceSavedState: desktopState.replaceSavedState, knownIcons, knownWindows, applyLiveConfiguration(selected) {
         if (selected.includes("appearance")) appearanceController.applyRestoredSettings(memory.settings);
         if (selected.includes("accessibility")) {
             window.dispatchEvent(new CustomEvent("guidelume:apply-accessible-fonts", {
@@ -481,6 +514,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         if (selected.includes("environment")) environmentController.applyRestoredSettings(memory.settings.environment);
         if (selected.includes("desktopLayout")) desktopIconController.refreshRestoredPositions();
+        if (selected.includes("shortcuts")) { shortcutsController.render(); shortcutsController.refreshPreference(); }
         if (selected.includes("windowLayout")) windowManager.refreshRestoredLayout();
         if (selected.includes("taskbar")) {
             appearanceController.applyRestoredSettings({ taskbar: memory.settings.taskbar });
@@ -489,6 +523,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (selected.includes("widgets")) widgetsController?.applyRestoredState();
         if (selected.includes("profile")) profileController?.refreshStartMenu();
         if (selected.includes("lookingGlass")) lookingGlassController?.applyRestoredState();
+        if (selected.includes("blackwall")) blackwallApp?.refresh();
         updateSettingsAvailability();
     } });
 
@@ -498,6 +533,128 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.documentElement.dataset.restorationState = "ready";
         document.getElementById("bootState")?.setAttribute("hidden", "");
     }
+    const interactionGuard = createSyncInteractionGuard();
+    blackwallApp = initBlackwallApp({
+        memory, saveMemory, queueSave, toast,
+        canShowNotice: () => interactionGuard.canShowNotice(),
+        getConflicts: () => desktopState.conflicts,
+        getHistoryGeneration: () => desktopState.resetGeneration,
+        resolveConflict: desktopState.resolveConflict,
+        getReturnFocus: windowManager.getFocusTarget,
+        canLock: () => memory.onboarding.completed === true
+            && document.documentElement.dataset.restorationState === "ready"
+            && !blackwall.isLocked && !document.querySelector("dialog[open]"),
+        beforeLock() {
+            closeStartMenu();
+            // Resuming the OS session never authenticates the independent vault.
+            developerVaultController?.lock();
+        }
+    });
+    const initialSession = blackwallApp.applySharedSession();
+    const environmentWindow = document.querySelector('[data-window="environmental-controls"]');
+    environmentWindow?.addEventListener("change", () => { environmentWindow.dataset.syncDirty = "true"; });
+    ui.applyEnvironmentButton?.addEventListener("click", () => {
+        environmentWindow.dataset.syncDirty = "false";
+        window.dispatchEvent(new Event("guidelume:interaction-ended"));
+    });
+    await desktopState.startSynchronization({
+        initialDeferredPaths: initialSession.deferredPaths,
+        isProtected: interactionGuard.isProtected,
+        getDraftScopes: interactionGuard.draftScopes,
+        onSync: state => blackwallApp.synchronizationStatus(state),
+        onConflicts: () => blackwallApp.refreshConflicts(),
+        onReset: () => blackwallApp.refreshHistoryGeneration(),
+        onApply(paths, { force }) {
+            const rendered = [];
+            const windowIds = new Set(paths.filter(path => path[0] === "windows").map(path => path[1]));
+            const revokedWindows = new Set();
+            const has = section => paths.some(path => path[0] === section);
+            const tabWindows = [...new Set(paths.filter(path => path[0] === "windows" && (path.length === 2 || path[2] === "activeTab")).map(path => path[1]))];
+            if (tabWindows.length) {
+                tabsController.applySharedState(tabWindows);
+                if (tabWindows.includes("blackwall")) blackwallApp.applySharedTabs();
+            }
+            if (has("sessionLocked")) rendered.push(blackwallApp.applySharedSession());
+            const settings = paths.filter(path => path[0] === "settings").map(path => path[1]);
+            if (settings.some(key => ["theme", "background", "taskbar"].includes(key))) appearanceController.applyRestoredSettings(memory.settings);
+            if (settings.some(key => ["accessibleFonts", "crtEffects", "brandingVisible", "textSize", "iconSize", "independentSizes", "reducedMotion"].includes(key))) {
+                window.dispatchEvent(new CustomEvent("guidelume:apply-accessible-fonts", { detail: {
+                    enabled: memory.settings.accessibleFonts === true, waitUntil: promise => rendered.push(promise)
+                } }));
+                accessibilityController.applyRestoredSettings(memory.settings);
+            }
+            if (settings.includes("environment")) rendered.push(environmentController.applyRestoredSettings(memory.settings.environment));
+            if (has("icons")) desktopIconController.refreshRestoredPositions();
+            if (has("shortcuts")) shortcutsController.render();
+            if (settings.includes("desktopContextMenus")) shortcutsController.refreshPreference();
+            if (has("pinnedTaskbar") || has("pinnedTaskbarOrder")) windowManager.updateTaskbar();
+            if (has("widgets")) widgetsController?.applyRestoredState();
+            if (has("profile") || has("onboarding")) profileController?.refreshSharedState();
+            if (has("lookingGlass")) lookingGlassController?.refreshSharedState();
+            if (has("documents")) rendered.push(notepadController.refreshFromMemory());
+            if (settings.includes("blackwall")) blackwallApp.refresh();
+            if (settings.includes("easterEggsUnlocked")) {
+                ui.easterEggIcon.hidden = memory.settings.easterEggsUnlocked !== true;
+                if (!memory.settings.easterEggsUnlocked) {
+                    for (const id of ["easter-eggs", "easter-eggs-password"]) {
+                        Object.assign(getWindowMemory(id), { open: false, minimized: false, maximized: false });
+                        windowIds.add(id);
+                        revokedWindows.add(id);
+                    }
+                }
+            }
+            if (settings.includes("developerVaultDiscovered")) {
+                ui.developerVaultIcon.hidden = memory.settings.developerVaultDiscovered !== true;
+                if (!memory.settings.developerVaultDiscovered) {
+                    developerVaultController.lock();
+                    Object.assign(getWindowMemory("developer-vault"), { open: false, minimized: false, maximized: false });
+                    windowIds.add("developer-vault");
+                    revokedWindows.add("developer-vault");
+                }
+            }
+            if (has("onboarding")) {
+                onboardingInProgress = memory.onboarding.completed !== true;
+                document.documentElement.dataset.onboardingComplete = String(!onboardingInProgress);
+                window.dispatchEvent(new Event("guidelume:onboarding-updated"));
+                if (onboardingInProgress) {
+                    Object.assign(getWindowMemory("setup"), { open: true, minimized: false });
+                    windowIds.add("setup");
+                }
+            }
+            const isProtected = path => {
+                const explicitlyReplaced = force === true || (typeof force === "function" && force(path));
+                return !explicitlyReplaced && !revokedWindows.has(path[1]) && interactionGuard.isProtected(path);
+            };
+            if (windowIds.size || has("focusedWindow") || has("sessionLocked")) {
+                const windowsApplied = windowIds.size ? windowManager.applySharedState([...windowIds], { isProtected }) : Promise.resolve({ deferredPaths: [] });
+                rendered.push(windowsApplied.then(result => ({ deferredPaths: [
+                    ...result.deferredPaths, ...windowManager.applySharedFocus({ isProtected }).deferredPaths
+                ] })));
+            }
+            updateSettingsAvailability();
+            backupController.refreshCategories();
+            // Wait for the applied fonts and the next paint before claiming the
+            // desktop is synchronized. No artificial delay gates persistence.
+            rendered.push(fontManager.prepare());
+            return Promise.all(rendered).then(results => new Promise(resolve => requestAnimationFrame(() => resolve({
+                deferredPaths: results.flatMap(result => result?.deferredPaths || [])
+            }))));
+        }
+    });
+    const reconcile = () => { void desktopState.reconcile(); };
+    window.addEventListener("focus", reconcile);
+    window.addEventListener("pageshow", reconcile);
+    window.addEventListener("guidelume:interaction-ended", reconcile);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) reconcile(); });
+    const modalSyncObserver = new MutationObserver(reconcile);
+    modalSyncObserver.observe(document.body, { subtree: true, attributes: true, attributeFilter: ["open"] });
+    if (storageNotice) toast.show(storageNotice, "error", { duration: 0 });
+    window.addEventListener("pagehide", event => {
+        if (event.persisted) return;
+        modalSyncObserver.disconnect();
+        blackwallApp.destroy();
+        blackwall.destroy();
+    });
     if (resetNoticeMessages[pendingResetNotice]) toast.show(resetNoticeMessages[pendingResetNotice]);
 
 });

@@ -28,9 +28,12 @@ export function iconsOverlap(rect, other) {
     return overlapX > Math.min(rect.width, other.width) * 0.25 && overlapY > Math.min(rect.height, other.height) * 0.25;
 }
 
-export function findAvailableIconPosition(rect, bounds, occupied) {
+export function findAvailableIconPosition(rect, bounds, occupied, { gap = 0 } = {}) {
     const position = clampIconPosition(rect, bounds);
-    const available = candidate => !occupied.some(other => iconsOverlap({ ...candidate, width: rect.width, height: rect.height }, other));
+    const available = candidate => !occupied.some(other => gap > 0
+        ? candidate.left < other.left + other.width + gap && candidate.left + rect.width + gap > other.left
+            && candidate.top < other.top + other.height + gap && candidate.top + rect.height + gap > other.top
+        : iconsOverlap({ ...candidate, width: rect.width, height: rect.height }, other));
     if (available(position)) return position;
 
     const maxX = Math.max(bounds.left, bounds.right - rect.width);

@@ -5,8 +5,7 @@ import { discoveryFlagForIcon } from "./discovery-registry.js";
 // Discoverable apps declare their discovery icon and meaningful retained data here.
 const categoryGroups = [
     { id: "appearanceEnvironment", label: "Appearance & Environment", categories: ["appearance", "environment"] },
-    { id: "accessibility", label: "Accessibility", categories: ["accessibility"] },
-    { id: "desktopWindows", label: "Desktop & Windows", categories: ["desktopLayout", "windowLayout", "taskbar"] },
+    { id: "system", label: "System", categories: ["blackwall", "accessibility", "desktopLayout", "shortcuts", "windowLayout", "taskbar"] },
     { id: "widgets", label: "Widgets", categories: ["widgets"] },
     { id: "profileDocuments", label: "Profile & Documents", categories: ["profile", "documents"] },
     {
@@ -27,7 +26,7 @@ export function configurationCategoryGroups(memory, availableCategories) {
             .map(id => ({
                 ...configurationCategories.find(category => category.id === id),
                 hidden,
-                restoreWarning: group.restoreWarning
+                restoreWarning: group.restoreWarning || configurationCategories.find(category => category.id === id)?.restoreWarning
             }));
         if (!categories.length) continue;
         if (hidden) hiddenCategories.push(...categories);

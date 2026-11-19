@@ -263,10 +263,11 @@ export function initEnvironmentalControls({ memory, queueSave, effectManager, el
             weatherModeRadios.forEach(radio => { radio.checked = radio.value === (current.rotation.enabled ? "rotate" : "together"); });
             if (rotationClearToggle) rotationClearToggle.checked = current.rotation.includeClear;
             if (rotationInterval) rotationInterval.value = current.rotation.interval;
-            effectManager.applySettings(current);
+            const applied = effectManager.applySettings(current);
             syncDisabledState();
             updateApplyPreview();
             queueSave();
+            return applied;
         }
     };
 }

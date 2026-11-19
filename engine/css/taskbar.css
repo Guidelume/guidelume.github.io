@@ -371,16 +371,26 @@
 
 .start-menu[hidden] { display: none; }
 
+.start-menu-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    order: 1;
+    flex: 0 0 auto;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid color-mix(in srgb, var(--text-secondary), transparent 75%);
+}
+
 .start-menu-security {
     display: flex;
     align-items: center;
     gap: 7px;
-    order: 1;
-    flex: 0 0 auto;
-    margin: 10px 0 0;
-    padding: 10px 4px 2px;
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    padding: 4px;
     border: 0;
-    border-top: 1px solid color-mix(in srgb, var(--text-secondary), transparent 75%);
     background: transparent;
     color: var(--text-secondary);
     font: inherit;
@@ -394,8 +404,25 @@
 
 .start-menu-security svg { width: 13px; height: 15px; flex: 0 0 auto; stroke: currentColor; stroke-width: 1.5; }
 
+.start-menu-lock {
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+    border: 1px solid color-mix(in srgb, var(--accent-strong), transparent 55%);
+    border-radius: 2px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+.start-menu-lock svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.start-menu-lock:hover { background: color-mix(in srgb, var(--accent-strong), transparent 82%); color: var(--accent-light); }
+.start-menu-lock:focus-visible { outline: 2px solid var(--accent-light); outline-offset: 2px; }
+
 /* This menu reverses its items when the taskbar is at the top. */
-.taskbar-top ~ .start-menu .start-menu-security { order: -1; }
+.taskbar-top ~ .start-menu .start-menu-footer { order: -1; }
 
 .start-profile-card {
     display: flex;

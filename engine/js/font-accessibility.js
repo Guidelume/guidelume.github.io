@@ -47,7 +47,7 @@
         });
     }
 
-    function savePreference(enabled) {
+    function savePreference(enabled, { external = false } = {}) {
         wantedAccessible = enabled;
         return transitionFonts("accessible-fonts", { accessibleFonts: enabled }, () => {
             applyPreference(enabled);
@@ -56,7 +56,7 @@
             } catch {
                 // Keep the preference active in this document if storage is unavailable.
             }
-            window.dispatchEvent(new CustomEvent("guidelume:accessible-fonts-changed", { detail: { enabled } }));
+            if (!external) window.dispatchEvent(new CustomEvent("guidelume:accessible-fonts-changed", { detail: { enabled } }));
         });
     }
 
@@ -82,7 +82,8 @@
     applyEasterFontPreference(readEasterFontPreference());
 
     window.addEventListener("guidelume:apply-accessible-fonts", event => {
-        savePreference(event.detail?.enabled === true);
+        const applied = savePreference(event.detail?.enabled === true, { external: true });
+        event.detail?.waitUntil?.(applied);
     });
 
     toggles.forEach(toggle => {

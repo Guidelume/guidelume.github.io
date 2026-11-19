@@ -31,9 +31,10 @@ export function initNotepad({ memory, saveMemory }) {
         const draft = state.editor.value;
         const contentError = getDocumentTextError(draft);
         state.dirty = state.ready && draft !== state.savedContent;
-        state.saveButton.disabled = !state.ready || !state.dirty || Boolean(contentError);
+        state.panel.dataset.syncDirty = String(state.dirty);
+        state.saveButton.disabled = state.saving || !state.ready || !state.dirty || Boolean(contentError);
         state.restoreButton.hidden = false;
-        state.restoreButton.disabled = !state.ready || !state.hasOverride;
+        state.restoreButton.disabled = state.saving || !state.ready || !state.hasOverride;
 
         if (message) {
             setStatus(state, message, kind);
@@ -84,8 +85,8 @@ export function initNotepad({ memory, saveMemory }) {
         }
     }
 
-    function saveDocument(state) {
-        if (!state.documentInfo.editable || !state.ready) return;
+    async function saveDocument(state) {
+        if (!state.documentInfo.editable || !state.ready || state.saving) return;
         const content = state.editor.value;
         const contentError = getDocumentTextError(content);
         if (contentError) {
@@ -102,35 +103,46 @@ export function initNotepad({ memory, saveMemory }) {
             ...normalizeDocumentOverrides(previousDocuments),
             [state.documentInfo.id]: { content }
         };
-        if (saveMemory() !== true) {
-            memory.documents = previousDocuments;
+        if (!await persist(state)) {
             updateState(state, "Could not save this document in this browser. Your edits are still here.", "error");
             return;
         }
 
         state.savedContent = content;
         state.hasOverride = true;
-        updateState(state, "All changes saved locally", "saved");
+        updateState(state, state.editor.value === content ? "All changes saved locally" : "Earlier changes saved; your newer edits are unsaved.", state.editor.value === content ? "saved" : "unsaved");
+        window.dispatchEvent(new Event("guidelume:interaction-ended"));
     }
 
-    function restoreOriginal(state) {
-        if (!state.documentInfo.editable || !state.ready || !state.hasOverride || state.originalContent === null) return;
+    async function restoreOriginal(state) {
+        if (!state.documentInfo.editable || !state.ready || state.saving || !state.hasOverride || state.originalContent === null) return;
         if (!window.confirm(`Restore the bundled original for ${state.documentInfo.title}? This removes its saved local edits.`)) return;
+        const revision = state.editRevision;
+        const draft = state.editor.value;
 
         const previousDocuments = memory.documents;
         const nextDocuments = normalizeDocumentOverrides(previousDocuments);
         delete nextDocuments[state.documentInfo.id];
         memory.documents = nextDocuments;
-        if (saveMemory() !== true) {
-            memory.documents = previousDocuments;
+        if (!await persist(state)) {
             updateState(state, "Could not restore the original in this browser. Your text is still here.", "error");
             return;
         }
 
         state.hasOverride = false;
         state.savedContent = normalizeLineEndings(state.originalContent);
-        loadDisplayedContent(state, state.savedContent);
-        updateState(state, "Original restored", "saved");
+        const unchanged = revision === state.editRevision && draft === state.editor.value;
+        if (unchanged) loadDisplayedContent(state, state.savedContent);
+        updateState(state, unchanged ? "Original restored" : "Original restored; your newer edits are unsaved.", unchanged ? "saved" : "unsaved");
+        window.dispatchEvent(new Event("guidelume:interaction-ended"));
+    }
+
+    async function persist(state) {
+        state.saving = true;
+        updateState(state, "Saving…");
+        try { return await saveMemory() === true; }
+        catch { return false; }
+        finally { state.saving = false; }
     }
 
     function canCloseWindow(windowId) {
@@ -139,6 +151,7 @@ export function initNotepad({ memory, saveMemory }) {
         if (!window.confirm(`Discard unsaved changes to ${state.documentInfo.title}? Choose Cancel to keep editing.`)) return false;
         state.editor.value = state.savedContent;
         updateState(state);
+        window.dispatchEvent(new Event("guidelume:interaction-ended"));
         return true;
     }
 
@@ -152,7 +165,7 @@ export function initNotepad({ memory, saveMemory }) {
             state.savedContent = incoming;
             if (!state.dirty) state.editor.value = incoming;
             const remainsDirty = state.editor.value !== incoming;
-            updateState(state, remainsDirty ? "A backup changed the saved copy; your unsaved edits remain." : null, remainsDirty ? "unsaved" : "");
+            updateState(state, remainsDirty ? "The saved copy changed; your unsaved edits remain." : null, remainsDirty ? "unsaved" : "");
         }
     }
 
@@ -172,6 +185,8 @@ export function initNotepad({ memory, saveMemory }) {
             hasOverride: false,
             dirty: false,
             ready: false,
+            saving: false,
+            editRevision: 0,
             loading: Promise.resolve()
         };
         if (!state.editor || !state.view || !state.saveButton || !state.restoreButton || !state.status) return;
@@ -179,7 +194,7 @@ export function initNotepad({ memory, saveMemory }) {
         state.saveButton.disabled = true;
         state.restoreButton.disabled = true;
         state.status.textContent = "Loading document…";
-        state.editor.addEventListener("input", () => updateState(state));
+        state.editor.addEventListener("input", () => { state.editRevision++; updateState(state); });
         state.saveButton.addEventListener("click", () => saveDocument(state));
         state.restoreButton.addEventListener("click", () => restoreOriginal(state));
         state.loading = loadDocument(state);
@@ -191,6 +206,11 @@ export function initNotepad({ memory, saveMemory }) {
         event.returnValue = "";
     });
     window.addEventListener("guidelume:documents-updated", () => { void refreshFromMemory(); });
+    window.addEventListener("guidelume:conflict-resolved", event => {
+        if (event.detail?.path?.[0] !== "documents") return;
+        const state = states.get(event.detail.path[1]);
+        if (state) { state.dirty = false; state.panel.dataset.syncDirty = "false"; void refreshFromMemory(); }
+    });
 
-    return { canCloseWindow, hasUnsavedChanges, setResetInProgress(value) { resetInProgress = value === true; } };
+    return { canCloseWindow, hasUnsavedChanges, refreshFromMemory, setResetInProgress(value) { resetInProgress = value === true; } };
 }

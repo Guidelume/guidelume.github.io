@@ -1,4 +1,3 @@
-<script>
 (function () {
 	'use strict';
 
@@ -819,4 +818,3 @@
 	window.addEventListener('pagehide', cleanupAll);
 	window.addEventListener('beforeunload', cleanupAll);
 })();
-</script>

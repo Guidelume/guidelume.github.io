@@ -15,6 +15,11 @@
 		fontScheme: "default",
 		cozy: false,
 	};
+	let bookmarkReady = false;
+	let bookmarkError = false;
+	const notifyBookmark = () => window.dispatchEvent(new Event("guidelume:bookmark-state-changed"));
+	window.guidelumeGetBookmarkState = () => bookmarkError ? { error: true } : bookmarkReady
+		? { href: window.location.href, title: state.entry.title } : null;
 	
 	// ---------------------- DOM -------------------------
 	const $ = (s) => document.querySelector(s);
@@ -418,6 +423,9 @@
 	// ---------------------- Render Entry ----------------------
 	async function renderEntry() {
 		if (!titleEl || !contentEl || !state.entry) return;
+		bookmarkReady = false;
+		bookmarkError = false;
+		notifyBookmark();
 
 		contentEl.innerHTML = `<div class="prose"><p>Loading entry...</p></div>`;
 
@@ -468,9 +476,14 @@
 		
 		contentEl.scrollTop = 0;
 		updateProgress();
+		bookmarkReady = true;
+		notifyBookmark();
 	}
 	
 	function renderError(messageHtml) {
+		bookmarkError = true;
+		bookmarkReady = false;
+		notifyBookmark();
 		if (titleEl) titleEl.textContent = "Error";
 		if (contentEl) {
 			contentEl.innerHTML = `<div class="prose"><p>${messageHtml}</p></div>`;

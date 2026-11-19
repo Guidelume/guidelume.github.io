@@ -23,6 +23,22 @@
 	let chapterAbortController = null;
 	let resumeChoicePending = false;
 	let chapterReady = false;
+	let pausedChapter = null;
+	let chapterScrollRatio = 0;
+	let bookmarkError = false;
+	let unavailableChapter = false;
+	const notifyBookmark = () => window.dispatchEvent(new Event("guidelume:bookmark-state-changed"));
+	function chapterKey(chapter) {
+		const base = new URL(".", window.location.href).href;
+		return chapter.file.startsWith(base) ? chapter.file.slice(base.length) : chapter.file;
+	}
+	window.guidelumeGetBookmarkState = () => {
+		if (bookmarkError) return { error: true };
+		if (!chapterReady || !state.story) return null;
+		const url = new URL(window.location.href);
+		url.searchParams.set("chapter", chapterKey(state.story.chapters[state.chapterIndex]));
+		return { href: url.href, title: `${state.story.title} — ${titleEl.textContent}`, unavailableChapter };
+	};
 	
 	// ---------------------- DOM -------------------------
 	const $ = (s) => document.querySelector(s);
@@ -640,6 +656,14 @@
 		};
 
 		document.title = `| ${state.story.title}`;
+		if (!chapters.length) { renderError("This story has no available chapters."); return; }
+		const requestedChapter = new URL(window.location.href).searchParams.get("chapter");
+		if (requestedChapter) {
+			const index = chapters.findIndex(chapter => chapterKey(chapter) === requestedChapter);
+			unavailableChapter = index < 0;
+			await renderChapter(index < 0 ? 0 : index, 0);
+			return;
+		}
 		// Show popup if resume data exists and meets threshold
 		const resumeData = loadResume(slug);
 		if (resumeData && state.story && typeof resumeData.scrollRatio === "number" && resumeData.scrollRatio > RESUME_POPUP_THRESHOLD) {
@@ -673,6 +697,10 @@
 	async function renderChapter(index, scrollRatio = 0) {
 		if (!titleEl || !contentEl || !state.story) return;
 		chapterReady = false;
+		bookmarkError = false;
+		notifyBookmark();
+		pausedChapter = null;
+		chapterScrollRatio = scrollRatio;
 
 		const requestId = ++chapterRequestId;
 		chapterAbortController?.abort();
@@ -743,6 +771,7 @@
 			);
 			contentEl.style.scrollBehavior = previousScrollBehavior;
 			chapterReady = true;
+			notifyBookmark();
 			updateProgress();
 			saveResume(state.story.slug, state.chapterIndex);
 		});
@@ -781,6 +810,9 @@
 	}
 
 	function renderError(messageHtml) {
+		bookmarkError = true;
+		chapterReady = false;
+		notifyBookmark();
 		if (titleEl) titleEl.textContent = "Error";
 		if (contentEl) {
 			contentEl.innerHTML = `<div class="prose"><p>${messageHtml}</p></div>`;
@@ -789,13 +821,22 @@
 
 	// ---------------------- Events ----------------------
 	if (contentEl) contentEl.addEventListener("scroll", updateProgress, { passive: true });
-	window.addEventListener("pagehide", () => {
+	window.addEventListener("pagehide", event => {
+		if (event.persisted && chapterAbortController && state.story) {
+			pausedChapter = { index: state.chapterIndex, scrollRatio: chapterScrollRatio };
+		}
 		clearTimeout(state.scrollSaveTimer);
 		state.scrollSaveTimer = null;
 		if (state.story) saveResume(state.story.slug, state.chapterIndex);
 		chapterRequestId += 1;
 		chapterAbortController?.abort();
 		chapterAbortController = null;
+	});
+	window.addEventListener("pageshow", event => {
+		if (!event.persisted || !pausedChapter) return;
+		const chapter = pausedChapter;
+		pausedChapter = null;
+		void renderChapter(chapter.index, chapter.scrollRatio);
 	});
 	window.addEventListener("resize", () => { updateProgress(); if (state.cozy) { makeItRain(); } });
 

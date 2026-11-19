@@ -94,11 +94,11 @@ export function initSetupFlow({ closeWindow, restoreDefaults, resetDiscoveries, 
         });
     }
 
-    finishButton?.addEventListener("click", () => {
+    finishButton?.addEventListener("click", async () => {
         if (!isOnboardingInProgress()) return;
         if (!appearanceStepComplete) return;
-        if (!saveSetupProfile()) return;
-        if (!completeOnboarding()) {
+        if (!await saveSetupProfile()) return;
+        if (!await completeOnboarding()) {
             const status = setupWindow?.querySelector("[data-setup-profile-status]");
             if (status) status.textContent = "Setup could not be saved in this browser. You can keep using Guidelume and try again later.";
             return;
@@ -108,5 +108,6 @@ export function initSetupFlow({ closeWindow, restoreDefaults, resetDiscoveries, 
     });
 
     setupWindow?.addEventListener("windowfocus", updateSetupContent);
+    window.addEventListener("guidelume:onboarding-updated", updateSetupContent);
     updateSetupContent();
 }

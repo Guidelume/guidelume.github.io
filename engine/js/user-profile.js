@@ -52,6 +52,8 @@ export function initUserProfile({ memory, saveMemory, openWindow, closeStartMenu
     memory.profile = normalizeUserProfile(memory.profile);
     let setupAvatar = memory.profile.avatar;
     let editedAvatar = memory.profile.avatar;
+    let setupEditRevision = 0;
+    let profileEditRevision = 0;
 
     const avatarFor = id => PROFILE_AVATARS.find(avatar => avatar.id === id) || PROFILE_AVATARS[0];
     function refreshStartMenu() {
@@ -72,16 +74,22 @@ export function initUserProfile({ memory, saveMemory, openWindow, closeStartMenu
         setupName.maxLength = MAX_DISPLAY_NAME_LENGTH;
         setupName.value = memory.profile.displayName;
     }
-    renderAvatarChoices(setupAvatars, setupAvatar, id => { setupAvatar = id; });
+    renderAvatarChoices(setupAvatars, setupAvatar, id => { setupAvatar = id; setupEditRevision++; if (setupName) setupName.closest("[data-window]").dataset.syncDirty = "true"; });
 
-    function saveSetupProfile() {
+    function markDraft(root, value = true) { if (root) root.dataset.syncDirty = String(value); }
+    setupName?.addEventListener("input", () => { setupEditRevision++; markDraft(setupName.closest("[data-window]")); });
+    profileName?.addEventListener("input", () => { profileEditRevision++; markDraft(profileWindow); });
+
+    async function saveSetupProfile() {
+        const revision = setupEditRevision;
         memory.profile = normalizeUserProfile({
             displayName: setupName?.value,
             avatar: selectedAvatar(setupAvatars, setupAvatar)
         });
         setupName.value = memory.profile.displayName;
         setupAvatar = memory.profile.avatar;
-        const saved = saveMemory();
+        const saved = await saveMemory();
+        if (saved === true && revision === setupEditRevision) { markDraft(setupName.closest("[data-window]"), false); window.dispatchEvent(new Event("guidelume:interaction-ended")); }
         if (setupStatus) setupStatus.textContent = saved === true
             ? "Your profile is saved on this device."
             : "Your profile could not be saved in this browser. Try again when storage is available.";
@@ -99,9 +107,12 @@ export function initUserProfile({ memory, saveMemory, openWindow, closeStartMenu
         if (profilePreview) profilePreview.src = avatarFor(profile.avatar).src;
         renderAvatarChoices(profileAvatars, editedAvatar, id => {
             editedAvatar = id;
+            profileEditRevision++;
+            markDraft(profileWindow);
             if (profilePreview) profilePreview.src = avatarFor(id).src;
         });
         if (profileStatus) profileStatus.textContent = "";
+        markDraft(profileWindow, false);
     }
 
     // Restored open windows are opened before this controller is initialized.
@@ -111,14 +122,16 @@ export function initUserProfile({ memory, saveMemory, openWindow, closeStartMenu
         // The window manager emits windowfocus on every click inside a window, not only
         // when focus moves to it. Reload only when it actually receives focus so an
         // unsaved name edit survives clicking another avatar or the Save button.
-        if (!profileWindow.classList.contains("is-focused")) loadProfileEditor();
+        if (!profileWindow.classList.contains("is-focused") && profileWindow.dataset.syncDirty !== "true") loadProfileEditor();
     });
-    profileWindow?.querySelector("[data-save-user-profile]")?.addEventListener("click", () => {
+    profileWindow?.querySelector("[data-save-user-profile]")?.addEventListener("click", async () => {
+        const revision = profileEditRevision;
         memory.profile = normalizeUserProfile({ displayName: profileName?.value, avatar: selectedAvatar(profileAvatars, editedAvatar) });
         if (profileName) profileName.value = memory.profile.displayName;
         editedAvatar = memory.profile.avatar;
         if (profilePreview) profilePreview.src = avatarFor(editedAvatar).src;
-        const saved = saveMemory();
+        const saved = await saveMemory();
+        if (saved === true && revision === profileEditRevision) { markDraft(profileWindow, false); window.dispatchEvent(new Event("guidelume:interaction-ended")); }
         refreshStartMenu();
         if (profileStatus) profileStatus.textContent = saved === true
             ? "Profile saved on this device."
@@ -130,6 +143,15 @@ export function initUserProfile({ memory, saveMemory, openWindow, closeStartMenu
         openWindow(isOnboardingInProgress() ? "setup" : "user-profile");
     });
     refreshStartMenu();
+    window.addEventListener("guidelume:conflict-resolved", event => {
+        if (event.detail?.path?.[0] !== "profile") return;
+        markDraft(profileWindow, false);
+        if (setupName) markDraft(setupName.closest("[data-window]"), false);
+    });
 
-    return { saveSetupProfile, refreshStartMenu };
+    return { saveSetupProfile, refreshStartMenu, refreshSharedState() {
+        refreshStartMenu();
+        if (profileWindow?.dataset.syncDirty !== "true") loadProfileEditor();
+        if (setupName && setupName.closest("[data-window]").dataset.syncDirty !== "true") setupName.value = memory.profile.displayName;
+    } };
 }

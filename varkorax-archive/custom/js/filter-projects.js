@@ -59,6 +59,8 @@ function saveSettings() {
 
 let MASTER = [];
 let FILTERED = [];
+let archiveLoading = false;
+let archiveLoadError = false;
 
 let currentPage = settings.page;
 let pageSize = settings.pageSize;
@@ -105,7 +107,12 @@ function normalize(value) {
 }
 
 async function loadArchive() {
-
+    if (archiveLoading) return;
+    archiveLoading = true;
+    archiveLoadError = false;
+    grid.setAttribute("aria-busy", "true");
+    grid.textContent = "Loading collection…";
+    counter.textContent = "Loading entries…";
     try {
 
         const response = await fetch(DATA_JSON, { cache: "no-cache" });
@@ -114,6 +121,8 @@ async function loadArchive() {
             throw new Error("Couldn't load data.json");
 
         const data = await response.json();
+
+        if (!Array.isArray(data.entries)) throw new Error("The collection index is invalid.");
 		
         MASTER = data.entries || [];
 		
@@ -121,15 +130,29 @@ async function loadArchive() {
 
         console.error(err);
 
-        MASTER = [];
+        archiveLoadError = true;
 
-    }
+    } finally { archiveLoading = false; grid.setAttribute("aria-busy", "false"); }
 
     refresh(true);
 
 }
 
 function refresh(syncControls = false) {
+    if (archiveLoading) return;
+    if (archiveLoadError) {
+        grid.replaceChildren();
+        const message = document.createElement("p");
+        message.setAttribute("role", "alert");
+        message.textContent = "This collection could not be loaded. Check your connection and try again.";
+        const retry = document.createElement("button");
+        retry.type = "button"; retry.className = "filter-clear"; retry.textContent = "Retry collection";
+        retry.addEventListener("click", loadArchive);
+        grid.append(message, retry);
+        counter.textContent = "Entries unavailable";
+        prevBtn.disabled = true; nextBtn.disabled = true; pageLabel.textContent = "";
+        return;
+    }
     currentPage = settings.page;
     pageSize = settings.pageSize;
     sortMode = settings.sort;

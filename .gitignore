@@ -1,5 +1,6 @@
 # Ignore undesired files
 template/
+experimental/
 /engine/encrypted/staging/
 /engine/encrypted/output/
 /engine/encrypted/tests/

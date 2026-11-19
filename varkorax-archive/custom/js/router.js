@@ -18,6 +18,8 @@
 
     function showError(message, retry) {
         setState("error");
+        window.guidelumeGetBookmarkState = () => ({ error: true });
+        window.dispatchEvent(new Event("guidelume:bookmark-state-changed"));
         main.innerHTML = `<article id="reader" class="frame theme-default reader-error" aria-labelledby="reader-error-title">
             <header class="chapter-header"><h1 id="reader-error-title">Unable to open reader</h1></header>
             <div class="content" tabindex="0">

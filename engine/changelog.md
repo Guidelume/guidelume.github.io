@@ -1,6 +1,18 @@
 # Changelog
 
-## 2026-10-26 · 1.1 | Mystery Drink
+## 2026-11-19 · 1.2 | Denorian Beer
+
+- Added Blackwall Security, an overzealous fake Antivirus utility
+- Added a fake logout screen
+
+- Added duplicate tab detection for weirdos like me
+- Fixed duplicate tab desyncing
+- Reworked how things are saved across the site
+
+- Added the ability to create "Bookmarks" that is to say shortcuts to specific guide pages, with a functional Recycle Bin for them.
+- Added further desktop context menus, expanded keyboard controls, and a choice between Guidelume and native browser menus (Shift + Right Click).
+
+## 2026-10-27 · 1.1 | Mystery Drink
 
 - Reworked how CSS files are loaded for future stability
 - Added a few safeties for slow or timed-out connections
@@ -25,7 +37,6 @@
 - Expanded **Backup & Restore** to version 6 with grouped previews, selective imports, and support for widgets, profiles, document edits, and Looking Glass bookmarks. Older backups remain compatible; discoveries and Setup completion stay local.
 - Separated **Restore Defaults**, **Reset Discoveries**, and a complete site reset, with clearer explanations and confirmations.
 
-- Expanded the **Developer Vault** with single-file and folder unlocks, session-only decrypted content, and cleaner media handling.
 - Improved workspace restoration, saved window-focus order, and handling of inactive guides and media. First-time Nexus links open the requested guide with Setup skipped and CRT effects off.
 
 ## Final Beta | Ryncol

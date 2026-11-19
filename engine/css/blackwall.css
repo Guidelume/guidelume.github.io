@@ -1,5 +1,5 @@
 /* Blackwall intentionally keeps its own palette in every desktop theme. */
-.blackwall-dialog {
+:is(.blackwall-dialog, .blackwall-session-notice) {
     box-sizing: border-box;
     width: min(620px, calc(100vw - 32px));
     max-width: none;
@@ -20,19 +20,19 @@
     scrollbar-color: #83313f #09090d;
 }
 
-.blackwall-dialog::backdrop {
+:is(.blackwall-dialog, .blackwall-session-notice)::backdrop {
     background: rgb(3 3 8 / 82%);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
 }
 
-.blackwall-dialog[open] { animation: blackwall-enter 180ms ease-out both; }
+:is(.blackwall-dialog, .blackwall-session-notice)[open] { animation: blackwall-enter 180ms ease-out both; }
 
 .blackwall-header { display: flex; align-items: center; gap: 16px; }
 .blackwall-shield { width: 44px; height: 48px; flex: 0 0 auto; stroke: #e66d7b; stroke-width: 2; }
-.blackwall-dialog .blackwall-eyebrow { margin: 0 0 5px; color: #bd929b; font-size: .68em; letter-spacing: .1em; }
-.blackwall-dialog h2 { margin: 0; color: #f3e8eb; font-size: 1.35em; line-height: 1.4; letter-spacing: .04em; overflow-wrap: anywhere; }
-.blackwall-dialog h2:focus { outline: none; }
+:is(.blackwall-dialog, .blackwall-session-notice) .blackwall-eyebrow { margin: 0 0 5px; color: #bd929b; font-size: .68em; letter-spacing: .1em; }
+:is(.blackwall-dialog, .blackwall-session-notice) h2 { margin: 0; color: #f3e8eb; font-size: 1.35em; line-height: 1.4; letter-spacing: .04em; overflow-wrap: anywhere; }
+:is(.blackwall-dialog, .blackwall-session-notice) h2:focus { outline: none; }
 .blackwall-alert { margin: 24px 0 16px; color: #ff929e; font-size: .87em; font-weight: 700; letter-spacing: .1em; }
 .blackwall-summary p { margin: 0 0 10px; color: #c2afb5; }
 .blackwall-report { margin-top: 24px; padding: 18px 0; border-block: 1px solid #502630; }
@@ -60,6 +60,7 @@
 .blackwall-dismiss:hover:enabled { background: #4b1b27; }
 .blackwall-dismiss:focus-visible { outline: 2px solid #ffb4bc; outline-offset: 4px; }
 .blackwall-footer { margin-top: 22px; color: #ac8d97; font-size: .67em; letter-spacing: .08em; text-align: center; overflow-wrap: anywhere; }
+.blackwall-session-notice .blackwall-dismiss { margin-top: 18px; }
 
 @keyframes blackwall-enter {
     from { opacity: 0; transform: translateY(6px); }
@@ -69,7 +70,7 @@
 @media (max-width: 420px) {
     .blackwall-header { gap: 12px; }
     .blackwall-shield { width: 34px; height: 40px; }
-    .blackwall-dialog h2 { font-size: 1.15em; }
+    :is(.blackwall-dialog, .blackwall-session-notice) h2 { font-size: 1.15em; }
     .blackwall-alert { margin-top: 18px; }
     .blackwall-report { margin-top: 18px; padding-block: 14px; }
     .blackwall-report dl { grid-template-columns: minmax(88px, .65fr) minmax(0, 1fr); gap: 7px 10px; }
@@ -78,7 +79,59 @@
     .blackwall-footer { margin-top: 16px; }
 }
 
-html[data-reduced-motion="true"] .blackwall-dialog[open] { animation: none; }
+html[data-reduced-motion="true"] :is(.blackwall-dialog, .blackwall-session-notice)[open] { animation: none; }
 @media (prefers-reduced-motion: reduce) {
-    .blackwall-dialog[open] { animation: none; }
+    :is(.blackwall-dialog, .blackwall-session-notice)[open] { animation: none; }
+}
+
+/* Application uses the incident palette; window behavior stays with the manager. */
+.blackwall-window {
+    --accent-strong: #c34755;
+    --accent-light: #ffb4bc;
+    --frame-dark: #502630;
+    --window-content-top: #180d12;
+    --window-content-bottom: #09090d;
+    --text-primary: #eee3e5;
+    --text-secondary: #c2afb5;
+    border-color: #83313f;
+    background: #09090d;
+}
+.blackwall-window.is-focused:not(.is-maximized) { outline-color: #a24755; box-shadow: 0 0 18px #9e243533; }
+.setup-window.blackwall-window .setup-titlebar { background: linear-gradient(#54212e, #291019); color: #eee3e5; border-color: #83313f; font-family: Consolas, "Liberation Mono", monospace; }
+.blackwall-window .setup-titlebar span { color: #eee3e5; }
+.blackwall-window .blackwall-content { background: linear-gradient(155deg, #180d12, #09090d 65%); color: #eee3e5; font-family: Consolas, "Liberation Mono", monospace; font-size: calc(13px * var(--text-size-scale, 1)); line-height: 1.65; color-scheme: dark; padding: 0; }
+.blackwall-content .window-tab-panel { background: linear-gradient(155deg, #180d12, #09090d 65%); }
+.blackwall-app-header { border-bottom: 1px solid #502630; padding-bottom: 18px; }
+.blackwall-content .blackwall-eyebrow { margin: 0; font-size: .7em; color: #bd929b; letter-spacing: .1em; }
+.blackwall-window .blackwall-content h1 { margin: 6px 0; font-family: inherit; font-size: 2em; letter-spacing: .12em; color: #f3e8eb; }
+.blackwall-window .blackwall-content h2 { margin: 0 0 14px; font-family: inherit; color: #ffb4bc; font-size: 1em; letter-spacing: .05em; }
+.blackwall-content p { color: #c2afb5; margin: 8px 0; }
+.blackwall-content .blackwall-app-status { color: #ffb4bc; font-weight: 700; letter-spacing: .08em; }
+.blackwall-content .blackwall-section { padding: 20px 0; border-bottom: 1px solid #502630; }
+.blackwall-section:first-child { padding-top: 0; }
+.blackwall-option { display: flex; gap: 12px; align-items: flex-start; margin: 14px 0; cursor: pointer; }
+.blackwall-option input { margin-top: 5px; accent-color: #c34755; flex-shrink: 0; width: 18px; height: 18px; }
+.blackwall-option small { display: block; margin-top: 3px; color: #c2afb5; font-size: .85em; }
+.blackwall-option:has(input:disabled), .blackwall-timeout:has(select:disabled) { opacity: .65; }
+.blackwall-timeout { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin: 18px 0; }
+.blackwall-timeout select { min-height: 40px; padding: 6px 12px; background: #180d12; color: #eee3e5; border: 1px solid #83313f; font: inherit; }
+.blackwall-app-button { min-height: 44px; padding: 10px 18px; border: 1px solid #a24755; border-radius: 0; color: #ffd8df; background: #33121c; font: inherit; cursor: pointer; }
+.blackwall-app-button:hover { background: #4b1b27; }
+.blackwall-content :is(button, select, input):focus-visible { outline: 2px solid #ffb4bc; outline-offset: 4px; }
+.blackwall-events { list-style: none; padding: 0; margin: 0; font-size: .87em; }
+.blackwall-events li { display: flex; align-items: baseline; gap: 14px; padding: 5px 0; }
+.blackwall-events time { color: #bd929b; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.blackwall-content .blackwall-app-disclaimer { font-size: .85em; }
+.blackwall-content .blackwall-preference-status { color: #ffb4bc; font-size: .85em; }
+.blackwall-sync-conflict { padding-block: 12px; border-bottom: 1px solid #502630; }
+.blackwall-sync-conflict h3 { font: inherit; color: #ffb4bc; }
+.blackwall-sync-conflict pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 180px; overflow: auto; font: inherit; }
+.blackwall-sync-conflict button { margin: 6px 8px 0 0; }
+.guidelume-toast[data-state="blackwall"] { background: #180d12; color: #eee3e5; border-color: #83313f; font-family: Consolas, "Liberation Mono", monospace; text-align: left; line-height: 1.6; }
+.guidelume-toast .toast-title { display: block; margin-bottom: 8px; font-size: .85em; letter-spacing: .04em; }
+.guidelume-toast > button { display: block; margin-top: 14px; padding: 8px 14px; border: 1px solid currentColor; color: inherit; background: transparent; font: inherit; cursor: pointer; pointer-events: auto; }
+.guidelume-toast > button:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+@media (max-width: 480px) {
+    .blackwall-window .window-tab-panel { padding: 18px; }
+    .blackwall-events li { flex-direction: column; gap: 0; padding: 7px 0; }
 }

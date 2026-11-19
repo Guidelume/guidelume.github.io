@@ -2,12 +2,31 @@ const params = new URLSearchParams(location.search);
 const type = params.get("type");
 
 const supportedTypes = new Set(["entry", "stories", "projects"]);
+function showFilterError(message, retry) {
+    const grid = document.querySelector(".browser-grid");
+    const notice = document.createElement("p");
+    notice.setAttribute("role", "alert"); notice.textContent = message;
+    const action = document.createElement(retry ? "button" : "a");
+    action.className = "filter-clear";
+    action.textContent = retry ? "Retry collection" : "Back to Collections";
+    if (retry) { action.type = "button"; action.addEventListener("click", retry, { once: true }); }
+    else action.href = "../landing_collections.html";
+    grid.replaceChildren(notice, action);
+    document.querySelector(".entry-counter")?.replaceChildren("Entries unavailable");
+    for (const id of ["page-prev", "page-next"]) document.getElementById(id).disabled = true;
+}
 if (supportedTypes.has(type)) {
-	const script = document.createElement("script");
-	script.src = `../../custom/js/filter-${type}.js`;
-	document.head.appendChild(script);
+    const load = () => {
+        document.querySelector(".browser-grid").textContent = "Loading collection…";
+        const script = document.createElement("script");
+        script.src = `../../custom/js/filter-${type}.js`;
+        script.onerror = () => { script.remove(); showFilterError("This collection could not be downloaded. Check your connection and try again.", load); };
+        document.head.appendChild(script);
+    };
+    load();
 } else {
-	console.warn("Unsupported archive filter type.");
+    document.querySelector("#filter-head").textContent = "Choose a collection";
+    showFilterError("This collection link is incomplete or unsupported. Choose a collection from the index.");
 }
 
 if (type === "entry") {

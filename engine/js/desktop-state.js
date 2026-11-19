@@ -3,21 +3,18 @@ import { createDefaultWidgetState, normalizeWidgetState } from "./widgets-data.j
 import { DEFAULT_PROFILE, normalizeUserProfile } from "./profile-data.js";
 import { normalizeDocumentOverrides } from "./document-registry.js";
 import { normalizeLookingGlassState } from "./looking-glass-data.js";
+import { normalizeBlackwallPreferences } from "./blackwall-preferences.js";
+import { blackwallViewKey } from "./blackwall-view.js";
+import { createDesktopDatabase } from "./desktop-database.js";
+import { createDesktopSync, TAB_DESKTOP_KEY } from "./desktop-sync.js";
+import { desktopFromRecords, sharedDesktop } from "./desktop-records.js";
+import { normalizeDesktopShortcuts, normalizeDesktopContextMenus } from "./desktop-shortcuts-data.js";
 
 export function readStoredValue(key) {
     try {
         return localStorage.getItem(key);
     } catch {
         return null;
-    }
-}
-
-export function writeStoredValue(key, value) {
-    try {
-        localStorage.setItem(key, value);
-        return true;
-    } catch {
-        return false;
     }
 }
 
@@ -52,6 +49,7 @@ export function restoreDesktopDefaults(memory, defaultMemory, options = {}) {
     const easterEggsUnlocked = memory.settings.easterEggsUnlocked === true;
     const developerVaultDiscovered = memory.settings.developerVaultDiscovered === true;
     const lookingGlass = normalizeLookingGlassState(memory.lookingGlass);
+    const shortcuts = normalizeDesktopShortcuts(memory.shortcuts);
     const widgets = options.preserveWidgets === true
         ? structuredClone(normalizeWidgetState(memory.widgets))
         : createDefaultWidgetState();
@@ -63,14 +61,18 @@ export function restoreDesktopDefaults(memory, defaultMemory, options = {}) {
         profile,
         documents,
         lookingGlass: { ...lookingGlass, sidebarOpen: true },
+        shortcuts,
         icons: {},
         windows: {},
         widgets,
         windowOrder: [],
         taskbarOrder: [],
         pinnedTaskbar: [],
+        focusedWindow: null,
+        sessionLocked: false,
         settings: {
             ...defaultMemory.settings,
+            blackwall: normalizeBlackwallPreferences(),
             environment: {
                 ...defaultEnvironment,
                 presets: [],
@@ -91,7 +93,10 @@ export function restoreDesktopDefaults(memory, defaultMemory, options = {}) {
 export function resetDiscoveryFlags(memory) {
     memory.settings.easterEggsUnlocked = false;
     memory.settings.developerVaultDiscovered = false;
-    const hiddenWindows = new Set(["developer-vault", "easter-eggs"]);
+    const hiddenWindows = new Set(["developer-vault", "easter-eggs", "easter-eggs-password"]);
+    for (const id of hiddenWindows) if (memory.windows?.[id]) Object.assign(memory.windows[id], {
+        open: false, minimized: false, maximized: false, hideTaskbar: false
+    });
     memory.pinnedTaskbar = (memory.pinnedTaskbar || []).filter(id => !hiddenWindows.has(id));
     memory.taskbarOrder = (memory.taskbarOrder || []).filter(id => !hiddenWindows.has(id));
     memory.windowOrder = (memory.windowOrder || []).filter(id => !hiddenWindows.has(id));
@@ -104,11 +109,12 @@ export function createDesktopState() {
     const memoryKey = "guidelume_desktop_memory";
     const legacyExperience = readStoredValue("guidelume_experience");
     const legacyCompletion = ["interactive", "reader", "basic"].includes(legacyExperience);
-    const freshVisitor = readStoredValue(memoryKey) === null && !legacyCompletion;
+    let freshVisitor = readStoredValue(memoryKey) === null && !legacyCompletion;
     const defaultMemory = {
         icons: {},
         windows: {},
         documents: {},
+        shortcuts: {},
         lookingGlass: normalizeLookingGlassState(),
         onboarding: { completed: false },
         profile: { ...DEFAULT_PROFILE },
@@ -121,6 +127,7 @@ export function createDesktopState() {
             taskbar: "bottom",
             background: "midnight",
             environment: normalizeEnvironmentSettings(),
+            blackwall: normalizeBlackwallPreferences(),
             crtEffects: true,
             brandingVisible: true,
             textSize: "default",
@@ -129,16 +136,15 @@ export function createDesktopState() {
             easterEggsUnlocked: false,
             developerVaultDiscovered: false,
             reducedMotion: false,
-            accessibleFonts: false
+            accessibleFonts: false,
+            desktopContextMenus: "guidelume"
         }
     };
 
-    function loadMemory() {
-        let saved = null;
-        try {
-            saved = JSON.parse(readStoredValue(memoryKey));
-        } catch {
-            // Ignore invalid saved state and start with defaults.
+    function loadMemory(saved, legacy = true) {
+        if (saved === undefined) {
+            try { saved = JSON.parse(readStoredValue(memoryKey)); }
+            catch { saved = null; }
         }
         if (!saved || typeof saved !== "object" || Array.isArray(saved)) {
             saved = {};
@@ -169,7 +175,7 @@ export function createDesktopState() {
             migrated.settings.environment,
             migrated.settings
         );
-        const sharedAccessibleFonts = readStoredValue("accessibleFonts");
+        const sharedAccessibleFonts = legacy ? readStoredValue("accessibleFonts") : null;
         const accessibleFonts = sharedAccessibleFonts !== null
             ? sharedAccessibleFonts === "true"
             : migrated.settings.accessibleFonts === true;
@@ -192,6 +198,7 @@ export function createDesktopState() {
             profile: normalizeUserProfile(migrated.profile),
             widgets: normalizeWidgetState(migrated.widgets),
             documents: normalizeDocumentOverrides(migrated.documents),
+            shortcuts: normalizeDesktopShortcuts(migrated.shortcuts),
             lookingGlass: normalizeLookingGlassState(migrated.lookingGlass),
             icons: {
                 ...defaultMemory.icons,
@@ -214,6 +221,8 @@ export function createDesktopState() {
                 ...defaultMemory.settings,
                 ...(migrated.settings || {}),
                 accessibleFonts,
+                desktopContextMenus: normalizeDesktopContextMenus(migrated.settings.desktopContextMenus),
+                blackwall: normalizeBlackwallPreferences(migrated.settings.blackwall),
                 environment
             }
         };
@@ -236,58 +245,74 @@ export function createDesktopState() {
         ? requestedGuide : null;
     const nexusGuideRequested = nexusGuideId !== null;
     let memory = loadMemory();
-    if (legacyExperience !== null) removeStoredValue("guidelume_experience");
     delete memory.windows["developer-vault"];
     memory.windowOrder = memory.windowOrder.filter(id => id !== "developer-vault");
     memory.taskbarOrder = memory.taskbarOrder.filter(id => id !== "developer-vault");
     memory.pinnedTaskbar = memory.pinnedTaskbar.filter(id => id !== "developer-vault");
-    const firstNexusGuideVisit = nexusGuideRequested && memory.onboarding.completed !== true;
-    const onboardingInProgress = memory.onboarding.completed !== true;
     document.documentElement.dataset.onboardingComplete = String(memory.onboarding.completed);
 
-    let saveTimeout = null;
+    let synchronizer = null;
 
-    function persistMemory() {
-        // Shutdown handlers in other modules may call saveMemory() during a reset reload.
-        // Do not let those handlers repopulate storage after the full reset clears it.
-        if (window.guidelumeFullResetInProgress === true) return false;
-        return writeStoredValue(memoryKey, JSON.stringify(createPersistableDesktopMemory(memory)));
+    function reportStorageError(reason) {
+        window.dispatchEvent(new CustomEvent("guidelume:storage-status", { detail: { reason } }));
+    }
+
+    async function initializePersistence(options = {}) {
+        const database = createDesktopDatabase({ ...options, onStatus: reason => {
+            if (reason !== "ready") reportStorageError(reason);
+        } });
+        try {
+            let local;
+            try { local = JSON.parse(sessionStorage.getItem(TAB_DESKTOP_KEY)); } catch { /* New tab. */ }
+            const initial = await database.initialize(sharedDesktop(createPersistableDesktopMemory(memory)), { privateSeed: local });
+            // Import the legacy workspace once, then keep open windows and scroll
+            // positions private. A reset's epoch invalidates old reload caches.
+            const privateState = local?.epoch === initial.meta.epoch ? local.state
+                : local ? {} : { windows: memory.windows, windowOrder: memory.windowOrder,
+                    taskbarOrder: memory.taskbarOrder, sidebarOpen: memory.lookingGlass.sidebarOpen };
+            const restored = loadMemory(desktopFromRecords(initial.records, privateState), false);
+            for (const key of Object.keys(memory)) delete memory[key];
+            Object.assign(memory, restored);
+            freshVisitor = memory.onboarding.completed !== true;
+            synchronizer = createDesktopSync({ memory, database, initial,
+                normalize: value => loadMemory(value, false), onError: reportStorageError });
+            document.documentElement.dataset.onboardingComplete = String(memory.onboarding.completed === true);
+            // Keep the original legacy snapshot untouched as a migration recovery
+            // copy. It is never a write target or authority after initialization.
+            if (legacyExperience !== null) removeStoredValue("guidelume_experience");
+            return true;
+        } catch (error) {
+            database.close();
+            reportStorageError(error?.name === "VersionError" ? "versionchange" : "unavailable");
+            return false;
+        }
     }
 
     function queueSave() {
         if (window.guidelumeFullResetInProgress === true) return;
-        window.clearTimeout(saveTimeout);
-        saveTimeout = window.setTimeout(() => {
-            saveTimeout = null;
-            persistMemory();
-        }, 200);
-    }
-
-    function flushQueuedSave() {
-        if (saveTimeout === null) return;
-        window.clearTimeout(saveTimeout);
-        saveTimeout = null;
-        persistMemory();
+        synchronizer?.queue();
     }
 
     function saveMemory() {
-        window.clearTimeout(saveTimeout);
-        saveTimeout = null;
-        return persistMemory();
+        if (window.guidelumeFullResetInProgress === true) return Promise.resolve(false);
+        if (synchronizer) return synchronizer.save();
+        return Promise.resolve(false);
     }
 
     function clearSavedGuidelumeState() {
-        window.clearTimeout(saveTimeout);
-        saveTimeout = null;
         removeStoredValue(memoryKey);
         removeStoredValue("guidelume_experience");
+        try { sessionStorage.removeItem(blackwallViewKey); } catch { /* Storage may be unavailable. */ }
+        try { sessionStorage.removeItem(TAB_DESKTOP_KEY); } catch { /* Storage may be unavailable. */ }
     }
 
-    window.addEventListener("pagehide", flushQueuedSave);
+    window.addEventListener("pagehide", () => {
+        if (window.guidelumeFullResetInProgress === true) return;
+        if (synchronizer) synchronizer.pause();
+    });
+    window.addEventListener("pageshow", event => { if (event.persisted) void synchronizer?.resume(); });
 
     if (nexusGuideRequested) {
-        saveMemory();
-
         // Consume this launch command once so later reloads do not reopen the guide. Yum.
         launchQuery.delete("from");
         launchQuery.delete("guide");
@@ -300,5 +325,16 @@ export function createDesktopState() {
      * Window system
      */
 
-    return { memory, defaultMemory, queueSave, saveMemory, clearSavedGuidelumeState, nexusGuideId, nexusGuideRequested, firstNexusGuideVisit, onboardingInProgress, freshVisitor };
+    return { memory, defaultMemory, queueSave, saveMemory, clearSavedGuidelumeState, nexusGuideId, nexusGuideRequested,
+        initializePersistence,
+        startSynchronization: options => synchronizer?.start(options),
+        reconcile: () => synchronizer?.reconcile(),
+        replaceSavedState: (transform, options) => synchronizer?.replace(transform, options) || Promise.resolve(false),
+        get conflicts() { return synchronizer?.conflicts || []; },
+        get resetGeneration() { return synchronizer?.resetGeneration || "initial"; },
+        resolveConflict: (key, keepMine) => synchronizer?.resolve(key, keepMine),
+        get firstNexusGuideVisit() { return nexusGuideRequested && memory.onboarding.completed !== true; },
+        get onboardingInProgress() { return memory.onboarding.completed !== true; },
+        get freshVisitor() { return freshVisitor; }
+    };
 }

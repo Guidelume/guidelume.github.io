@@ -12,7 +12,7 @@ import {
 import { concealUndiscoveredCategoryNames, configurationCategoryGroups } from "./configuration-backup-categories.js";
 import { findDiscovery } from "./discovery-registry.js";
 
-export function initConfigurationBackup({ memory, saveMemory, knownIcons, knownWindows, applyLiveConfiguration }) {
+export function initConfigurationBackup({ memory, saveMemory, replaceSavedState, knownIcons, knownWindows, applyLiveConfiguration }) {
     const root = document.querySelector("[data-window='backup-restore'] .backup-restore");
     if (!root) return;
     const exportList = root.querySelector("[data-export-categories]");
@@ -22,6 +22,8 @@ export function initConfigurationBackup({ memory, saveMemory, knownIcons, knownW
     const summary = root.querySelector("[data-import-summary]");
     const fileInput = root.querySelector("[data-import-file]");
     const codeInput = root.querySelector("[data-import-code]");
+    function protectImport(value) { root.dataset.syncDirty = String(value); }
+    codeInput.addEventListener("input", () => protectImport(codeInput.value.length > 0));
     const importVersion = root.querySelector("[data-import-version]");
     let pendingConfiguration = null;
     let pendingSource = null;
@@ -190,6 +192,7 @@ export function initConfigurationBackup({ memory, saveMemory, knownIcons, knownW
     });
 
     function showPreview(configuration, source) {
+        protectImport(true);
         pendingConfiguration = configuration;
         pendingSource = source;
         renderImportPreview();
@@ -238,6 +241,7 @@ export function initConfigurationBackup({ memory, saveMemory, knownIcons, knownW
 
     async function readFile(file) {
         if (!file) return;
+        protectImport(true);
         cancelPendingImport();
         const requestId = importRequestId;
         pendingSource = "file";
@@ -259,7 +263,7 @@ export function initConfigurationBackup({ memory, saveMemory, knownIcons, knownW
     }
     fileInput.addEventListener("change", () => readFile(fileInput.files?.[0]));
 
-    root.querySelector("[data-preview-code]").addEventListener("click", () => {
+    root.querySelector("[data-preview-code]").addEventListener("click", async () => {
         cancelPendingImport();
         const code = codeInput.value;
         const discovery = findDiscovery(code);
@@ -267,16 +271,14 @@ export function initConfigurationBackup({ memory, saveMemory, knownIcons, knownW
             pendingConfiguration = null;
             preview.hidden = true;
             const icon = document.querySelector(`.desktop-icon[data-icon="${discovery.id}"]`);
-            const alreadyDiscovered = memory.settings[discovery.flag] === true;
             memory.settings[discovery.flag] = true;
             if (icon) icon.hidden = false;
-            if (saveMemory() !== true) {
-                memory.settings[discovery.flag] = alreadyDiscovered;
-                if (icon) icon.hidden = !alreadyDiscovered;
+            if (await saveMemory() !== true) {
                 setStatus("The discovery could not be saved in this browser.", "error");
                 return;
             }
             codeInput.value = "";
+            protectImport(false);
             refreshCategories();
             setStatus("A hidden desktop item has appeared.", "success");
             return;
@@ -293,6 +295,7 @@ export function initConfigurationBackup({ memory, saveMemory, knownIcons, knownW
 
     root.querySelector("[data-clear-code]").addEventListener("click", () => {
         codeInput.value = "";
+        protectImport(false);
         if (pendingSource === "code" || !pendingConfiguration) cancelPendingImport();
         setStatus("Pasted code cleared.");
         codeInput.focus();
@@ -300,6 +303,7 @@ export function initConfigurationBackup({ memory, saveMemory, knownIcons, knownW
 
     root.querySelector("[data-cancel-import]").addEventListener("click", () => {
         cancelPendingImport();
+        protectImport(false);
         setStatus("Import cancelled.");
     });
     root.closest("[data-window]")?.addEventListener("windowclosing", () => {
@@ -307,7 +311,7 @@ export function initConfigurationBackup({ memory, saveMemory, knownIcons, knownW
         if (!pendingConfiguration) cancelPendingImport();
     });
 
-    root.querySelector("[data-apply-import]").addEventListener("click", () => {
+    root.querySelector("[data-apply-import]").addEventListener("click", async () => {
         if (!pendingConfiguration) return;
         const selected = selectedChecks(importList);
         if (selected.length === 0) {
@@ -331,25 +335,40 @@ export function initConfigurationBackup({ memory, saveMemory, knownIcons, knownW
         // Retain those originals so rollback keeps live widget references valid.
         const backup = { ...memory };
         try {
-            applyConfiguration(memory, pendingConfiguration, selected, {
+            const configuration = pendingConfiguration;
+            const options = {
                 knownIcons,
                 knownWindows,
                 viewport: { width: window.innerWidth, height: window.innerHeight }
-            });
+            };
+            if (replaceSavedState) {
+                const settingsCategories = { theme: "appearance", background: "appearance", taskbar: "taskbar", blackwall: "blackwall", environment: "environment", desktopContextMenus: "shortcuts" };
+                const rootCategories = { icons: "desktopLayout", shortcuts: "shortcuts", windows: "windowLayout", pinnedTaskbar: "taskbar", pinnedTaskbarOrder: "taskbar", widgets: "widgets", profile: "profile", documents: "documents", lookingGlass: "lookingGlass" };
+                if (!await replaceSavedState(next => applyConfiguration(next, configuration, selected, options), {
+                    discardLocal(path) {
+                        const category = path[0] === "settings" ? settingsCategories[path[1]] || "accessibility" : rootCategories[path[0]];
+                        return selected.includes(category);
+                    }
+                })) {
+                    setStatus("Settings could not be restored. Review saved changes or try again.", "error");
+                    return;
+                }
+            } else {
+                applyConfiguration(memory, configuration, selected, options);
+                if (await saveMemory() !== true) throw new Error("Could not save restored settings.");
+            }
             applyLiveConfiguration(selected);
-            if (saveMemory() !== true) throw new Error("Could not save restored settings.");
             if (selected.includes("documents")) window.dispatchEvent(new Event("guidelume:documents-updated"));
             cancelPendingImport();
             refreshCategories();
             setStatus("Selected settings restored.", "success");
+            protectImport(false);
+            window.dispatchEvent(new Event("guidelume:interaction-ended"));
         } catch {
             try {
                 Object.keys(memory).forEach(key => delete memory[key]);
                 Object.assign(memory, backup);
                 applyLiveConfiguration(selected);
-                if (saveMemory() !== true) {
-                    console.error("Backup & Restore could not save the recovered settings after a failed import.");
-                }
             } catch (rollbackError) {
                 console.error("Backup & Restore could not fully roll back a failed import.", rollbackError);
             }

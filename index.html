@@ -107,9 +107,12 @@
     <!-- Nexus guide links use ?from=nexus&guide=mwbc or ?from=nexus&guide=twfg. -->
 	<script>
         try {
+            // This is a first-paint hint. global.js awaits IndexedDB and replaces
+            // it with the authoritative value before restoring any windows.
+            const bootstrap = JSON.parse(localStorage.getItem("guidelume_desktop_bootstrap_v1"));
             const savedMemory = JSON.parse(localStorage.getItem("guidelume_desktop_memory"));
             const savedExperience = localStorage.getItem("guidelume_experience");
-            const completed = savedMemory?.onboarding?.completed === true
+            const completed = typeof bootstrap?.completed === "boolean" ? bootstrap.completed : savedMemory?.onboarding?.completed === true
                 || savedMemory?.settings?.onboardingComplete === true
                 || (!savedMemory && ["interactive", "reader", "basic"].includes(savedExperience));
             document.documentElement.dataset.onboardingComplete = String(completed);
@@ -173,6 +176,9 @@
                 <img src="./engine/dagaz.svg" alt=""><span>Developer Vault</span>
             </div>
             <div class="desktop-widgets" data-desktop-widgets aria-label="Desktop widgets"></div>
+            <div class="desktop-icon" role="button" tabindex="0" data-onboarding-advanced data-icon="recycle-bin" data-resource-type="bin" data-protected="true" data-open-window="recycle-bin" data-x="0.68" data-y="0.78" aria-label="Recycle Bin">
+                <img src="./engine/img/environment/recycle-bin-empty.svg" alt=""><span>Recycle Bin</span>
+            </div>
             <div class="desktop-widgets-pinned" data-pinned-widgets aria-label="Pinned desktop widgets"></div>
             <nav
                 class="taskbar taskbar-bottom"
@@ -241,10 +247,15 @@
                     <span>Logo and tagline</span>
                 </label>
                 <button type="button" class="start-menu-reset start-menu-action" data-onboarding-only data-open-window="setup" data-close-start-menu="true">Open Setup</button>
-                <button type="button" class="start-menu-security" data-blackwall-branding title="Blackwall Security System // Active">
-                    <svg viewBox="0 0 24 26" fill="none" aria-hidden="true"><path d="M12 2 22 6v7c0 5-6 9-10 11C8 22 2 18 2 13V6Z"/><path d="m7 13 3 3 7-7"/></svg>
-                    <span>Secured by Blackwall</span>
-                </button>
+                <div class="start-menu-footer">
+                    <button type="button" class="start-menu-security" data-blackwall-branding title="Blackwall Security System // Active">
+                        <svg viewBox="0 0 24 26" fill="none" aria-hidden="true"><path d="M12 2 22 6v7c0 5-6 9-10 11C8 22 2 18 2 13V6Z"/><path d="m7 13 3 3 7-7"/></svg>
+                        <span>Secured by Blackwall</span>
+                    </button>
+                    <button type="button" class="start-menu-lock" data-onboarding-advanced data-lock-session aria-label="Lock Session" title="Lock Session">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v9M6.34 6.34a8 8 0 1 0 11.32 0"/></svg>
+                    </button>
+                </div>
             </section>
 			
             <section
@@ -454,6 +465,7 @@
                     <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="terminal"><img src="./engine/img/environment/doc_term.svg" data-seasonal-icon="terminal" alt=""><span>Terminal</span></button>
                     <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="widgets"><img src="./engine/img/environment/doc_widget.svg" alt=""><span>Widgets</span></button>
                     <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="folder-unfinished"><img src="./engine/img/environment/doc_folder.svg" data-seasonal-icon="folder" alt=""><span>Unfinished</span></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="blackwall"><img src="./engine/img/environment/blackwall.svg" alt=""><span>Blackwall</span><small>Session &amp; Security</small></button>
                     <button type="button" class="virtual-folder-entry" draggable="false" data-blackwall-protected-file aria-label="blackwall.sys — restricted system file" title="Protected system configuration. Access restricted."><img src="./engine/img/environment/doc_text.svg" data-seasonal-icon="text" alt=""><span>blackwall.sys</span><small>Restricted</small></button>
                 </div>
             </section>
@@ -523,7 +535,7 @@
                     <div class="mod-download">
                         <div class="mod-download-actions">
                             <a class="setup-button mod-download-button" href="./engine/files/modOneOnTheHouse.zip" download="modOneOnTheHouse.zip">Download One On The House</a>
-                            <a class="setup-button mod-download-button" href="https://www.nexusmods.com/games/witcher3/mods/14918" target="_blank" rel="noopener noreferrer">Nexus Mods ↗</a>
+                            <a class="setup-button mod-download-button" href="https://www.nexusmods.com/witcher3/mods/14918" target="_blank" rel="noopener noreferrer">Nexus Mods ↗</a>
                         </div>
                         <small>ZIP archive · mod, DLC, and configuration files included</small>
                     </div>
@@ -540,6 +552,18 @@
                     <button type="button" class="window-close" data-close-window="credits" aria-label="Close window">X</button>
                 </div>
                 <div class="setup-content readme-content" data-markdown-src="./engine/credits.md" aria-live="polite"><p>Loading credits…</p></div>
+            </section>
+
+            <section class="setup-window blackwall-window" data-window="blackwall" data-window-width="680px" data-window-height="680px" hidden aria-labelledby="blackwall-app-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/blackwall.svg" alt=""><span id="blackwall-app-title">Blackwall Security</span></div>
+                    <div class="window-controls">
+                        <button type="button" class="window-minimize" data-minimize-window="blackwall" aria-label="Minimize window">−</button>
+                        <button type="button" class="window-maximize" data-maximize-window="blackwall" aria-label="Maximize window" aria-pressed="false">□</button>
+                    </div>
+                    <button type="button" class="window-close" data-close-window="blackwall" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content blackwall-content tabbed-window-content" data-tabbed-window></div>
             </section>
 
             <section class="setup-window terminal-window" data-window="terminal" data-window-width="860px" data-window-height="520px" hidden aria-labelledby="terminal-title">
@@ -924,6 +948,10 @@
                             <p><span>Theme</span><strong class="appearance-summary-value"><span class="appearance-summary-swatch" data-current-theme-swatch aria-hidden="true"></span><span data-current-theme>Amber</span></strong></p>
                             <p><span>Background</span><strong class="appearance-summary-value"><span class="appearance-summary-swatch" data-current-background-swatch aria-hidden="true"></span><span data-current-background>Midnight</span></strong></p>
                         </div>
+                        <label class="desktop-context-setting">Desktop Context Menus
+                            <select data-desktop-context-menus aria-describedby="desktop-context-menu-hint"><option value="guidelume">Guidelume</option><option value="browser">Browser</option></select>
+                            <small id="desktop-context-menu-hint">Shift + right-click always leaves the browser menu available where supported.</small>
+                        </label>
                         <h2>Taskbar position</h2>
                         <div class="taskbar-choice" role="group" aria-label="Taskbar position">
                             <button type="button" class="taskbar-option" data-taskbar="top" aria-pressed="false">
@@ -956,7 +984,7 @@
                         <p>Choose how much of Guidelume you want to restore or clear.</p>
                         <section class="settings-maintenance" aria-labelledby="settings-maintenance-title">
                             <h2 id="settings-maintenance-title">Restore defaults</h2>
-                            <p>Resets appearance, accessibility, environment, desktop layout, taskbar, and widgets. Sticky Notes and their text are removed; your profile, discoveries, and personal Looking Glass bookmarks stay.</p>
+                            <p>Resets appearance, accessibility, environment, desktop layout, taskbar, and widgets. Sticky Notes and their text are removed; your profile, discoveries, guide shortcuts, Recycle Bin contents, and personal Looking Glass bookmarks stay.</p>
                             <button type="button" class="settings-maintenance-button" data-action="restore-defaults" data-settings-reset-action>Restore defaults</button>
                         </section>
 
@@ -975,6 +1003,20 @@
                 </div>
             </section>
 
+            <section class="setup-window" data-window="recycle-bin" data-window-width="720px" data-window-height="540px" hidden aria-labelledby="recycle-bin-title">
+                <div class="setup-titlebar window-drag-handle">
+                    <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/recycle-bin-empty.svg" alt=""><span id="recycle-bin-title">Recycle Bin</span></div>
+                    <div class="window-controls"><button type="button" class="window-minimize" data-minimize-window="recycle-bin" aria-label="Minimize window">−</button><button type="button" class="window-maximize" data-maximize-window="recycle-bin" aria-label="Maximize window" aria-pressed="false">□</button></div>
+                    <button type="button" class="window-close" data-close-window="recycle-bin" aria-label="Close window">X</button>
+                </div>
+                <div class="setup-content recycle-bin-content">
+                    <h1>Recycle Bin</h1>
+                    <p>Deleted guide shortcuts stay here until you restore or permanently delete them. Their guide pages are kept.</p>
+                    <div class="recycle-bin-toolbar"><p data-recycle-count tabindex="-1">0 deleted shortcuts</p><button type="button" class="setup-button" data-empty-recycle-bin disabled>Empty Recycle Bin</button></div>
+                    <p data-recycle-empty>The Recycle Bin is empty.</p>
+                    <ul class="recycle-bin-items" data-recycle-items aria-label="Deleted shortcuts"></ul>
+                </div>
+            </section>
             <section class="setup-window" data-window="widgets" data-window-width="820px" data-window-height="760px" hidden aria-labelledby="widgets-title">
                 <div class="setup-titlebar window-drag-handle">
                     <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/doc_widget.svg" alt="" aria-hidden="true"><span id="widgets-title">Widgets</span></div>
