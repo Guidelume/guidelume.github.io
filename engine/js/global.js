@@ -15,7 +15,7 @@ import { initBlackwallApp } from "./blackwall-app.js";
 import { initEasterEggs } from "./easter-eggs.js";
 import { initConfigurationBackup } from "./configuration-backup-ui.js";
 import { initNotepad } from "./notepad.js";
-import { initDeveloperVault } from "./developer-vault.js";
+import { initDeveloperVault } from "../data/developer-vault/js/developer-vault.js";
 import { initUserProfile } from "./user-profile.js";
 import { initTabs } from "./tabs.js";
 import { initLookingGlass } from "./looking-glass.js";
@@ -200,7 +200,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         saveMemory,
         openWindow: windowManager.openWindow,
         closeWindow: windowManager.closeWindow,
-        icon: ui.easterEggIcon
+        icon: ui.easterEggIcon,
+        developerVaultIcon: ui.developerVaultIcon
     });
     const terminalWindow = document.querySelector('[data-window="terminal"]');
     let blackwallApp;
@@ -218,7 +219,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         windowElement: terminalWindow,
         blackwall,
         requestEasterEggUnlock: easterEggs.requestUnlock,
-        isEasterEggsUnlocked: () => memory.settings.easterEggsUnlocked === true,
         getProfileName: () => memory.profile?.displayName
     });
     const {
@@ -484,7 +484,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         closeWindow("developer-vault");
         closeWindow("easter-eggs");
         closeWindow("easter-eggs-password");
-        backupController?.refreshCategories();
         toast.show("Discoveries reset.");
     }
     document.querySelector("[data-reset-entire-site]")?.addEventListener("click", () => { void resetEntireSite(); });
@@ -503,29 +502,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             height: icon.getBoundingClientRect().height || 100
         }));
     const knownWindows = windows.map(windowEl => windowEl.dataset.window)
-        .filter(id => !["setup", "easter-eggs-password", "developer-vault"].includes(id));
-    const backupController = initConfigurationBackup({ memory, saveMemory, replaceSavedState: desktopState.replaceSavedState, knownIcons, knownWindows, applyLiveConfiguration(selected) {
-        if (selected.includes("appearance")) appearanceController.applyRestoredSettings(memory.settings);
-        if (selected.includes("accessibility")) {
-            window.dispatchEvent(new CustomEvent("guidelume:apply-accessible-fonts", {
-                detail: { enabled: memory.settings.accessibleFonts === true }
-            }));
-            accessibilityController.applyRestoredSettings(memory.settings);
-        }
-        if (selected.includes("environment")) environmentController.applyRestoredSettings(memory.settings.environment);
-        if (selected.includes("desktopLayout")) desktopIconController.refreshRestoredPositions();
-        if (selected.includes("shortcuts")) { shortcutsController.render(); shortcutsController.refreshPreference(); }
-        if (selected.includes("windowLayout")) windowManager.refreshRestoredLayout();
-        if (selected.includes("taskbar")) {
-            appearanceController.applyRestoredSettings({ taskbar: memory.settings.taskbar });
-            windowManager.updateTaskbar();
-        }
-        if (selected.includes("widgets")) widgetsController?.applyRestoredState();
-        if (selected.includes("profile")) profileController?.refreshStartMenu();
-        if (selected.includes("lookingGlass")) lookingGlassController?.applyRestoredState();
-        if (selected.includes("blackwall")) blackwallApp?.refresh();
-        updateSettingsAvailability();
-    } });
+        .filter(id => !["easter-eggs-password", "developer-vault"].includes(id));
+    initConfigurationBackup({ memory, defaultMemory, saveMemory, replaceSavedState: desktopState.replaceSavedState,
+        knownIcons, knownWindows, confirmAction,
+        getGeneration: () => desktopState.persistenceGeneration,
+        beforeRestore: () => developerVaultController.lock()
+    });
 
     await fontManager.prepare();
     if (window.guidelumeStartup) window.guidelumeStartup.complete();
@@ -587,6 +569,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (has("icons")) desktopIconController.refreshRestoredPositions();
             if (has("shortcuts")) shortcutsController.render();
             if (settings.includes("desktopContextMenus")) shortcutsController.refreshPreference();
+            if (settings.includes("showHiddenFiles")) shortcutsController.refreshHiddenFiles();
             if (has("pinnedTaskbar") || has("pinnedTaskbarOrder")) windowManager.updateTaskbar();
             if (has("widgets")) widgetsController?.applyRestoredState();
             if (has("profile") || has("onboarding")) profileController?.refreshSharedState();
@@ -632,7 +615,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 ] })));
             }
             updateSettingsAvailability();
-            backupController.refreshCategories();
             // Wait for the applied fonts and the next paint before claiming the
             // desktop is synchronized. No artificial delay gates persistence.
             rendered.push(fontManager.prepare());

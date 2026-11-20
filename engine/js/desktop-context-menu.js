@@ -17,9 +17,10 @@ export function initDesktopContextMenu() {
         menu.replaceChildren(...actions.map(action => {
             const button = document.createElement("button");
             button.type = "button"; button.className = "taskbar-context-menu-item";
-            button.setAttribute("role", "menuitem"); button.textContent = action.label;
+            button.setAttribute("role", action.checked === undefined ? "menuitem" : "menuitemcheckbox"); button.textContent = action.label;
+            if (action.checked !== undefined) button.setAttribute("aria-checked", String(action.checked));
             button.disabled = action.disabled === true;
-            button.addEventListener("click", () => { close(); void action.run?.(); });
+            button.addEventListener("click", () => { close(true); void action.run?.(); });
             return button;
         }));
         window.dispatchEvent(new CustomEvent("guidelume:context-menu-open", { detail: { menu } }));

@@ -10,15 +10,15 @@ import { MAX_NOTE_LENGTH, normalizeWidgetState, notePalettes, validateWidgetStat
 import { DEFAULT_PROFILE, isProfileAvatar, MAX_DISPLAY_NAME_LENGTH, normalizeUserProfile } from "./profile-data.js";
 import { normalizeDocumentOverrides, validateDocumentOverrides } from "./document-registry.js";
 import { normalizeLookingGlassState, validateLookingGlassState } from "./looking-glass-data.js";
-import { discoveryFlagForIcon, findDiscovery } from "./discovery-registry.js";
+import { discoveryFlagForIcon, findDiscovery } from "../data/developer-vault/js/discovery-registry.js";
 import { backgroundIds, themeIds } from "./appearance-palettes.js";
 import { binaryStringToBytes } from "./base64.js";
 import { lockTimeouts, defaultBlackwallPreferences, normalizeBlackwallPreferences } from "./blackwall-preferences.js";
 import { normalizeDesktopShortcuts, validateDesktopShortcuts, normalizeDesktopContextMenus } from "./desktop-shortcuts-data.js";
 
-export const CONFIGURATION_VERSION = 8;
-export const CONFIGURATION_PREFIX = "GUIDELUME-8:";
-const LEGACY_CONFIGURATION_PREFIXES = ["GUIDELUME-7:", "GUIDELUME-6:", "GUIDELUME-5:", "GUIDELUME-4:", "GUIDELUME-3:", "GUIDELUME-2:", "GUIDELUME-1:"];
+export const CONFIGURATION_VERSION = 9;
+export const CONFIGURATION_PREFIX = "GUIDELUME-9:";
+const LEGACY_CONFIGURATION_PREFIXES = ["GUIDELUME-8:", "GUIDELUME-7:", "GUIDELUME-6:", "GUIDELUME-5:", "GUIDELUME-4:", "GUIDELUME-3:", "GUIDELUME-2:", "GUIDELUME-1:"];
 export const MAX_CONFIGURATION_BYTES = 256 * 1024;
 
 export const configurationCategories = Object.freeze([
@@ -27,7 +27,7 @@ export const configurationCategories = Object.freeze([
     { id: "environment", label: "Environment" },
     { id: "blackwall", label: "Blackwall & Session" },
     { id: "desktopLayout", label: "Desktop layout" },
-    { id: "shortcuts", label: "Shortcuts & Recycle Bin", restoreWarning: "Restoring Shortcuts & Recycle Bin replaces all current guide shortcuts, deleted shortcuts, their positions, and the desktop context-menu preference." },
+    { id: "shortcuts", label: "Shortcuts & Recycle Bin", restoreWarning: "Restoring Shortcuts & Recycle Bin replaces all current guide shortcuts, deleted shortcuts, their positions, and the context-menu and hidden-file preferences." },
     { id: "windowLayout", label: "Window layout" },
     { id: "taskbar", label: "Taskbar" },
     { id: "widgets", label: "Widgets" },
@@ -81,6 +81,10 @@ configurationMigrations.set(4, value => ({ ...value, formatVersion: 5 }));
 configurationMigrations.set(5, value => ({ ...value, formatVersion: 6 }));
 configurationMigrations.set(6, value => ({ ...value, formatVersion: 7 }));
 configurationMigrations.set(7, value => ({ ...value, formatVersion: 8 }));
+configurationMigrations.set(8, value => ({ ...value, formatVersion: 9, categories: {
+    ...value.categories,
+    ...(value.categories?.shortcuts ? { shortcuts: { ...value.categories.shortcuts, showHiddenFiles: false } } : {})
+} }));
 const themes = new Set(themeIds);
 const backgrounds = new Set(backgroundIds);
 const sizes = new Set(["small", "default", "large", "extra-large"]);
@@ -139,7 +143,7 @@ function validateEnvironment(value) {
     }
 }
 
-function validateConfiguration(value, knownIcons, knownWindows) {
+export function validateConfiguration(value, knownIcons, knownWindows) {
     assertKeys(value, ["formatVersion", "categories"], "Configuration");
     if (value.formatVersion !== CONFIGURATION_VERSION) throw new Error("This configuration version is not supported.");
     assertKeys(value.categories, [...categoryIds], "Configuration categories");
@@ -224,9 +228,10 @@ function validateConfiguration(value, knownIcons, knownWindows) {
     if (own(data, "documents")) data.documents = validateDocumentOverrides(data.documents);
     if (own(data, "lookingGlass")) data.lookingGlass = validateLookingGlassState(data.lookingGlass);
     if (own(data, "shortcuts")) {
-        assertKeys(data.shortcuts, ["items", "contextMenus"], "Shortcuts & Recycle Bin");
+        assertKeys(data.shortcuts, ["items", "contextMenus", "showHiddenFiles"], "Shortcuts & Recycle Bin");
         data.shortcuts.items = validateDesktopShortcuts(data.shortcuts.items);
         enumValue(data.shortcuts.contextMenus, new Set(["guidelume", "browser"]), "Desktop context menus");
+        if (!bool(data.shortcuts.showHiddenFiles)) throw new Error("Show hidden files must be a boolean.");
     }
     if (Object.keys(data).length === 0) throw new Error("Choose at least one category to import.");
     return value;
@@ -302,7 +307,7 @@ export function createConfiguration(memory, selectedCategories, knownIcons, know
     if (selected.has("profile")) categories.profile = normalizeUserProfile(memory.profile || DEFAULT_PROFILE);
     if (selected.has("documents")) categories.documents = normalizeDocumentOverrides(memory.documents);
     if (selected.has("lookingGlass")) categories.lookingGlass = normalizeLookingGlassState(memory.lookingGlass);
-    if (selected.has("shortcuts")) categories.shortcuts = { items: normalizeDesktopShortcuts(memory.shortcuts), contextMenus: normalizeDesktopContextMenus(memory.settings.desktopContextMenus) };
+    if (selected.has("shortcuts")) categories.shortcuts = { items: normalizeDesktopShortcuts(memory.shortcuts), contextMenus: normalizeDesktopContextMenus(memory.settings.desktopContextMenus), showHiddenFiles: memory.settings.showHiddenFiles === true };
     const configuration = { formatVersion: CONFIGURATION_VERSION, categories };
     validateConfiguration(configuration, knownExportableIcons(knownIcons).map(icon => icon.id), knownWindows);
     return configuration;
@@ -348,11 +353,15 @@ export function parseConfiguration(json, knownIcons, knownWindows) {
     try { parsed = JSON.parse(json); } catch { throw new Error("The configuration is not valid JSON."); }
     const configuration = migrateConfiguration(parsed);
     const iconIds = knownExportableIcons(knownIcons).map(icon => icon.id);
-    // Older backups may contain positions for shortcuts now inside Unfinished.
+    // Older backups may contain retired desktop icons or the removed Sound Mixer.
     if (isRecord(configuration.categories?.desktopLayout)) {
         for (const id of ["looking-glass", "twfg"]) {
             if (!iconIds.includes(id)) delete configuration.categories.desktopLayout[id];
         }
+    }
+    if (isRecord(configuration.categories?.windowLayout)) delete configuration.categories.windowLayout["sound-mixer"];
+    if (isRecord(configuration.categories?.taskbar)) for (const key of ["pinned", "order"]) {
+        if (Array.isArray(configuration.categories.taskbar[key])) configuration.categories.taskbar[key] = configuration.categories.taskbar[key].filter(id => id !== "sound-mixer");
     }
     return validateConfiguration(configuration, iconIds, knownWindows);
 }
@@ -410,7 +419,7 @@ export function configurationPreview(configuration, memory) {
     if (data.shortcuts) {
         const values = Object.values(data.shortcuts.items);
         changes.shortcuts = [`${values.filter(item => item.deletedAt === null).length} desktop shortcuts`,
-            `${values.filter(item => item.deletedAt !== null).length} deleted shortcuts`, "Shortcut positions and desktop context menus"];
+            `${values.filter(item => item.deletedAt !== null).length} deleted shortcuts`, "Shortcut positions, context menus and hidden-file visibility"];
     }
     return changes;
 }
@@ -509,6 +518,7 @@ export function applyConfiguration(memory, configuration, selectedCategories, { 
     if (selected.has("shortcuts") && data.shortcuts) {
         next.shortcuts = normalizeDesktopShortcuts(data.shortcuts.items);
         next.settings.desktopContextMenus = data.shortcuts.contextMenus;
+        next.settings.showHiddenFiles = data.shortcuts.showHiddenFiles;
     }
     Object.assign(memory, next);
 }

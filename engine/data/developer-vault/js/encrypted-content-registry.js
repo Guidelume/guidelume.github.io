@@ -4,7 +4,7 @@ import {
     MAX_ENCRYPTED_PAYLOAD_BYTES
 } from "./encrypted-content.js";
 
-const DEFAULT_REGISTRY_URL = "./engine/encrypted/registry.json";
+const DEFAULT_REGISTRY_URL = new URL("../encrypted/registry.json", import.meta.url).href;
 const REGISTRY_FORMAT = "guidelume-encrypted-content-registry";
 const REGISTRY_VERSION = 1;
 const MAX_REGISTRY_BYTES = 64 * 1024;

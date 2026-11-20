@@ -6,6 +6,7 @@ import { MAX_DESKTOP_SHORTCUTS, MAX_SHORTCUT_NAME, shortcutGuides, shortcutTarge
 
 export function initDesktopShortcuts({ desktop, memory, saveMemory, iconController, windowManager, toast, confirmAction, onDeleteRecycleBin }) {
     const menu = initDesktopContextMenu();
+    if (!desktop.hasAttribute("tabindex")) desktop.tabIndex = -1;
     const properties = initDesktopProperties({ windowManager });
     const bin = desktop.querySelector('[data-icon="recycle-bin"]');
     const binWindow = document.querySelector('[data-window="recycle-bin"]');
@@ -296,15 +297,28 @@ export function initDesktopShortcuts({ desktop, memory, saveMemory, iconControll
             const path = vault ? "Developer Vault" + (icon.closest("[data-vault-folder-list]") ? "\\" + owner.querySelector("[data-vault-folder-path]").textContent.split(" / ").join("\\") : "")
                 : paths[windowId] || owner?.querySelector(".titlebar-left span")?.textContent || "Desktop";
             return { type: vault ? "file" : "system", id: `${windowId}:${icon.dataset.openWindow || path + "\\" + name}`, name,
-                location: `Guidelume:\\${path}`, folder: icon.dataset.openWindow?.startsWith("folder-") || icon.querySelector('img[data-seasonal-icon="folder"]') !== null };
+                location: `Guidelume:\\${path}`, hiddenFile: icon.hasAttribute("data-hidden-file"),
+                folder: icon.dataset.openWindow?.startsWith("folder-") || icon.querySelector('img[data-seasonal-icon="folder"]') !== null };
         }
         return { type: "system", name: icon.querySelector("span")?.textContent || "System resource" };
     }
-    function showMenu(event, icon) {
+    function refreshHiddenFiles() {
+        menu.close(true);
+        const focused = document.activeElement?.closest("[data-hidden-file]");
+        desktop.querySelectorAll("[data-hidden-file]").forEach(item => { item.hidden = memory.settings.showHiddenFiles !== true; });
+        if (focused?.hidden) focused.closest(".virtual-folder-content")?.focus({ preventScroll: true });
+        properties.refreshVisibility();
+    }
+    async function toggleHiddenFiles() {
+        memory.settings.showHiddenFiles = memory.settings.showHiddenFiles !== true;
+        refreshHiddenFiles();
+        await save();
+    }
+    function showMenu(event, icon, surface = desktop) {
         const native = event.type === "keydown" ? memory.settings?.desktopContextMenus === "browser" : nativeContextMenuRequested(event, memory);
         if (native) { menu.close(); return; }
         event.preventDefault();
-        const rect = (icon || desktop).getBoundingClientRect();
+        const rect = (icon || surface).getBoundingClientRect();
         const actions = icon ? (() => {
             const object = resource(icon), shortcut = object.type === "shortcut", recycleBin = object.type === "bin", folderEntry = icon.matches(".virtual-folder-entry");
             return [
@@ -316,22 +330,26 @@ export function initDesktopShortcuts({ desktop, memory, saveMemory, iconControll
                     ? onDeleteRecycleBin() : recycle(object.id) },
                 { label: "Properties", run: () => properties.show(icon, object, memory) }
             ];
-        })() : [
+        })() : surface !== desktop ? [] : [
             { label: "Open Recycle Bin", run: () => windowManager.openWindow("recycle-bin") },
             { label: "Desktop Settings…", run: () => windowManager.openWindow("settings") }
         ];
-        menu.show({ x: event.clientX || rect.left + 12, y: event.clientY || rect.top + 12, target: icon || desktop, actions,
-            label: icon?.matches(".virtual-folder-entry") ? "Folder item actions" : "Desktop actions" });
+        actions.push({ label: "Show hidden files", checked: memory.settings.showHiddenFiles === true, run: toggleHiddenFiles });
+        menu.show({ x: event.clientX || rect.left + 12, y: event.clientY || rect.top + 12, target: icon || surface, actions,
+            label: icon?.matches(".virtual-folder-entry") ? "Folder item actions" : surface !== desktop ? "Folder actions" : "Desktop actions" });
     }
+    desktop.querySelectorAll(".virtual-folder-content").forEach(surface => { if (!surface.hasAttribute("tabindex")) surface.tabIndex = 0; });
     desktop.addEventListener("contextmenu", event => {
         const icon = event.target.closest(".desktop-icon, .virtual-folder-entry");
-        // Leave folder backgrounds, other window content, widgets and embedded pages alone.
-        if (icon || event.target === desktop) showMenu(event, icon);
+        const surface = event.target.closest(".virtual-folder-content");
+        // Other window content, widgets, text and embedded pages keep native menus.
+        if (icon || event.target === desktop || event.target === surface) showMenu(event, icon, surface || desktop);
     });
     desktop.addEventListener("keydown", event => {
         const icon = event.target.closest(".desktop-icon, .virtual-folder-entry");
-        if ((event.key === "ContextMenu" || event.key === "F10" && event.shiftKey) && icon) {
-            showMenu(event, icon);
+        const surface = event.target.closest(".virtual-folder-content");
+        if ((event.key === "ContextMenu" || event.key === "F10" && event.shiftKey) && (icon || event.target === surface)) {
+            showMenu(event, icon, surface || desktop);
         }
         if (event.key === "F2" && icon && resource(icon).type === "shortcut") { event.preventDefault(); void rename(icon.dataset.shortcutId, icon); }
         if (event.key === "Delete" && icon) {
@@ -346,8 +364,8 @@ export function initDesktopShortcuts({ desktop, memory, saveMemory, iconControll
         window.dispatchEvent(new Event("guidelume:context-menu-preference"));
     }
     preference.addEventListener("change", () => { memory.settings.desktopContextMenus = preference.value; refreshPreference(); void save(); });
-    refreshPreference(); render();
-    return { render, refreshPreference, openShortcut,
+    refreshPreference(); render(); refreshHiddenFiles();
+    return { render, refreshPreference, refreshHiddenFiles, openShortcut,
         handleDrop(icon, event) {
             if (icon === bin) return false;
             const rect = bin.getBoundingClientRect();

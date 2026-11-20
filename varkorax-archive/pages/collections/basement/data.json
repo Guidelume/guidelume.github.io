@@ -4,6 +4,7 @@
     {
 		"id": "portal-two-pc",
 		"title": "Portal 2",
+		"hasThumbnail": false,
 		"featured": true,
 		"added": "2026-07-18",
 		"type": "game",

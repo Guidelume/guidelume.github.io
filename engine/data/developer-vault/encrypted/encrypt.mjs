@@ -4,9 +4,9 @@ import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
 import { encryptFileBytes, MAX_FILE_BYTES, MAX_FOLDER_BUNDLE_BYTES } from "../js/encrypted-content.js";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
-const stagingPath = resolve(root, "engine/encrypted/staging");
-const outputPath = resolve(root, "engine/encrypted/output");
+const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../../..");
+const stagingPath = resolve(root, "engine/data/developer-vault/encrypted/staging");
+const outputPath = resolve(root, "engine/data/developer-vault/encrypted/output");
 const bundleFormat = "guidelume-vault-folder";
 const bundleMimeType = "application/vnd.guidelume.folder+json";
 const contentTypes = {
@@ -74,7 +74,7 @@ async function collectTopLevelFiles() {
     await mkdir(stagingPath, { recursive: true });
     const entries = await readdir(stagingPath, { withFileTypes: true });
     const files = entries.filter(entry => entry.isFile()).map(entry => entry.name).sort();
-    if (!files.length) throw new Error("Place one or more files directly in engine/encrypted/staging/ first.");
+    if (!files.length) throw new Error("Place one or more files directly in engine/data/developer-vault/encrypted/staging/ first.");
     for (const name of files) {
         const info = await lstat(resolve(stagingPath, name));
         if (!info.isFile() || info.size > MAX_FILE_BYTES) throw new Error(`${name} is not a regular file or exceeds the 8 MiB per-file limit.`);
@@ -122,7 +122,7 @@ async function collectFolderBundle() {
         return contents;
     }
     const entries = await readDirectory(stagingPath);
-    if (limits.files === 0) throw new Error("Place one or more files in engine/encrypted/staging/ first.");
+    if (limits.files === 0) throw new Error("Place one or more files in engine/data/developer-vault/encrypted/staging/ first.");
     return { format: bundleFormat, version: 1, name: "Developer Vault", entries };
 }
 
@@ -176,7 +176,7 @@ async function writeOutput(path, contents, overwriteAllowed) {
 async function main() {
     const args = process.argv.slice(2);
     const bundleMode = args.length === 1 && args[0] === "--bundle";
-    if (args.length > 0 && !bundleMode) throw new Error("Usage: node engine/encrypted/encrypt.mjs [--bundle]");
+    if (args.length > 0 && !bundleMode) throw new Error("Usage: node engine/data/developer-vault/encrypted/encrypt.mjs [--bundle]");
 
     let stagedFiles = null;
     let bundle = null;

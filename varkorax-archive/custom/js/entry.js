@@ -492,7 +492,7 @@
 	
 	function buildMetadata(entry) {
 		const thumbnailUrl = new URL(
-			`pages/collections/basement/${encodeURIComponent(entry.id)}/thumbnail.webp`,
+			entry.hasThumbnail === false ? "custom/img/thumb-fallback.png" : `pages/collections/basement/${encodeURIComponent(entry.id)}/thumbnail.webp`,
 			ARCHIVE_ROOT
 		).href;
 		const fallbackThumbnailUrl = new URL("custom/img/thumb-fallback.png", ARCHIVE_ROOT).href;

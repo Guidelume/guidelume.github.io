@@ -12,6 +12,12 @@
 }
 .desktop-shortcut span { max-height: 5.5em; overflow: hidden; }
 .desktop-context-menu { max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); overflow: auto; }
+.desktop-context-menu [role="menuitemcheckbox"]::before { content: ""; display: inline-block; width: 1.4em; }
+.desktop-context-menu [role="menuitemcheckbox"][aria-checked="true"]::before { content: "✓"; }
+.virtual-folder-entry[hidden] { display: none; }
+.virtual-folder-entry[data-hidden-file] { border-radius: 3px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text-primary), transparent 85%); }
+.virtual-folder-entry[data-hidden-file] img { opacity: .65; }
+.virtual-folder-entry[data-hidden-file]:is(:hover, :focus-visible) img { opacity: .9; }
 .desktop-object-dialog { max-width: min(520px, calc(100vw - 32px)); }
 .desktop-object-dialog label { display: grid; gap: 8px; color: var(--text-primary); }
 .desktop-object-dialog input {

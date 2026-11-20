@@ -1,4 +1,6 @@
-export function initEasterEggs({ memory, saveMemory, openWindow, closeWindow, icon }) {
+import { findDiscovery } from "../data/developer-vault/js/discovery-registry.js";
+
+export function initEasterEggs({ memory, saveMemory, openWindow, closeWindow, icon, developerVaultIcon }) {
     const passwordWindow = document.querySelector('[data-window="easter-eggs-password"]');
     const form = passwordWindow?.querySelector("[data-easter-password-form]");
     const input = passwordWindow?.querySelector("[data-easter-password-input]");
@@ -29,19 +31,25 @@ export function initEasterEggs({ memory, saveMemory, openWindow, closeWindow, ic
         input?.focus({ preventScroll: true });
     });
 
-    form?.addEventListener("submit", event => {
+    form?.addEventListener("submit", async event => {
         event.preventDefault();
-        const accepted = input?.value === "12345";
-        if (accepted) {
-            memory.settings.easterEggsUnlocked = true;
-            if (icon) icon.hidden = false;
-            saveMemory();
-        }
-        if (input) input.value = "";
+        const code = input?.value.trim();
+        const discovery = findDiscovery(code);
+        const accepted = code === "12345" || Boolean(discovery);
         const respond = pendingResponse;
         pendingResponse = null;
+        if (accepted) {
+            memory.settings[discovery?.flag || "easterEggsUnlocked"] = true;
+            const unlockedIcon = discovery ? developerVaultIcon : icon;
+            if (unlockedIcon) unlockedIcon.hidden = false;
+        }
+        if (input) input.value = "";
         closeWindow("easter-eggs-password");
-        respond?.(accepted ? "Accepted. Easter Eggs unlocked." : "Wrong password.");
+        if (!accepted) { respond?.("Wrong password."); return; }
+        const message = discovery ? "Accepted. Developer Vault discovered." : "Accepted. Easter Eggs unlocked.";
+        let saved = false;
+        try { saved = await saveMemory(); } catch { /* The staged discovery remains available for retry. */ }
+        respond?.(saved === false ? `${message} Saving is pending; try again if you reload.` : message);
     });
 
     return {

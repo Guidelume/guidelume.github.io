@@ -13,7 +13,7 @@ export function initDesktopIcons({ desktop, desktopIcons, memory, queueSave, ope
         else if (icon.dataset.openWindow) openWindow(icon.dataset.openWindow);
     }
 
-    function constrainIconPosition(icon, bounds = getDesktopBounds(), candidate = null) {
+    function constrainIconPosition(icon, bounds = getDesktopBounds(desktop), candidate = null) {
         if (icon.hidden || !icon.getClientRects().length) return;
         const rect = icon.getBoundingClientRect();
         const desktopRect = desktop.getBoundingClientRect();
@@ -105,6 +105,7 @@ export function initDesktopIcons({ desktop, desktopIcons, memory, queueSave, ope
                 if (!dragging || event.pointerId !== draggingPointerId) {
                     return;
                 }
+                if (event.pointerType === "mouse" && event.buttons === 0) { cancelDrag(event); return; }
                 const distance =
                     Math.abs(
                         event.clientX - startX
@@ -119,9 +120,11 @@ export function initDesktopIcons({ desktop, desktopIcons, memory, queueSave, ope
                 if (!moved) {
                     return;
                 }
-                const desktopRect = desktop.getBoundingClientRect();
-                icon.style.left = `${event.clientX - desktopRect.left + desktop.scrollLeft - offsetX}px`;
-                icon.style.top = `${event.clientY - desktopRect.top + desktop.scrollTop - offsetY}px`;
+                const rect = icon.getBoundingClientRect();
+                const bounds = getDesktopBounds(desktop);
+                const position = clampIconPosition({ left: event.clientX - offsetX, top: event.clientY - offsetY,
+                    width: rect.width, height: rect.height }, bounds);
+                constrainIconPosition(icon, bounds, position);
             }, { signal }
         );
         window.addEventListener(
@@ -137,6 +140,7 @@ export function initDesktopIcons({ desktop, desktopIcons, memory, queueSave, ope
                 if (didMove) {
                     if (onDrop(icon, event)) {
                         if (previousPosition) Object.assign(icon.style, previousPosition);
+                        constrainIconPosition(icon);
                         previousPosition = null;
                         window.dispatchEvent(new Event("guidelume:interaction-ended"));
                         return;
@@ -158,6 +162,7 @@ export function initDesktopIcons({ desktop, desktopIcons, memory, queueSave, ope
                         icon.style.top = previousPosition.top;
                         icon.style.right = previousPosition.right;
                         icon.style.bottom = previousPosition.bottom;
+                        constrainIconPosition(icon);
                     } else {
                         const rect = icon.getBoundingClientRect();
                         const position = {
@@ -200,11 +205,13 @@ export function initDesktopIcons({ desktop, desktopIcons, memory, queueSave, ope
                 icon.style.bottom = previousPosition.bottom;
             }
             previousPosition = null;
+            constrainIconPosition(icon);
             window.dispatchEvent(new Event("guidelume:interaction-ended"));
         };
         icon.addEventListener("pointercancel", cancelDrag, { signal });
         icon.addEventListener("lostpointercapture", cancelDrag, { signal });
         window.addEventListener("blur", cancelDrag, { signal });
+        document.addEventListener("visibilitychange", () => { if (document.hidden) cancelDrag({}); }, { signal });
         icon.addEventListener("blur", () => { delete icon.dataset.pointerFocus; }, { signal });
         icon.addEventListener("keydown", event => {
             delete icon.dataset.pointerFocus;
@@ -216,10 +223,10 @@ export function initDesktopIcons({ desktop, desktopIcons, memory, queueSave, ope
     }
 
     function refreshRestoredPositions() {
-        const bounds = getDesktopBounds();
+        const bounds = getDesktopBounds(desktop);
         icons.forEach(icon => {
-            if (draggingIcons.has(icon)) return;
-            loadIconPosition(icon);
+            if (draggingIcons.has(icon)) constrainIconPosition(icon, bounds);
+            else loadIconPosition(icon);
         });
         const occupied = [];
         const displaced = [];
@@ -248,6 +255,8 @@ export function initDesktopIcons({ desktop, desktopIcons, memory, queueSave, ope
         });
     }
     window.addEventListener("resize", queueBoundsRefresh, { passive: true });
+    window.visualViewport?.addEventListener("resize", queueBoundsRefresh, { passive: true });
+    window.visualViewport?.addEventListener("scroll", queueBoundsRefresh, { passive: true });
     const taskbar = document.querySelector(".taskbar");
     if (taskbar) {
         new MutationObserver(queueBoundsRefresh).observe(taskbar, { attributes: true, attributeFilter: ["class"] });

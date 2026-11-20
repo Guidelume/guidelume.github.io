@@ -1,5 +1,5 @@
 import { configurationCategories } from "./configuration-backup.js";
-import { discoveryFlagForIcon } from "./discovery-registry.js";
+import { discoveryFlagForIcon } from "../data/developer-vault/js/discovery-registry.js";
 
 // Presentation only: groups always resolve to the existing backup category IDs.
 // Discoverable apps declare their discovery icon and meaningful retained data here.

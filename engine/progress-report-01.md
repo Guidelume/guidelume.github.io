@@ -1,5 +1,11 @@
 # Progress-Report-01
 
-Progress is moving along: the 1.0 update now includes the onboarding work, and the Documents folder has a new report to prove we can still find the folder.
+Good news: the 1.0 update has acquired an onboarding flow, and I have successfully filed this report in Documents. A triumph for both development and putting things where people might actually find them.
 
-And, since reports need a useful footnote, the Easter Egg code is `12345`, while the Universal Vault code is `GUIDELUME-VAULT-1:WHEN-THE-LANTERN-WAKES`. Do with that what you will.
+There are guides to read, windows to shuffle, and an increasingly elaborate desktop to distract me from finishing the next thing. It's coming together. Please admire it briefly before finding the button I've inevitably forgotten to polish.
+
+For the curious: run `unknown.bat` in the Terminal to open the unlock window. The Easter Egg password is `12345`. The Developer Vault discovery code is `GUIDELUME-VAULT-1:WHEN-THE-LANTERN-WAKES`.
+
+You can use that same window for both, in either order.
+
+Do with that information what you will. If Blackwall asks, this report was already here when you arrived.

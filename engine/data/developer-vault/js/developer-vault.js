@@ -3,7 +3,7 @@ import {
     MAX_FOLDER_BUNDLE_BYTES
 } from "./encrypted-content.js";
 import { createEncryptedContentUnlocker } from "./encrypted-content-registry.js";
-import { decodeBase64, isBase64 } from "./base64.js";
+import { decodeBase64, isBase64 } from "../../../js/base64.js";
 
 /*
  * Special thanks to some bullshit I found on Google and Stackoverflow to make this work.

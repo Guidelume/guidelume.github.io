@@ -1,4 +1,4 @@
-import { decodeBase64, isBase64 } from "./base64.js";
+import { decodeBase64, isBase64 } from "../../../js/base64.js";
 
 const PAYLOAD_FORMAT = "guidelume-encrypted-file";
 const PAYLOAD_VERSION = 1;

@@ -387,7 +387,7 @@ function renderCard(entry) {
     card.innerHTML = `
 
         <img
-            src="./projects/${encodeURIComponent(entry.slug)}/thumbnail.webp"
+            src="${entry.hasThumbnail === false ? '../../custom/img/thumb-fallback.png' : `./projects/${encodeURIComponent(entry.slug)}/thumbnail.webp` }"
             alt="${entry.title}"
             loading="lazy"
             onerror="this.onerror=null;this.src='../../custom/img/thumb-fallback.png';">

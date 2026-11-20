@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-11-20 · 1.3 | Relay Brandy
+
+- Simplified Backup & Restore to a basic export/import JSON system
+- Fixed bug where on multiple monitors you could drag icons outside the workspace and into the v o i d
+
+- Rewrote the Readme and Progress-Report-01
+- Removed the Sound Mixer placeholder. It might come back one day, but not anytime soon
+- Moved Looking Glass into System
+
+- Added a 'hidden files' toggle. 'Hidden' files are differentiated visually
+
 ## 2026-11-19 · 1.2 | Denorian Beer
 
 - Added Blackwall Security, an overzealous fake Antivirus utility

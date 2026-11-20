@@ -137,7 +137,8 @@ export function createDesktopState() {
             developerVaultDiscovered: false,
             reducedMotion: false,
             accessibleFonts: false,
-            desktopContextMenus: "guidelume"
+            desktopContextMenus: "guidelume",
+            showHiddenFiles: false
         }
     };
 
@@ -222,10 +223,14 @@ export function createDesktopState() {
                 ...(migrated.settings || {}),
                 accessibleFonts,
                 desktopContextMenus: normalizeDesktopContextMenus(migrated.settings.desktopContextMenus),
+                showHiddenFiles: migrated.settings.showHiddenFiles === true,
                 blackwall: normalizeBlackwallPreferences(migrated.settings.blackwall),
                 environment
             }
         };
+        // Retired placeholders must not return through old layouts or taskbar pins.
+        delete memory.windows["sound-mixer"];
+        for (const key of ["windowOrder", "taskbarOrder", "pinnedTaskbar"]) memory[key] = memory[key].filter(id => id !== "sound-mixer");
         if (memory.settings.easterEggsUnlocked !== true) {
             const easterEggWindow = memory.windows["easter-eggs"];
             if (easterEggWindow && typeof easterEggWindow === "object") {
@@ -332,6 +337,7 @@ export function createDesktopState() {
         replaceSavedState: (transform, options) => synchronizer?.replace(transform, options) || Promise.resolve(false),
         get conflicts() { return synchronizer?.conflicts || []; },
         get resetGeneration() { return synchronizer?.resetGeneration || "initial"; },
+        get persistenceGeneration() { return synchronizer?.epoch || "initial"; },
         resolveConflict: (key, keepMine) => synchronizer?.resolve(key, keepMine),
         get firstNexusGuideVisit() { return nexusGuideRequested && memory.onboarding.completed !== true; },
         get onboardingInProgress() { return memory.onboarding.completed !== true; },

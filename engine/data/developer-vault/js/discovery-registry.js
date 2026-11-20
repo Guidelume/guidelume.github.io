@@ -1,4 +1,4 @@
-// Discovery codes share the existing Backup & Restore code entry point.
+// Discovery codes are accepted by Terminal's reusable unlock window.
 export const discoveryRegistry = Object.freeze([
     Object.freeze({
         id: "developer-vault", flag: "developerVaultDiscovered",

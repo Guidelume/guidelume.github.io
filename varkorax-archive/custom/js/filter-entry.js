@@ -406,7 +406,7 @@ function renderCard(entry) {
     card.innerHTML = `
 
         <img
-            src="./basement/${entry.id}/thumbnail.webp"
+            src="${entry.hasThumbnail === false ? '../../custom/img/thumb-fallback.png' : `./basement/${encodeURIComponent(entry.id)}/thumbnail.webp` }"
             alt="${entry.title}"
             loading="lazy"
             onerror="this.onerror=null;this.src='../../custom/img/thumb-fallback.png';">

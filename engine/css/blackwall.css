@@ -104,6 +104,7 @@ html[data-reduced-motion="true"] :is(.blackwall-dialog, .blackwall-session-notic
 .blackwall-app-header { border-bottom: 1px solid #502630; padding-bottom: 18px; }
 .blackwall-content .blackwall-eyebrow { margin: 0; font-size: .7em; color: #bd929b; letter-spacing: .1em; }
 .blackwall-window .blackwall-content h1 { margin: 6px 0; font-family: inherit; font-size: 2em; letter-spacing: .12em; color: #f3e8eb; }
+.setup-window.blackwall-window .blackwall-content .blackwall-app-header h1 { font-family: Consolas, "Liberation Mono", monospace; }
 .blackwall-window .blackwall-content h2 { margin: 0 0 14px; font-family: inherit; color: #ffb4bc; font-size: 1em; letter-spacing: .05em; }
 .blackwall-content p { color: #c2afb5; margin: 8px 0; }
 .blackwall-content .blackwall-app-status { color: #ffb4bc; font-weight: 700; letter-spacing: .08em; }

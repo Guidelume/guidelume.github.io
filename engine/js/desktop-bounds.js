@@ -1,7 +1,18 @@
 const clamp = (value, minimum, maximum) => Math.max(minimum, Math.min(Math.max(minimum, maximum), value));
 
-export function getDesktopBounds() {
-    const bounds = { left: 8, top: 8, right: window.innerWidth - 8, bottom: window.innerHeight - 8 };
+export function getDesktopBounds(surface = null) {
+    const viewport = window.visualViewport;
+    const left = viewport?.offsetLeft || 0, top = viewport?.offsetTop || 0;
+    const bounds = { left: left + 8, top: top + 8,
+        right: Math.min(window.innerWidth, left + (viewport?.width || window.innerWidth)) - 8,
+        bottom: Math.min(window.innerHeight, top + (viewport?.height || window.innerHeight)) - 8 };
+    if (surface) {
+        const rect = surface.getBoundingClientRect();
+        bounds.left = Math.max(bounds.left, rect.left + 8);
+        bounds.top = Math.max(bounds.top, rect.top + 8);
+        bounds.right = Math.min(bounds.right, rect.right - 8);
+        bounds.bottom = Math.min(bounds.bottom, rect.bottom - 8);
+    }
     const taskbar = document.querySelector(".taskbar");
     if (taskbar && !taskbar.classList.contains("taskbar-hidden")) {
         const rect = taskbar.getBoundingClientRect();

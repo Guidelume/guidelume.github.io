@@ -12,7 +12,7 @@ const directories = {
 const commands = ["help", "whoami", "dir", "ls", "cd", "clear", "reset"];
 const maxOutputLines = 500;
 
-export function initTerminal({ windowElement, blackwall, requestEasterEggUnlock, isEasterEggsUnlocked = () => false, getProfileName = () => "Visitor" }) {
+export function initTerminal({ windowElement, blackwall, requestEasterEggUnlock, getProfileName = () => "Visitor" }) {
     if (!windowElement) return;
     const output = windowElement.querySelector(".terminal-output");
     const content = windowElement.querySelector(".terminal-content");
@@ -112,13 +112,12 @@ export function initTerminal({ windowElement, blackwall, requestEasterEggUnlock,
             addLine(currentProfileName());
             return true;
         }
-        if (currentDirectory === "" && commandLine.toLowerCase() === "unknown.bat" && !isEasterEggsUnlocked()) {
+        if (currentDirectory === "" && commandLine.toLowerCase() === "unknown.bat") {
             requestEasterEggUnlock?.(message => addLine(message));
             return true;
         }
         if (command === "dir" || command === "ls") {
             (directories[currentDirectory] || [])
-                .filter(name => name !== "unknown.bat" || !isEasterEggsUnlocked())
                 .forEach(name => addLine(name));
             return true;
         }

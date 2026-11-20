@@ -1,35 +1,29 @@
 # Welcome to Guidelume
 
-Guidelume brings its guides and archives together on one interactive desktop. You can open a guide right away; Setup is optional, and you can close or minimize it whenever you like.
+Make yourself at home. This little desktop is where I keep my modding guides, writing, and the occasional project that got out of hand.
 
-## Finding your way around
+If you're here to mod Mass Effect, open **Milky Way Bar Crawl**. **Varkorax Archive** is for stories and other odds and ends. **Mods** holds my smaller releases. Setup can wait; the guides are ready when you are.
 
-- Open **Milky Way Bar Crawl** or **Varkorax Archive** from the desktop.
-- Open **Mods** for small standalone projects. **The Witcher 3** entry introduces **One On The House** with a direct download and a Nexus Mods link.
-- Open **Readme** for this introduction, or visit **Documents** for the Changelog, **Progress-Report-01**, and Credits.
-- Use **Setup** to choose a local display name and avatar on your first visit. Finishing Setup reveals the rest of the desktop, but does not change how the guides work.
-- Find desktop utilities in **System**, including Widgets, Environmental Controls, the Terminal, and **Blackwall**. **System → Unfinished** contains Looking Glass, The Warden's Field Guide, and the Sound Mixer placeholder.
+## A quick look around
 
-The Start menu has accessibility controls, CRT and logo toggles, and your local profile. Select your profile there whenever you want to change your name or avatar. These details stay in this browser; they are not an account.
+Drag icons and windows wherever they suit you. The taskbar keeps track of open windows, and a right-click lets you pin your favourites. Your arrangement is saved in this browser.
 
-Your desktop icons, windows, and widget positions are saved on this device. Arrange the desktop by dragging icons and window title bars. You can also minimize or maximize windows, and use **Settings** to change the theme, background, or taskbar position.
+**Documents** holds the Changelog, progress reports, and Credits. **System** is the utility drawer: Widgets, Environmental Controls, Looking Glass, and the Terminal live there. The Warden's Field Guide is still finding its feet in **System → Unfinished**.
 
-## Widgets
+Right-click the desktop or the space inside a folder for more options. **Show hidden files** may turn up a thing or two you've missed. Blackwall would prefer you didn't make a habit of that.
 
-Open **Widgets** to add an analogue clock, a locale-aware calendar, or Sticky Notes. Drag widgets by their headers, or focus a header and use the arrow keys. Pin a Sticky Note to keep it above ordinary windows; each note saves its pinned state, text, color, and position. Calendar holidays are small decorative notes for a handful of dates, rather than a complete public-holiday calendar.
+## Make it comfortable
 
-The **Widgets** category in **Backup & Restore** includes widget settings and note contents. Restoring that category replaces the widgets and notes currently on your desktop.
+The Start menu has reading and accessibility controls, plus your local profile. Change the text or icon size, reduce motion, or pick a name and avatar. There's no account to create.
 
-## Taskbar and accessibility
+Open **Settings** to change the theme, wallpaper, and taskbar. **Widgets** can add a clock, calendar, or a few Sticky Notes. Notes save their text, colour, position, and whether you've pinned them above other windows.
 
-Right-click a taskbar item, or press and hold it, to pin or unpin it, change the order of pinned windows, or close a window. Maximized windows can also hide the taskbar from their title-bar options.
+Want a spare copy of your setup? **Backup & Restore** saves your desktop and guide preferences in one JSON file. Keep it somewhere safe and import it when you need it. Restoring a backup replaces what's saved here, so export a fresh copy first if there's anything you'd miss.
 
-Accessibility controls are always available from the Start menu. They include text and desktop-icon scaling, reduced motion, and other reading-comfort settings. Individual guides may have additional controls for their own content.
+## Poke around
 
-The Terminal is a small fictional console with a read-only text tree. Try `help`, `whoami`, `dir`, `cd tributes`, or a text filename. Its command history and current folder reset when you reload the page.
+The Terminal understands `help`, `whoami`, `dir`, and `cd`. Try opening a text file, or see what else is lying around. It is a fictional console; curiosity is encouraged, although Blackwall has opinions.
 
-## About this project
+This is a personal project, and some corners are still under construction. The Changelog keeps track of what's new. Thanks for stopping by, and I hope you find something useful—or at least pleasantly distracting.
 
-Guidelume is a personal project by Varkorax, focused on atmospheric, accessible guides and references. The Changelog tracks named updates, while Credits lists acknowledgements and licensing details.
-
-Built with exasperation and free and open-source software. Thanks for stopping by.
+— Varkorax

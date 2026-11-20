@@ -9,7 +9,7 @@ const date = value => new Date(value).toLocaleString([], { dateStyle: "long", ti
 
 // Built-in resources belong to the fictional OS. Older shortcuts receive stable
 // installation-era metadata; newly created/changed shortcuts retain real dates.
-export function desktopResourceProperties({ id, type, name, shortcut, folder = false, location = "Guidelume:\\Desktop", deletedItems = [] }) {
+export function desktopResourceProperties({ id, type, name, shortcut, folder = false, hiddenFile = false, location = "Guidelume:\\Desktop", deletedItems = [] }) {
     const created = shortcut?.createdAt ?? installed + hash(id) % 86400000;
     const modified = Math.max(created, shortcut?.modifiedAt ?? shortcut?.deletedAt ?? created);
     const length = shortcut ? bytes(shortcut) : type === "bin" ? deletedItems.reduce((total, item) => total + bytes(item), 0)
@@ -19,7 +19,7 @@ export function desktopResourceProperties({ id, type, name, shortcut, folder = f
         ["Type", kind], ["Location", shortcut?.deletedAt != null ? "Guidelume:\\Recycle Bin" : location],
         ["Size", size(length)], ["Size on disk", size(Math.ceil(length / 4096) * 4096)],
         ["Created", date(created)], ["Last modified", date(type === "bin" ? Math.max(created, ...deletedItems.map(item => item.modifiedAt || item.deletedAt || created)) : modified)],
-        ["Attributes", shortcut ? "Shortcut" : type === "file" ? "Read-only" : "Read-only, System"]
+        ["Attributes", (hiddenFile ? "Hidden, " : "") + (shortcut ? "Shortcut" : type === "file" ? "Read-only" : "Read-only, System")]
     ];
     if (type === "bin") general.splice(2, 0, ["Contains", `${deletedItems.length} shortcut${deletedItems.length === 1 ? "" : "s"}`]);
     return { name, kind, general, shortcut: shortcut ? [
@@ -49,7 +49,9 @@ export function initDesktopProperties({ windowManager }) {
         }
         return list;
     };
-    return { show(icon, resource, memory) {
+    return { refreshVisibility() {
+        if (dialog.open && (!opener?.isConnected || opener.closest("[hidden]"))) dialog.close();
+    }, show(icon, resource, memory) {
         if (dialog.open || document.querySelector("dialog[open]") || !icon.isConnected) return;
         const shortcut = resource.type === "shortcut" && memory.shortcuts?.[resource.id];
         if (resource.type === "shortcut" && !shortcut) return;

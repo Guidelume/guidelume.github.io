@@ -9,7 +9,7 @@ export const stylesheets = [
     { id: "desktop-objects", href: cssUrl("desktop-objects.css"), dependencies: ["windows", "taskbar"] },
     { id: "notepad", href: cssUrl("notepad.css"), dependencies: ["windows"] },
     { id: "backup-restore", href: cssUrl("backup-restore.css"), dependencies: ["windows"] },
-    { id: "developer-vault", href: cssUrl("developer-vault.css"), dependencies: ["windows"] },
+    { id: "developer-vault", href: new URL("../data/developer-vault/css/developer-vault.css", import.meta.url).href, dependencies: ["windows"] },
     { id: "terminal", href: cssUrl("terminal.css"), dependencies: ["windows", "blackwall"] },
     { id: "blackwall", href: cssUrl("blackwall.css"), dependencies: ["global"] },
     { id: "session-lock", href: cssUrl("session-lock.css"), dependencies: ["global"] },

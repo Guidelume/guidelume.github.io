@@ -465,8 +465,9 @@
                     <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="terminal"><img src="./engine/img/environment/doc_term.svg" data-seasonal-icon="terminal" alt=""><span>Terminal</span></button>
                     <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="widgets"><img src="./engine/img/environment/doc_widget.svg" alt=""><span>Widgets</span></button>
                     <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="folder-unfinished"><img src="./engine/img/environment/doc_folder.svg" data-seasonal-icon="folder" alt=""><span>Unfinished</span></button>
-                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="blackwall"><img src="./engine/img/environment/blackwall.svg" alt=""><span>Blackwall</span><small>Session &amp; Security</small></button>
-                    <button type="button" class="virtual-folder-entry" draggable="false" data-blackwall-protected-file aria-label="blackwall.sys — restricted system file" title="Protected system configuration. Access restricted."><img src="./engine/img/environment/doc_text.svg" data-seasonal-icon="text" alt=""><span>blackwall.sys</span><small>Restricted</small></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="looking-glass"><img src="./engine/img/environment/doc_glass.svg" alt=""><span>Looking Glass</span></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="blackwall" data-hidden-file hidden><img src="./engine/img/environment/blackwall.svg" alt=""><span>Blackwall</span><small>Session &amp; Security</small></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-hidden-file hidden data-blackwall-protected-file aria-label="blackwall.sys — restricted system file" title="Protected system configuration. Access restricted."><img src="./engine/img/environment/doc_text.svg" data-seasonal-icon="text" alt=""><span>blackwall.sys</span><small>Restricted</small></button>
                 </div>
             </section>
 
@@ -480,22 +481,8 @@
                     <button type="button" class="window-close" data-close-window="folder-unfinished" aria-label="Close window">X</button>
                 </div>
                 <div class="setup-content virtual-folder-content">
-                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="looking-glass"><img src="./engine/img/environment/doc_glass.svg" alt=""><span>Looking Glass</span></button>
                     <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="twfg"><img src="./the-warden-field-guide/volume-1/custom/favicon.svg" alt=""><span>The Warden's Field Guide</span></button>
-                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="sound-mixer"><img src="./engine/img/environment/doc_sound.svg" alt=""><span>Sound Mixer</span></button>
                 </div>
-            </section>
-
-            <section class="setup-window" data-window="sound-mixer" data-window-width="440px" data-window-height="300px" hidden aria-labelledby="sound-mixer-title">
-                <div class="setup-titlebar window-drag-handle">
-                    <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/doc_sound.svg" alt=""><span id="sound-mixer-title">Sound Mixer</span></div>
-                    <div class="window-controls">
-                        <button type="button" class="window-minimize" data-minimize-window="sound-mixer" aria-label="Minimize window">−</button>
-                        <button type="button" class="window-maximize" data-maximize-window="sound-mixer" aria-label="Maximize window" aria-pressed="false">□</button>
-                    </div>
-                    <button type="button" class="window-close" data-close-window="sound-mixer" aria-label="Close window">X</button>
-                </div>
-                <div class="setup-content sound-mixer-content"><h1>Coming Soon</h1><p>The Sound Mixer is a placeholder for a future desktop feature.</p></div>
             </section>
 
             <section class="setup-window" data-window="folder-mods" data-window-width="580px" data-window-height="400px" hidden aria-labelledby="mods-title">
@@ -595,7 +582,7 @@
                 </div>
                 <div class="setup-content easter-password-content">
                     <form class="easter-password-form" data-easter-password-form>
-                        <label for="easterEggPassword">Password</label>
+                        <label for="easterEggPassword">Password or discovery code</label>
                         <input id="easterEggPassword" type="password" autocomplete="off" data-easter-password-input>
                         <button type="submit" class="setup-button">OK</button>
                     </form>
@@ -1080,53 +1067,27 @@
                     </div>
                     <button type="button" class="window-close" data-close-window="backup-restore" aria-label="Close window">X</button>
                 </div>
-                <div class="setup-content backup-restore" aria-label="Backup and restore preferences">
-                    <header class="backup-heading">
-                        <span class="backup-eyebrow">WORKSPACE TOOLS</span>
-                        <h1>Backup &amp; Restore</h1>
-                        <p>Carry your Guidelume preferences with you, or restore a saved workspace.</p>
-                    </header>
+                <div class="setup-content backup-restore" aria-label="Backup and restore">
+                    <header class="backup-heading"><h1>Backup &amp; Restore</h1><p>One file for your whole Guidelume setup.</p></header>
                     <section class="backup-card" aria-labelledby="backup-export-title">
-                        <div class="backup-card-heading"><span class="backup-step">01</span><div><h2 id="backup-export-title">Create a backup</h2><p>Expand a group to choose individual categories. All are selected to start.</p></div></div>
-                        <fieldset class="backup-category-fieldset">
-                            <legend>Included categories</legend>
-                            <div class="backup-category-controls">
-                                <button type="button" class="backup-utility-button" data-select-all-categories>Select all</button>
-                                <button type="button" class="backup-utility-button" data-deselect-all-categories>Clear selection</button>
-                            </div>
-                            <div class="backup-category-list" data-export-categories role="group" aria-label="Categories to include"></div>
-                        </fieldset>
-                        <div class="backup-actions">
-                            <button type="button" class="backup-primary-button" data-export-json><span aria-hidden="true">↓</span> Download JSON</button>
-                            <button type="button" class="backup-secondary-button" data-export-code><span aria-hidden="true">⧉</span> Copy configuration code</button>
-                        </div>
+                        <h2 id="backup-export-title">Save a backup</h2>
+                        <p>Your desktop, notes, document edits, discoveries, bookmarks and guide preferences travel together.</p>
+                        <button type="button" class="backup-primary-button" data-export-json>Download JSON</button>
                     </section>
-
                     <section class="backup-card" aria-labelledby="backup-import-title">
-                        <div class="backup-card-heading"><span class="backup-step">02</span><div><h2 id="backup-import-title">Restore a backup</h2><p>Expand a group to preview changes and choose individual categories to restore.</p></div></div>
+                        <h2 id="backup-import-title">Restore a backup</h2>
+                        <p>Choose a saved JSON file. You can review it before replacing your current setup.</p>
                         <label class="backup-file-label" for="configurationFile">Choose a JSON file</label>
                         <input id="configurationFile" data-import-file type="file" accept="application/json,.json">
-                        <div class="backup-divider"><span>or use a configuration code</span></div>
-                        <label class="backup-code-label" for="configurationCode">Paste configuration code</label>
-                        <textarea id="configurationCode" data-import-code rows="3" spellcheck="false" autocomplete="off" placeholder="Paste your Guidelume code here"></textarea>
-                        <div class="backup-actions backup-code-actions">
-                            <button type="button" class="backup-primary-button" data-preview-code>Preview code</button>
-                            <button type="button" class="backup-utility-button" data-clear-code>Clear code</button>
-                        </div>
                         <div class="backup-import-preview" data-import-preview hidden>
-                            <div class="backup-preview-title"><span class="backup-preview-icon" aria-hidden="true">✓</span><div><h3>Backup preview</h3><p data-import-version></p></div></div>
-                            <div data-import-summary></div>
-                            <fieldset class="backup-preview-categories">
-                                <legend>Restore these categories</legend>
-                                <div class="backup-category-list" data-import-categories role="group" aria-label="Categories to restore"></div>
-                            </fieldset>
+                            <p data-import-summary></p>
                             <div class="backup-actions">
-                                <button type="button" class="backup-primary-button" data-apply-import>Apply selected settings</button>
-                                <button type="button" class="backup-utility-button" data-cancel-import>Cancel</button>
+                                <button type="button" class="backup-primary-button" data-apply-import>Restore backup</button>
+                                <button type="button" class="backup-secondary-button" data-cancel-import>Cancel</button>
                             </div>
                         </div>
-                        <p class="backup-status" data-backup-status role="status" aria-live="polite"></p>
                     </section>
+                    <p class="backup-status" data-backup-status role="status" aria-live="polite"></p>
                 </div>
             </section>
 

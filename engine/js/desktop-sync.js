@@ -285,6 +285,7 @@ export function createDesktopSync({ memory, database, initial, normalize = value
         },
         get conflicts() { return [...conflicts.values()].map(patch => ({ ...patch, saved: known.records.get(patch.key) })); },
         get resetGeneration() { return known.meta.resetGeneration || "initial"; },
+        get epoch() { return known.meta.epoch; },
         get hasDeferredChanges() { return awaitingSynchronization; },
         pause() { capture(); suspended = true; clearTimeout(saveTimer); channel?.close(); channel = null; database.disconnect?.(); },
         async resume() {
