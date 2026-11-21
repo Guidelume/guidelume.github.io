@@ -5,6 +5,7 @@ import { validateDesktopShortcuts } from "./desktop-shortcuts-data.js";
 import { validateWidgetState } from "./widgets-data.js";
 import { validateLookingGlassState } from "./looking-glass-data.js";
 import { blackwallTabIds, blackwallViewKey, normalizeBlackwallView } from "./blackwall-view.js";
+import { validReadingState, validScrollPositions } from "./reading-state.js";
 
 export const MAX_BACKUP_BYTES = 4 * 1024 * 1024;
 const format = "guidelume-workspace";
@@ -54,12 +55,20 @@ function transformStandalonePreferences(preferences, base, portable) {
             throw new Error("A saved standalone guide location is unsupported.");
         }
         const location = (portable ? url.pathname.slice(root.pathname.length) : url.pathname) + url.search;
-        let text = value;
+        let state;
         try {
-            const state = JSON.parse(value);
-            if (record(state) && state.href) { state.href = frameUrl(match[1], state.href, root, portable); text = JSON.stringify(state); }
-        } catch { /* An older unreadable reading cache is retained as-is. */ }
-        result[`${match[1]}-guide-state:${location}`] = text;
+            state = JSON.parse(value);
+        } catch {
+            if (portable) continue; // Do not export an already broken local reading cache.
+            throw new Error("A saved standalone guide reading state is invalid.");
+        }
+        if (!validReadingState(state)) {
+            if (portable) continue;
+            throw new Error("A saved standalone guide reading state is invalid.");
+        }
+        checkTree(state);
+        state.href = frameUrl(match[1], state.href, root, portable);
+        result[`${match[1]}-guide-state:${location}`] = JSON.stringify(state);
     }
     return result;
 }
@@ -122,12 +131,14 @@ function validateDesktop(desktop, { knownIcons, knownWindows, defaultMemory, bas
             || !blackwallTabIds.includes(state.view.activeTab) || !record(state.view.scrollPositions)
             || Object.entries(state.view.scrollPositions).some(([key, value]) => !blackwallTabIds.includes(key) || !Number.isFinite(value) || value < 0 || value > 100000))) throw new Error(`The saved view for ${id} is invalid.`);
         for (const key of ["open", "minimized", "maximized", "hideTaskbar"]) if (state[key] !== undefined && typeof state[key] !== "boolean") throw new Error("A saved window state is invalid.");
-        for (const key of ["x", "y"]) if (state[key] !== undefined && !(Number.isFinite(state[key]) && state[key] >= 0 && state[key] <= 1)) throw new Error("A saved window position is invalid.");
+        // A window parked below the taskbar can have its center below the viewport.
+        for (const key of ["x", "y"]) if (state[key] !== undefined && !(Number.isFinite(state[key]) && state[key] >= 0 && state[key] <= (key === "y" ? 1.5 : 1))) throw new Error("A saved window position is invalid.");
         for (const key of ["width", "height"]) if (state[key] !== undefined && !validWindowDimension(state[key])) throw new Error(`The saved ${key} for ${id} is invalid.`);
         if (state.activeTab !== undefined && (typeof state.activeTab !== "string" || state.activeTab.length > 100)) throw new Error("A saved window tab is invalid.");
         for (const key of ["scrollTop", "windowScrollX", "windowScrollY"]) if (state[key] !== undefined && !(Number.isFinite(state[key]) && state[key] >= 0)) throw new Error(`The saved ${key} for ${id} is invalid.`);
+        if (state.scrollPositions !== undefined && !validScrollPositions(state.scrollPositions)) throw new Error("A saved scroll position is invalid.");
         if (state.iframeUrl !== undefined && !frameUrl(id, state.iframeUrl, base)) throw new Error("A saved guide location is unsupported.");
-        if (state.iframePageState !== undefined && (!record(state.iframePageState) || !frameUrl(id, state.iframePageState.href, base))) throw new Error("A saved guide reading state is invalid.");
+        if (state.iframePageState !== undefined && (!validReadingState(state.iframePageState) || !frameUrl(id, state.iframePageState.href, base))) throw new Error("A saved guide reading state is invalid.");
     }
     validateDocumentOverrides(desktop.documents);
     validateDesktopShortcuts(desktop.shortcuts);
@@ -146,6 +157,7 @@ export function createWorkspaceBackup(memory, options) {
     const iconIds = new Set(options.knownIcons.map(icon => icon.id));
     desktop.icons = Object.fromEntries(Object.entries(desktop.icons).filter(([id]) => iconIds.has(id)));
     desktop.windows = Object.fromEntries(Object.entries(desktop.windows).filter(([id]) => options.knownWindows.includes(id) && !privateWindows.has(id)));
+    for (const state of Object.values(desktop.windows)) if (state.iframePageState !== undefined && !validReadingState(state.iframePageState)) delete state.iframePageState;
     if (desktop.windows.blackwall?.view !== undefined) desktop.windows.blackwall.view = normalizeBlackwallView(desktop.windows.blackwall.view);
     desktop.settings = Object.fromEntries(Object.entries(options.defaultMemory.settings).map(([key, fallback]) => [key, desktop.settings[key] ?? fallback]));
     for (const key of ["windowOrder", "taskbarOrder", "pinnedTaskbar"]) desktop[key] = desktop[key].filter(id => !privateWindows.has(id) && options.knownWindows.includes(id));
@@ -171,6 +183,9 @@ export function parseWorkspaceBackup(text, options) {
     checkTree(value);
     if (record(value) && Number.isInteger(value.formatVersion)) return { legacy: parseConfiguration(text, options.knownIcons, options.knownWindows) };
     if (!record(value) || value.format !== format || value.version !== 1 || Object.keys(value).some(key => !["format", "version", "desktop", "preferences"].includes(key))) throw new Error("This is not a supported Guidelume backup.");
+    // Complete backups made before Looking Glass became a discovery have no flag.
+    if (record(value.desktop?.settings) && !Object.hasOwn(value.desktop.settings, "lookingGlassDiscovered")) value.desktop.settings.lookingGlassDiscovered = false;
+    if (record(value.desktop?.settings) && !Object.hasOwn(value.desktop.settings, "vaultLockOnClose")) value.desktop.settings.vaultLockOnClose = false;
     validateDesktop(value.desktop, options);
     if (!record(value.preferences) || Object.keys(value.preferences).some(key => !["local", "session"].includes(key))) throw new Error("Guide preferences are malformed.");
     validatePreferences(value.preferences.local, localKey); validatePreferences(value.preferences.session, sessionKey);

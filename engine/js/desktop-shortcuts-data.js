@@ -2,7 +2,7 @@ const siteRoot = new URL("../../", import.meta.url);
 export const MAX_DESKTOP_SHORTCUTS = 100;
 export const MAX_SHORTCUT_NAME = 80;
 export const shortcutGuides = Object.freeze({
-    mwbc: { title: "Milky Way Bar Crawl", icon: "milky-way-bar-crawl/custom/favicon.svg",
+    mwbc: { title: "Milky Way Bar Crawl", icon: "milky-way-bar-crawl/custom/img/logo-bare.png",
         home: "index-mwbc.html", directory: "milky-way-bar-crawl/",
         pages: ["intro", "setup", "textures", "me1", "me2", "me3", "extras", "finish", "questions", "credits", "changelog"] },
     twfg: { title: "The Warden's Field Guide", icon: "the-warden-field-guide/volume-1/custom/favicon.svg",

@@ -9,11 +9,19 @@ const privateWindow = (id, state) => Object.fromEntries(Object.entries(state || 
 export const recordKey = path => JSON.stringify(path);
 export const isPresentationRecord = path => ["focusedWindow", "sessionLocked"].includes(path[0])
     || (path[0] === "windows" && path.length === 3 && path[2] === "activeTab");
-export const sameRecordValue = (a, b) => JSON.stringify(a && !a.deleted ? [a.kind, a.value] : null)
-    === JSON.stringify(b && !b.deleted ? [b.kind, b.value] : null);
+export function sameRecordValue(a, b) {
+    const liveA = a && !a.deleted, liveB = b && !b.deleted;
+    if (!liveA || !liveB) return !liveA && !liveB;
+    if (a.kind !== b.kind) return false;
+    if (a.kind === "object" || a.value === b.value) return true;
+    if (a.value === null || b.value === null || typeof a.value !== "object" || typeof b.value !== "object") return false;
+    return JSON.stringify(a.value) === JSON.stringify(b.value);
+}
 
-export function sharedDesktop(memory) {
-    const shared = structuredClone(memory);
+export function sharedDesktop(memory, { clone = true } = {}) {
+    // Project private fields out before cloning. The sync flattener takes its own
+    // immutable leaf copies and can avoid cloning the entire tree twice.
+    const shared = { ...memory };
     delete shared.windowOrder;
     delete shared.taskbarOrder;
     shared.focusedWindow = typeof memory.focusedWindow === "string" && !localOnlyWindows.has(memory.focusedWindow) ? memory.focusedWindow : null;
@@ -27,14 +35,17 @@ export function sharedDesktop(memory) {
     shared.lookingGlass = { ...shared.lookingGlass,
         bookmarks: Object.fromEntries((memory.lookingGlass?.bookmarks || []).map(bookmark => [bookmark.id, bookmark])) };
     delete shared.lookingGlass.sidebarOpen;
-    return shared;
+    return clone ? structuredClone(shared) : shared;
 }
 
-export function privateDesktop(memory) {
+export const flattenSharedDesktop = memory => flattenDesktop(sharedDesktop(memory, { clone: false }));
+
+export function privateDesktop(memory, { runtime = false } = {}) {
     return {
-        windows: Object.fromEntries(Object.entries(memory.windows || {}).filter(([id]) => id !== "developer-vault").map(([id, state]) => [id, privateWindow(id, state)])),
-        windowOrder: (memory.windowOrder || []).filter(id => id !== "developer-vault"),
-        taskbarOrder: (memory.taskbarOrder || []).filter(id => id !== "developer-vault"),
+        windows: Object.fromEntries(Object.entries(memory.windows || {}).filter(([id]) => runtime || id !== "developer-vault").map(([id, state]) => [id, privateWindow(id, state)])),
+        windowOrder: (memory.windowOrder || []).filter(id => runtime || id !== "developer-vault"),
+        taskbarOrder: (memory.taskbarOrder || []).filter(id => runtime || id !== "developer-vault"),
+        ...(runtime ? { privatePins: (memory.pinnedTaskbar || []).map((id, index) => ({ id, index })).filter(({ id }) => localOnlyWindows.has(id)) } : {}),
         sidebarOpen: memory.lookingGlass?.sidebarOpen !== false
     };
 }
@@ -46,7 +57,7 @@ export function flattenDesktop(value, path = [], result = new Map()) {
         for (const [name, child] of Object.entries(value)) {
             if (!unsafeKeys.has(name) && child !== undefined) flattenDesktop(child, [...path, name], result);
         }
-    } else if (path.length) result.set(key, { key, path, kind: "value", value: structuredClone(value) });
+    } else if (path.length) result.set(key, { key, path, kind: "value", value: value !== null && typeof value === "object" ? structuredClone(value) : value });
     return result;
 }
 
@@ -61,15 +72,18 @@ export function expandDesktop(records) {
     return root;
 }
 
-export function desktopFromRecords(records, local = {}) {
+export function desktopFromRecords(records, local = {}, { runtime = false } = {}) {
     const shared = expandDesktop(records);
     shared.windows = Object.fromEntries([...new Set([...Object.keys(local.windows || {}), ...Object.keys(shared.windows || {})])]
-        .filter(id => id !== "developer-vault")
+        .filter(id => runtime || id !== "developer-vault")
         .map(id => [id, { ...privateWindow(id, local.windows?.[id]), ...shared.windows?.[id] }]));
     shared.windowOrder = local.windowOrder || [];
     shared.taskbarOrder = local.taskbarOrder || [];
     const pins = Object.keys(shared.pinnedTaskbar || {});
     shared.pinnedTaskbar = [...new Set([...(shared.pinnedTaskbarOrder || []).filter(id => pins.includes(id)), ...pins])];
+    if (runtime) for (const { id, index } of local.privatePins || []) {
+        if (localOnlyWindows.has(id)) shared.pinnedTaskbar.splice(Math.min(index, shared.pinnedTaskbar.length), 0, id);
+    }
     delete shared.pinnedTaskbarOrder;
     shared.widgets ||= {};
     shared.widgets.instances = Object.values(shared.widgets.instances || {});

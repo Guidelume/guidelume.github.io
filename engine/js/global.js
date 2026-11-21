@@ -37,8 +37,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const confirmAction = initConfirmationDialog();
     const toast = initToastNotifications();
     let storageNotice = null;
+    let incompatibleStorage = false;
     window.addEventListener("guidelume:storage-status", event => {
         const reason = event.detail?.reason;
+        if (reason === "versionchange") incompatibleStorage = true;
         storageNotice = reason === "versionchange"
             ? "Saved data is being upgraded. Your edits remain here; reload this tab before saving again."
             : reason === "blocked" ? "Waiting for another Guidelume tab to release saved data. Close an older tab to continue."
@@ -46,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 : reason === "deleted" ? "This item was removed in another session. Copy your retained text into a new item to keep it."
                     : "Browser storage is unavailable. Unsaved changes remain in this tab; please try saving again.";
         if (document.documentElement.dataset.restorationState === "ready") toast.show(storageNotice, "error", { duration: 0 });
-        else if (reason === "blocked") document.getElementById("bootState")?.replaceChildren(storageNotice);
+        else if (reason === "blocked" || reason === "versionchange") window.guidelumeStartup?.recover?.(storageNotice, reason === "versionchange");
     });
     const resetNoticeKey = "guidelume_reset_notice";
     const resetNoticeMessages = {
@@ -72,11 +74,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     /*
-      Global.js V8 - We'll Take Everything
+      Global.js V9 - We'll Take Everything
      */
 
     const desktopState = createDesktopState();
-    await desktopState.initializePersistence();
+    const persistenceReady = await desktopState.initializePersistence();
+    // Cached older code must not silently start from the legacy recovery copy
+    // when the authoritative database requires a newer application version.
+    if (!persistenceReady && incompatibleStorage) return;
+    window.guidelumeStartup?.progress(true);
     const {
         memory, defaultMemory, queueSave, saveMemory,
         clearSavedGuidelumeState, nexusGuideId, nexusGuideRequested, firstNexusGuideVisit, freshVisitor
@@ -109,6 +115,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         desktopIcons: Array.from(document.querySelectorAll(".desktop-icon")),
         easterEggIcon: document.querySelector("[data-easter-eggs-icon]"),
         developerVaultIcon: document.querySelector("[data-developer-vault-icon]"),
+        lookingGlassIcon: document.querySelector("[data-looking-glass-icon]"),
         crtToggle: document.getElementById("crtToggle"),
         brandingToggle: document.getElementById("brandingToggle"),
         crtShell: document.getElementById("crt"),
@@ -145,6 +152,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
     if (ui.easterEggIcon) ui.easterEggIcon.hidden = memory.settings.easterEggsUnlocked !== true;
     if (ui.developerVaultIcon) ui.developerVaultIcon.hidden = memory.settings.developerVaultDiscovered !== true;
+    if (ui.lookingGlassIcon) ui.lookingGlassIcon.hidden = memory.settings.lookingGlassDiscovered !== true;
     const {
         windows,
         taskbarWindows,
@@ -201,7 +209,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         openWindow: windowManager.openWindow,
         closeWindow: windowManager.closeWindow,
         icon: ui.easterEggIcon,
-        developerVaultIcon: ui.developerVaultIcon
+        developerVaultIcon: ui.developerVaultIcon,
+        lookingGlassIcon: ui.lookingGlassIcon
     });
     const terminalWindow = document.querySelector('[data-window="terminal"]');
     let blackwallApp;
@@ -228,7 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let profileController = null;
 
     const developerVaultController = initDeveloperVault({
-        windowElement: document.querySelector('[data-window="developer-vault"]')
+        windowElement: document.querySelector('[data-window="developer-vault"]'), memory, saveMemory
     });
 
     function updateSettingsAvailability() {
@@ -458,7 +467,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         openShortcut: id => shortcutsController?.openShortcut(id) });
     shortcutsController = initDesktopShortcuts({ desktop, memory, saveMemory, iconController: desktopIconController, windowManager, toast, confirmAction,
         onDeleteRecycleBin: () => blackwallApp?.denyRecycleBinDeletion() });
-    const widgetsController = initWidgets({ memory, queueSave, saveMemory, openWindow, activateTab: tabsController.activateTab });
+    const widgetsController = initWidgets({ memory, queueSave, saveMemory, openWindow, activateTab: tabsController.activateTab, confirmAction,
+        getGeneration: () => desktopState.persistenceGeneration });
+    // Widget availability is known only after its controller has loaded saved instances.
+    tabsController.applySharedState(["widgets"]);
     async function restoreDefaults() {
         if (!await confirmAction({
             title: "Restore default settings?",
@@ -471,7 +483,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function resetDiscoveries() {
         if (!await confirmAction({
             title: "Reset discoveries?",
-            message: "This hides the Developer Vault and Easter Eggs until they are discovered again. Their desktop positions and your other settings stay.",
+            message: "This hides Looking Glass, the Developer Vault and Easter Eggs until they are discovered again. Bookmarks, desktop positions and your other settings stay.",
             confirmLabel: "Reset discoveries"
         })) return;
         if (!await desktopState.replaceSavedState(next => resetDiscoveryFlags(next))) {
@@ -480,10 +492,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         if (ui.easterEggIcon) ui.easterEggIcon.hidden = true;
         if (ui.developerVaultIcon) ui.developerVaultIcon.hidden = true;
+        if (ui.lookingGlassIcon) ui.lookingGlassIcon.hidden = true;
         developerVaultController.lock();
         closeWindow("developer-vault");
         closeWindow("easter-eggs");
         closeWindow("easter-eggs-password");
+        closeWindow("looking-glass");
         toast.show("Discoveries reset.");
     }
     document.querySelector("[data-reset-entire-site]")?.addEventListener("click", () => { void resetEntireSite(); });
@@ -576,6 +590,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (has("lookingGlass")) lookingGlassController?.refreshSharedState();
             if (has("documents")) rendered.push(notepadController.refreshFromMemory());
             if (settings.includes("blackwall")) blackwallApp.refresh();
+            if (settings.includes("vaultLockOnClose")) developerVaultController.refreshPreferences?.();
             if (settings.includes("easterEggsUnlocked")) {
                 ui.easterEggIcon.hidden = memory.settings.easterEggsUnlocked !== true;
                 if (!memory.settings.easterEggsUnlocked) {
@@ -593,6 +608,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                     Object.assign(getWindowMemory("developer-vault"), { open: false, minimized: false, maximized: false });
                     windowIds.add("developer-vault");
                     revokedWindows.add("developer-vault");
+                }
+            }
+            if (settings.includes("lookingGlassDiscovered")) {
+                ui.lookingGlassIcon.hidden = memory.settings.lookingGlassDiscovered !== true;
+                if (!memory.settings.lookingGlassDiscovered) {
+                    Object.assign(getWindowMemory("looking-glass"), { open: false, minimized: false, maximized: false });
+                    windowIds.add("looking-glass");
+                    revokedWindows.add("looking-glass");
                 }
             }
             if (has("onboarding")) {

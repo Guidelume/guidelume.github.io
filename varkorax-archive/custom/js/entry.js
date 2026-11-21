@@ -508,7 +508,7 @@
 				<img
 					 src="${thumbnailUrl}"
 					 alt="${escapeHtml(entry.title)}"
-					 onerror="this.onerror=null;this.src='${fallbackThumbnailUrl}'">
+					 data-fallback-src="${fallbackThumbnailUrl}">
 			</div>
 
 			<div class="entry-summary">

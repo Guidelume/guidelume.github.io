@@ -41,6 +41,8 @@
     cursor: pointer;
 }
 
+.window-tab:disabled { opacity: .42; cursor: not-allowed; filter: grayscale(1); }
+
 .window-tab:hover {
     background: color-mix(in srgb, var(--accent-strong), var(--window-content-top) 82%);
     color: var(--text-primary);

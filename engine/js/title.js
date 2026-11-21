@@ -3,6 +3,7 @@ void import(new URL("./resource-lifecycle.js", document.currentScript.src).href)
         function enterGuide() {
             window.location.href = "./milky-way-bar-crawl/intro.html";
         }
+        document.querySelector("[data-enter-mwbc]")?.addEventListener("click", enterGuide);
 		
 		/* Optimization Attempt 1. Ideas courtesy of VentruePL 
 		- Rewrote the way the title animation works:

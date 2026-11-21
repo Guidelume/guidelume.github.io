@@ -6,6 +6,8 @@ There are guides to read, windows to shuffle, and an increasingly elaborate desk
 
 For the curious: run `unknown.bat` in the Terminal to open the unlock window. The Easter Egg password is `12345`. The Developer Vault discovery code is `GUIDELUME-VAULT-1:WHEN-THE-LANTERN-WAKES`.
 
-You can use that same window for both, in either order.
+Looking Glass has joined the secret club: `SELF-INDULGENT-FEATURE-01`. Enter it in the same window and you'll find the app in System. The name is an entirely fair accusation.
+
+All three codes work in that window, in any order.
 
 Do with that information what you will. If Blackwall asks, this report was already here when you arrived.

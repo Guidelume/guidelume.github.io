@@ -382,23 +382,24 @@ function renderCard(entry) {
         `./projects/${encodeURIComponent(entry.slug)}/index.html`;
 	
 	card.target = "_blank";
+	card.rel = "noopener noreferrer";
 	const year = formatDate(entry.releaseDate, "year") || formatDate(entry.added, "year");
 	
     card.innerHTML = `
 
         <img
             src="${entry.hasThumbnail === false ? '../../custom/img/thumb-fallback.png' : `./projects/${encodeURIComponent(entry.slug)}/thumbnail.webp` }"
-            alt="${entry.title}"
+            alt="${escapeHTML(entry.title)}"
             loading="lazy"
-            onerror="this.onerror=null;this.src='../../custom/img/thumb-fallback.png';">
+            data-fallback-src="../../custom/img/thumb-fallback.png">
 
         <div class="archive-overlay">
 
             <h3>${escapeHTML(entry.title)}</h3>
 
-            <p>${entry.category}${year ? ` • ${year}` : ""}</p>
+            <p>${escapeHTML(entry.category)}${year ? ` • ${year}` : ""}</p>
 
-            <span>${entry.status}</span>
+            <span>${escapeHTML(entry.status)}</span>
 
         </div>
 

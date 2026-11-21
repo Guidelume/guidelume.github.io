@@ -2,6 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 		<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 		
 		<title>Milky Way Bar Crawl</title>
@@ -75,7 +76,7 @@
 			<div class="main-buttons">
 			<button
 				class="enter-button"
-				onclick="enterGuide()"
+				data-enter-mwbc
 				aria-label="Enter the Milky Way Bar Crawl"
 			>
 				Embark
@@ -139,34 +140,7 @@
 			</div>
 		</div>
 		
-		<script>
-		const eaModal = document.getElementById('ea-note-modal');
-		const eaTrigger = document.querySelector('.ea-note-trigger');
-		const eaClose = document.querySelector('.ea-modal-close');
-		const eaBackdrop = document.querySelector('.ea-modal-backdrop');
-
-		function openEaNote() {
-			eaModal.hidden = false;
-			document.body.style.overflow = 'hidden';
-			eaClose.focus();
-		}
-
-		function closeEaNote() {
-			eaModal.hidden = true;
-			document.body.style.overflow = '';
-			eaTrigger.focus();
-		}
-
-		eaTrigger.addEventListener('click', openEaNote);
-		eaClose.addEventListener('click', closeEaNote);
-		eaBackdrop.addEventListener('click', closeEaNote);
-
-		document.addEventListener('keydown', (event) => {
-			if (event.key === 'Escape' && !eaModal.hidden) {
-				closeEaNote();
-			}
-		});
-		</script>
+		<script src="./engine/js/pages/index-mwbc-1.js"></script>
 		
 		<script src="./engine/js/title.js"></script>
 	</body>

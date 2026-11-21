@@ -113,7 +113,8 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
 
             child.requestAnimationFrame(() => child.requestAnimationFrame(() => {
                 if (child.location.href !== state.href) return;
-                (state.scrollPositions || []).forEach(position => {
+                (Array.isArray(state.scrollPositions) ? state.scrollPositions : []).forEach(position => {
+                    if (!position || typeof position !== "object") return;
                     if (typeof position.selector !== "string") return;
                     try {
                         const element = child.document.querySelector(position.selector);
@@ -246,12 +247,13 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
             const datasetKey = `window${dimension[0].toUpperCase()}${dimension.slice(1)}`;
             const fallback = normalizeWindowDimension(windowEl.dataset[datasetKey], defaultWindowSize[dimension]);
             const previousDefaults = {
-                "user-profile": { width: "520px", height: "470px" },
+                "user-profile": { width: ["520px", "620px"], height: ["440px", "470px", "560px"] },
+                widgets: { width: "820px", height: "760px" },
                 setup: { height: "560px" },
                 settings: { width: "780px" }
             };
             const previousDefault = previousDefaults[windowEl.dataset.window]?.[dimension];
-            const saved = previousDefault && normalizeWindowDimension(state[dimension], fallback) === previousDefault
+            const saved = previousDefault && [previousDefault].flat().includes(normalizeWindowDimension(state[dimension], fallback))
                 ? fallback : state[dimension];
             const value = requestedSize[dimension] !== undefined
                 ? normalizeWindowDimension(requestedSize[dimension], fallback)
@@ -273,6 +275,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         windowEl.style.left = `${saved.x * 100}vw`;
         windowEl.style.top = `${saved.y * 100}vh`;
         windowEl.style.translate = "-50% -50%";
+        fitDefaultWindow(windowEl);
         constrainWindowPosition(windowEl);
     }
 
@@ -285,6 +288,26 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         if (Math.abs(position.left - rect.left) < 0.5 && Math.abs(position.top - rect.top) < 0.5) return;
         windowEl.style.left = `${position.left}px`;
         windowEl.style.top = `${position.top}px`;
+        windowEl.style.translate = "none";
+    }
+
+    function fitDefaultWindow(windowEl) {
+        // Centered defaults should open entirely above/below the taskbar. Saved
+        // deliberate positions and ordinary dragging retain the relaxed bounds.
+        windowEl.style.maxHeight = "";
+        const state = getWindowMemory(windowEl.dataset.window);
+        if (windowEl.hidden || state.maximized || state.x !== .5 || state.y !== .5 || windowEl.classList.contains("is-maximized")) return;
+        const bounds = getDesktopBounds();
+        const style = getComputedStyle(windowEl);
+        const extra = style.boxSizing === "border-box" ? 0 : [style.borderTopWidth, style.borderBottomWidth, style.paddingTop, style.paddingBottom]
+            .reduce((total, value) => total + (parseFloat(value) || 0), 0);
+        const maximum = `${Math.max(1, bounds.bottom - bounds.top - extra)}px`;
+        windowEl.style.maxHeight = style.maxHeight === "none" ? maximum : `min(${style.maxHeight}, ${maximum})`;
+        const rect = windowEl.getBoundingClientRect();
+        const top = Math.max(bounds.top, Math.min(rect.top, bounds.bottom - rect.height));
+        if (Math.abs(top - rect.top) < .5) return;
+        windowEl.style.left = `${rect.left}px`;
+        windowEl.style.top = `${top}px`;
         windowEl.style.translate = "none";
     }
 
@@ -887,6 +910,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         windowEl.hidden = false;
         windowEl.classList.remove("window-opening", "window-closing");
         windowEl.style.zIndex = String(nextZIndex());
+        fitDefaultWindow(windowEl);
         if (!getWindowMemory(windowEl.dataset.window).maximized) constrainWindowPosition(windowEl);
         const content = windowEl.querySelector(".setup-content");
         const scrollTop = getWindowMemory(windowEl.dataset.window).scrollTop;
@@ -1008,6 +1032,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
         }
         if (!maximized) return;
 
+        windowEl.style.maxHeight = "";
         windowEl.style.width = "";
         windowEl.style.height = "";
         windowEl.style.left = "";
@@ -1032,6 +1057,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
 
     function canOpenWindow(id) {
         return (id !== "developer-vault" || memory.settings.developerVaultDiscovered === true)
+            && (id !== "looking-glass" || memory.settings.lookingGlassDiscovered === true)
             && (id !== "easter-eggs" || memory.settings.easterEggsUnlocked === true);
     }
 
@@ -1323,7 +1349,7 @@ export function initWindowManager({ memory, saveMemory, elements, canCloseWindow
             windows.forEach(windowEl => {
                 if (windowEl.hidden || windowEl.classList.contains("is-maximized") || windowEl.dataset.windowDragging) return;
                 if (restorePreferredPositions) restoreWindowPosition(windowEl);
-                else constrainWindowPosition(windowEl);
+                else { fitDefaultWindow(windowEl); constrainWindowPosition(windowEl); }
             });
             restorePreferredPositions = false;
         });

@@ -14,6 +14,15 @@ export const noteColors = new Set(["sunlight", "mint", "rose", "lavender"]);
 export const notePalettes = new Set(["classic", "halloween", "christmas", "new-years"]);
 export const clockHourFormats = new Set(["system", "12", "24"]);
 export const calendarWeekStarts = new Set(["locale", "sunday", "monday"]);
+export const calendarDateFormats = new Set(["system", "day-first", "month-first", "year-first"]);
+
+export function formatWidgetDate(date, format = "system", locale) {
+    const day = String(date.getDate()).padStart(2, "0"), month = String(date.getMonth() + 1).padStart(2, "0"), year = String(date.getFullYear());
+    if (format === "day-first") return `${day}/${month}/${year}`;
+    if (format === "month-first") return `${month}/${day}/${year}`;
+    if (format === "year-first") return `${year}/${month}/${day}`;
+    return new Intl.DateTimeFormat(locale, { year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
+}
 
 const own = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 const isRecord = value => value !== null && typeof value === "object" && !Array.isArray(value)
@@ -49,7 +58,7 @@ export function createDefaultWidgetSettings(type) {
         hourFormat: "system",
         showSeconds: false
     };
-    if (type === "calendar") return { locale: defaultLocale(), weekStart: "locale", monthOffset: 0 };
+    if (type === "calendar") return { locale: defaultLocale(), weekStart: "locale", monthOffset: 0, dateFormat: "system" };
     if (type === "note") return { color: "sunlight", text: "" };
     return {};
 }
@@ -89,7 +98,8 @@ function validateInstance(instance) {
         enumValue(instance.settings.hourFormat, clockHourFormats, "Clock hour format");
         if (typeof instance.settings.showSeconds !== "boolean") throw new Error("Clock seconds preference must be a boolean.");
     } else if (instance.type === "calendar") {
-        assertKeys(instance.settings, ["locale", "weekStart", "monthOffset"], "Calendar settings");
+        assertKeys(instance.settings, ["locale", "weekStart", "monthOffset", "dateFormat"], "Calendar settings");
+        if (own(instance.settings, "dateFormat")) enumValue(instance.settings.dateFormat, calendarDateFormats, "Calendar date format");
         if (!isSupportedLocale(instance.settings.locale)) throw new Error("Calendar locale is invalid or unavailable.");
         enumValue(instance.settings.weekStart, calendarWeekStarts, "Calendar week start");
         if (!Number.isInteger(instance.settings.monthOffset) || instance.settings.monthOffset < -1200 || instance.settings.monthOffset > 1200) {
@@ -156,7 +166,7 @@ export function normalizeWidgetState(value) {
                 size: candidate.size,
                 appearance: candidate.appearance,
                 ...(candidate.type === "note" ? { pinned: normalizedCandidate.pinned } : {}),
-                settings: { ...normalizedCandidate.settings }
+                settings: { ...(candidate.type === "calendar" ? { dateFormat: "system" } : {}), ...normalizedCandidate.settings }
             });
         } catch {
             // Skip invalid local instances while keeping the rest of the workspace available.

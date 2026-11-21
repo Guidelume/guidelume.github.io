@@ -8,12 +8,10 @@ Guidelume is the umbrella for a growing collection of guides and archives, bring
 
 ## Project contents
 
-- `engine/` contains the shared workspace, styles, scripts, images, and visitor-facing documents.
+- `engine/` contains the uh... engine of project. Scripts, images, fonts, etc.
 - `milky-way-bar-crawl/` contains the Mass Effect Legendary Edition modding guide.
 - `varkorax-archive/` contains the writing and archive site that I really need to do more with.
 - `the-warden-field-guide/` contains an early version of an upcoming Dragon Age Origins guide.
-
-The main `index.html` opens the Guidelume workspace. Individual guide entry points are also provided at the project root.
 
 ## Licensing
 

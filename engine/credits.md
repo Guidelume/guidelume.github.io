@@ -11,6 +11,8 @@ Thank you to the people who share the tools, artwork, and knowledge that help sm
 ## Open-source software
 
 - **GLightbox** - by Biati Digital, used for image galleries in the Milky Way Bar Crawl guide. Distributed under the [MIT License](./engine/external/glightbox/LICENSE.md).
+- **Marked** - the Archive's Markdown parser, distributed under the [MIT License](./engine/external/marked/18.0.5/LICENSE), with its accompanying notices.
+- **DOMPurify** - by Cure53 and contributors, used to sanitize Archive content. Distributed here under [Apache 2.0](./engine/external/dompurify/3.4.18/LICENSE).
 
 ## Typography
 

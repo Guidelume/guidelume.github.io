@@ -382,18 +382,18 @@ function renderCard(entry) {
     card.innerHTML = `
 
         <img
-            src="./stories/${entry.slug}/thumbnail.webp"
-            alt="${entry.title}"
+            src="./stories/${encodeURIComponent(entry.slug)}/thumbnail.webp"
+            alt="${escapeHTML(entry.title)}"
             loading="lazy"
-            onerror="this.onerror=null;this.src='../../custom/img/thumb-fallback.png';">
+            data-fallback-src="../../custom/img/thumb-fallback.png">
 
         <div class="archive-overlay">
 
             <h3>${escapeHTML(entry.title)}</h3>
 
-            <p>${entry.category} • ${formatDate(entry.date, "year")}</p>
+            <p>${escapeHTML(entry.category)} • ${formatDate(entry.date, "year")}</p>
 
-            <span>${entry.status}</span>
+            <span>${escapeHTML(entry.status)}</span>
 
         </div>
 

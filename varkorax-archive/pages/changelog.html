@@ -2,6 +2,8 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <script src="../../engine/js/image-fallbacks.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="noai, noimageai, noindex, nofollow" />
         
@@ -368,179 +370,14 @@
         <script src="../custom/js/global.js" defer></script>
 		
 		<!-- Markdown parser + DOMPurify -->
-		<script src="https://cdn.jsdelivr.net/npm/marked@18.0.5/lib/marked.umd.js" integrity="sha512-eYhVvgK6+HzGzZYdrMauPoXufKz0jNWSvBEj2yWkM5My9btV3cwRWylUnLDrhGM9HWpRKMaQvV251rUPt9Yo9g==" crossorigin="anonymous"></script>
-		<script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.10/dist/purify.min.js" integrity="sha512-zV0+P1qGCdp57soPEGVEr6xoBBPouKeHMhr5IB979T6DExjQdHZBJcjItIyn+BkeFU5xl/8cCW5ZwBUHM0ThOQ==" crossorigin="anonymous"></script>
+		<script src="../../engine/external/marked/18.0.5/marked.umd.js" integrity="sha512-eYhVvgK6+HzGzZYdrMauPoXufKz0jNWSvBEj2yWkM5My9btV3cwRWylUnLDrhGM9HWpRKMaQvV251rUPt9Yo9g==" crossorigin="anonymous"></script>
+		<script src="../../engine/external/dompurify/3.4.18/purify.min.js" integrity="sha512-rdR9GuV0xLpA0LBDRiu2Ei3wOgPbvzJIc7elYsvuRj9T/vdhXfJr9mcC8xoyuXoDHyZuisD9CJ6QhdBm48HENg==" crossorigin="anonymous"></script>
 		
 		<!-- Page script: glue the floating back button under the current topbar button -->
-		<script>
-			(function () {
-				const backBtn = document.getElementById('back-to-categories');
-
-				function positionBackButton() {
-					if (!backBtn) return;
-					// find the current topbar button (the one with aria-current="page")
-					const current = document.querySelector('#topbar .topbar-btn[aria-current="page"]');
-					// If that's not found, fallback to first topbar-btn
-					const anchor = current || document.querySelector('#topbar .topbar-btn');
-					if (!anchor) return;
-
-					// ensure backBtn has fixed positioning
-					backBtn.style.position = 'fixed';
-					backBtn.style.zIndex = 1202;
-
-					// measure
-					const aRect = anchor.getBoundingClientRect();
-					const bRect = backBtn.getBoundingClientRect();
-
-					// center under anchor, with slightly larger vertical gap so hover translate doesn't clip into topbar
-					const left = Math.round(aRect.left + (aRect.width / 2) - (bRect.width / 2));
-					const top = Math.round(aRect.bottom + 16); // was 8 -> now 16 (tiny bit lower)
-
-					backBtn.style.left = left + 'px';
-					backBtn.style.top = top + 'px';
-				}
-
-				// run on DOM ready and on resize; also run again shortly after load to catch late layout shifts
-				window.addEventListener('DOMContentLoaded', () => {
-					positionBackButton();
-					// slight retry after fonts/images settle
-					setTimeout(positionBackButton, 120);
-				});
-				window.addEventListener('load', () => setTimeout(positionBackButton, 120));
-				window.addEventListener('resize', positionBackButton);
-				// optional: observe layout changes to the topbar (e.g., if icons change)
-				const topbar = document.getElementById('topbar');
-				if (topbar && window.MutationObserver) {
-					const mo = new MutationObserver(() => positionBackButton());
-					mo.observe(topbar, { attributes: true, childList: true, subtree: true });
-				}
-			})();
-		</script>
+		<script src="../../engine/js/pages/varkorax-archive-pages-changelog-1.js"></script>
 		
 		<!-- Wiring: Changelog fetching and parsing -->
-		<script>
-			let changelog = [];
-			let current = 0;
-
-			async function loadChangelog() {
-				try {
-					const res = await fetch("./changelogs/data.json");
-
-					if (!res.ok) {
-						throw new Error("Couldn't load data.json");
-					}
-
-					changelog = await res.json();
-
-					// Newest first
-					changelog.sort(
-						(a, b) => new Date(b.date) - new Date(a.date)
-					);
-
-					await showEntry(0);
-				}
-				catch (err) {
-					console.error(err);
-
-					document.getElementById("changelog-content").innerHTML =
-						"<p>Couldn't load the changelog.</p>";
-				}
-			}
-
-			function formatDate(dateString) {
-				const date = new Date(dateString);
-
-				const day = date.getDate();
-
-				const suffix =
-					day % 10 === 1 && day !== 11 ? "st" :
-					day % 10 === 2 && day !== 12 ? "nd" :
-					day % 10 === 3 && day !== 13 ? "rd" :
-					"th";
-
-				return `${date.toLocaleString("en-US", {
-					month: "long"
-				})} ${day}${suffix}, ${date.getFullYear()}`;
-			}
-
-			async function showEntry(index) {
-
-				if (index < 0 || index >= changelog.length) {
-					return;
-				}
-
-				current = index;
-
-				const entry = changelog[current];
-
-				document.getElementById("version-title").innerHTML =
-					`<img src="../custom/img/glyph.svg" class="panel-glyph" /> ${entry.version}`;
-
-				document.getElementById("version-date").textContent =
-					formatDate(entry.date);
-
-				try {
-
-					const mdRes = await fetch(entry.md);
-
-					if (!mdRes.ok) {
-						throw new Error("Couldn't load markdown.");
-					}
-
-					const markdown = await mdRes.text();
-					const content = document.getElementById("changelog-content");
-					if (window.marked && window.DOMPurify && typeof window.DOMPurify.sanitize === "function") {
-						content.innerHTML = window.DOMPurify.sanitize(window.marked.parse(markdown));
-					} else {
-						content.textContent = markdown;
-						content.style.whiteSpace = "pre-wrap";
-					}
-
-				}
-				catch (err) {
-
-					console.error(err);
-
-					document.getElementById("changelog-content").innerHTML =
-						"<p>Couldn't load this changelog entry.</p>";
-				}
-
-				updateButtons();
-			}
-
-			function updateButtons() {
-
-				const prev = document.getElementById("prev-log");
-				const next = document.getElementById("next-log");
-
-				// Older version
-				prev.disabled = (current >= changelog.length - 1);
-
-				// Newer version
-				next.disabled = (current <= 0);
-
-				prev.classList.toggle("disabled", prev.disabled);
-				next.classList.toggle("disabled", next.disabled);
-			}
-
-			document.getElementById("prev-log").addEventListener("click", () => {
-
-				if (current < changelog.length - 1) {
-					showEntry(current + 1);
-				}
-
-			});
-
-			document.getElementById("next-log").addEventListener("click", () => {
-
-				if (current > 0) {
-					showEntry(current - 1);
-				}
-
-			});
-
-			loadChangelog();
-		</script>
+		<script src="../../engine/js/pages/varkorax-archive-pages-changelog-2.js"></script>
 		
     </body>
 </html>

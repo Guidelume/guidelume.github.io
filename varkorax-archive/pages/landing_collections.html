@@ -2,6 +2,8 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <script src="../../engine/js/image-fallbacks.js"></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="robots" content="noai, noimageai, noindex, nofollow" />
 		
@@ -711,39 +713,10 @@
 		</div>
 		
 		<!-- Beam Me Up Scotty -->
-		<script>
-		const topButton = document.getElementById("backToTop");
-
-		function onScroll() {
-			const scrolled = window.scrollY > 10;
-			document.body.classList.toggle("scrolled-ui", scrolled);
-
-			topButton.classList.toggle("visible", window.scrollY > 200);
-		}
-
-		window.addEventListener("scroll", onScroll);
-		onScroll();
-
-		topButton.addEventListener("click", () => {
-			window.scrollTo({
-				top: 0,
-				behavior: "smooth"
-			});
-		});
-		</script>
+		<script src="../../engine/js/pages/varkorax-archive-pages-landing_collections-1.js"></script>
 		
 		<!-- Ghost Scroll -->
-		<script>
-			const topbar = document.getElementById("topbar");
-			
-			function onScroll() {
-				const active = window.scrollY > 10;
-				document.body.classList.toggle("scrolled-ui", active);
-			}
-
-			window.addEventListener("scroll", onScroll);
-			onScroll();
-		</script>
+		<script src="../../engine/js/pages/varkorax-archive-pages-landing_collections-2.js"></script>
 		
 		<!-- Global Script -->
 		<script src="../custom/js/global.js" defer></script>

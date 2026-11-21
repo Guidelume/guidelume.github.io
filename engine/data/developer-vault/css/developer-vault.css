@@ -1,4 +1,7 @@
 /* Developer Vault presentation. */
+.vault-close-preference { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-bottom: 18px; font-size: .8em; }
+.vault-close-preference input { accent-color: var(--accent-strong); }
+.developer-vault-content .vault-preference-status { font-size: .75em; }
 .developer-vault-content {
     display: block;
     padding: clamp(20px, 4vw, 38px);

@@ -1,4 +1,4 @@
-import { changedRecords, desktopFromRecords, flattenDesktop, isPresentationRecord, privateDesktop, recordGroup, sameRecordValue, sharedDesktop } from "./desktop-records.js";
+import { changedRecords, desktopFromRecords, flattenSharedDesktop, isPresentationRecord, privateDesktop, recordGroup, sameRecordValue, sharedDesktop } from "./desktop-records.js";
 
 export const TAB_DESKTOP_KEY = "guidelume_tab_desktop_v1";
 export const DESKTOP_JOURNAL_KEY = "guidelume_desktop_journal_v1";
@@ -28,7 +28,7 @@ export function createDesktopSync({ memory, database, initial, normalize = value
     createChannel = name => new BroadcastChannel(name), onError = () => {} }) {
     let known = initial;
     let applied = new Map(initial.records);
-    let observed = flattenDesktop(sharedDesktop(memory));
+    let observed = flattenSharedDesktop(memory);
     let pending = new Map();
     let conflicts = new Map();
     let serial = Promise.resolve();
@@ -37,6 +37,9 @@ export function createDesktopSync({ memory, database, initial, normalize = value
     let destroyed = false;
     let suspended = false;
     let saveTimer;
+    let reconciliation = null;
+    let reconciliationRunning = false;
+    let reconcileAgain = false;
     let channel;
     let apply = () => {};
     let protect = () => false;
@@ -50,8 +53,13 @@ export function createDesktopSync({ memory, database, initial, normalize = value
     let journalFailed = false;
     const reportFailure = (error, fallback) => onError(error?.name === "VersionError" ? "versionchange" : fallback);
     const readSession = key => { try { return JSON.parse(storage.getItem(key)); } catch { return null; } };
+    const sessionWrites = new Map();
     const writeSession = (key, value) => {
-        try { storage.setItem(key, JSON.stringify(value)); journalFailed = false; }
+        try {
+            const text = JSON.stringify(value);
+            if (sessionWrites.get(key) !== text) { storage.setItem(key, text); sessionWrites.set(key, text); }
+            journalFailed = false;
+        }
         catch { if (!journalFailed) onError("journal"); journalFailed = true; }
     };
     const enqueue = operation => {
@@ -64,13 +72,16 @@ export function createDesktopSync({ memory, database, initial, normalize = value
         // A tiny first-paint hint only. Startup always awaits the database before
         // initializing controls, and no database write ever reads this hint.
         const onboarding = known.records.get('["onboarding","completed"]');
-        try { bootstrapStorage?.setItem(BOOTSTRAP_KEY, JSON.stringify({ completed: onboarding?.value === true })); } catch { /* Hint is optional. */ }
+        try {
+            const text = JSON.stringify({ completed: onboarding?.value === true });
+            if (sessionWrites.get(BOOTSTRAP_KEY) !== text) { bootstrapStorage?.setItem(BOOTSTRAP_KEY, text); sessionWrites.set(BOOTSTRAP_KEY, text); }
+        } catch { /* Hint is optional. */ }
     }
     function capture() {
         if (suppress || destroyed) return;
         writeSession(TAB_DESKTOP_KEY, { epoch: known.meta.epoch, state: privateDesktop(memory) });
         if (!started) return;
-        const current = flattenDesktop(sharedDesktop(memory));
+        const current = flattenSharedDesktop(memory);
         const base = new Map([...observed].map(([key, record]) => [key, { ...record, revision: applied.get(key)?.revision || 0 }]));
         for (const [key, record] of applied) if (record.deleted && !base.has(key)) base.set(key, record);
         for (const patch of changedRecords(base, current, known.meta.revision)) {
@@ -112,16 +123,22 @@ export function createDesktopSync({ memory, database, initial, normalize = value
         if (resetChanged) resetStatus();
         for (const [key, scope] of invalidatedDrafts) if (!protect(scope.path)) invalidatedDrafts.delete(key);
         if (external && newer) { awaitingSynchronization = true; syncStatus("synchronizing"); }
-        const desired = flattenDesktop(sharedDesktop(memory));
+        const desired = flattenSharedDesktop(memory);
+        const incoming = new Map(snapshot.records);
+        // Epoch replacement compacts old deletion markers. A missing formerly
+        // applied record still means deletion, including while its UI is held.
+        for (const [key, record] of applied) if (!incoming.has(key) && (!record.deleted || unrendered.has(key))) {
+            incoming.set(key, { ...record, deleted: true, revision: snapshot.meta.revision });
+        }
         const changed = [];
         let deferred = false;
         const heldGroups = new Set([...pending.values(), ...conflicts.values()].map(patch => patch.group));
         // Protect entire edited entities, including their deletion markers.
         const forced = record => force === true || (typeof force === "function" && force(record.path));
-        for (const record of snapshot.records.values()) if (!forced(record) && protect(record.path)) heldGroups.add(recordGroup(record.path));
-        for (const [key, record] of snapshot.records) {
-            if (sameRecordValue(applied.get(key), record) && applied.get(key)?.revision === record.revision
-                && !forced(record) && !unrendered.has(key) && !epochChanged) continue;
+        const candidates = [...incoming].filter(([key, record]) => !sameRecordValue(applied.get(key), record)
+            || applied.get(key)?.revision !== record.revision || forced(record) || unrendered.has(key) || epochChanged);
+        for (const [, record] of candidates) if (!forced(record) && protect(record.path)) heldGroups.add(recordGroup(record.path));
+        for (const [key, record] of candidates) {
             const held = !forced(record) && (heldGroups.has(recordGroup(record.path)) || protect(record.path)
                 || (record.deleted && record.kind === "object" && [...desired.values()].some(child =>
                     child.path.length > record.path.length && record.path.every((part, i) => child.path[i] === part)
@@ -135,9 +152,9 @@ export function createDesktopSync({ memory, database, initial, normalize = value
         if (changed.length) {
             suppress = true;
             try {
-                reconcileObject(memory, normalize(desktopFromRecords(desired, privateDesktop(memory))));
+                reconcileObject(memory, normalize(desktopFromRecords(desired, privateDesktop(memory, { runtime: true }), { runtime: true })));
                 rendered = apply(changed, { epochChanged, external, force });
-                observed = flattenDesktop(sharedDesktop(memory));
+                observed = flattenSharedDesktop(memory);
             } finally { suppress = false; }
         }
         cacheBootstrap();
@@ -149,7 +166,7 @@ export function createDesktopSync({ memory, database, initial, normalize = value
             const result = await rendered;
             for (const path of changed) unrendered.delete(JSON.stringify(path));
             for (const scope of result?.deferredPaths || []) {
-                for (const [key, record] of snapshot.records) if (scope.every((part, i) => record.path[i] === part)) unrendered.add(key);
+                for (const [key, record] of incoming) if (scope.every((part, i) => record.path[i] === part)) unrendered.add(key);
                 deferred = true;
             }
         }
@@ -212,12 +229,12 @@ export function createDesktopSync({ memory, database, initial, normalize = value
             if (savedJournal.epoch === known.meta.epoch && !savedConflicts.some(item => item.key === patch.key)) pending.set(patch.key, patch);
             else conflicts.set(patch.key, patch);
         }
-        const draft = flattenDesktop(sharedDesktop(memory));
+        const draft = flattenSharedDesktop(memory);
         for (const patch of [...pending.values(), ...conflicts.values()]) {
             if (patch.deleted) draft.delete(patch.key); else draft.set(patch.key, patch);
         }
-        reconcileObject(memory, normalize(desktopFromRecords(draft, privateDesktop(memory))));
-        observed = flattenDesktop(sharedDesktop(memory));
+        reconcileObject(memory, normalize(desktopFromRecords(draft, privateDesktop(memory, { runtime: true }), { runtime: true })));
+        observed = flattenSharedDesktop(memory);
     }
     cacheBootstrap();
 
@@ -230,7 +247,7 @@ export function createDesktopSync({ memory, database, initial, normalize = value
                 if (scope.every((part, i) => record.path[i] === part)) unrendered.add(key);
             }
             // Ignore initialization/normalization writes; those are not edits.
-            observed = flattenDesktop(sharedDesktop(memory));
+            observed = flattenSharedDesktop(memory);
             started = true;
             connectChannel();
             notifyConflicts();
@@ -249,12 +266,27 @@ export function createDesktopSync({ memory, database, initial, normalize = value
         },
         capture,
         reconcile() {
-            capture();
-            if (!started || destroyed || suspended) return Promise.resolve(false);
-            return enqueue(async () => {
-                try { return await ingest(await database.read()); }
-                catch (error) { reportFailure(error, "read"); syncStatus("unavailable"); return false; }
-            });
+            if (!started || destroyed || suspended) { capture(); return Promise.resolve(false); }
+            if (reconciliation) {
+                if (reconciliationRunning) reconcileAgain = true;
+                return reconciliation;
+            }
+            reconciliation = enqueue(async () => {
+                reconciliationRunning = true;
+                let result = true;
+                try {
+                    do {
+                        reconcileAgain = false;
+                        capture();
+                        const snapshot = database.readIfNewer ? await database.readIfNewer(known.meta) : await database.read();
+                        const newer = snapshot && (snapshot.meta.epoch !== known.meta.epoch || snapshot.meta.revision !== known.meta.revision);
+                        if (newer || unrendered.size || invalidatedDrafts.size || awaitingSynchronization) result = await ingest(snapshot || known);
+                    } while (reconcileAgain && !destroyed && !suspended);
+                    return result;
+                } catch (error) { reportFailure(error, "read"); syncStatus("unavailable"); return false; }
+                finally { reconciliationRunning = false; }
+            }).finally(() => { reconciliation = null; });
+            return reconciliation;
         },
         async replace(transform, { discardLocal = () => false, fullReset = false } = {}) {
             capture();
@@ -262,9 +294,9 @@ export function createDesktopSync({ memory, database, initial, normalize = value
                 try {
                     let stagedPrivate;
                     const result = await database.replace({ epoch: known.meta.epoch, fullReset, transform(records) {
-                        const next = normalize(desktopFromRecords(records, privateDesktop(memory)));
+                        const next = normalize(desktopFromRecords(records, privateDesktop(memory, { runtime: true }), { runtime: true }));
                         transform(next);
-                        stagedPrivate = privateDesktop(next);
+                        stagedPrivate = privateDesktop(next, { runtime: true });
                         return sharedDesktop(next);
                     } });
                     if (result.stale) { await ingest(result); return false; }
@@ -275,8 +307,8 @@ export function createDesktopSync({ memory, database, initial, normalize = value
                     for (const [key, patch] of conflicts) if (discardLocal(patch.path) || isPresentationRecord(patch.path)) conflicts.delete(key);
                     // A restore may explicitly change local taskbar order or
                     // library visibility. Apply those only to its initiating tab.
-                    reconcileObject(memory, normalize(desktopFromRecords(flattenDesktop(sharedDesktop(memory)), stagedPrivate)));
-                    observed = flattenDesktop(sharedDesktop(memory));
+                    reconcileObject(memory, normalize(desktopFromRecords(flattenSharedDesktop(memory), stagedPrivate, { runtime: true })));
+                    observed = flattenSharedDesktop(memory);
                     await ingest(result, { external: false, force: discardLocal });
                     announce();
                     return true;

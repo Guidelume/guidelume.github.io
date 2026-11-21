@@ -1,11 +1,11 @@
 export const PROFILE_AVATARS = Object.freeze([
-    { id: "planet00", label: "Planet 00", src: "./engine/img/environment/profile/planet00.png" },
-    { id: "planet02", label: "Planet 02", src: "./engine/img/environment/profile/planet02.png" },
-    { id: "planet03", label: "Planet 03", src: "./engine/img/environment/profile/planet03.png" },
-    { id: "planet04", label: "Planet 04", src: "./engine/img/environment/profile/planet04.png" },
-    { id: "planet06", label: "Planet 06", src: "./engine/img/environment/profile/planet06.png" },
-    { id: "planet07", label: "Planet 07", src: "./engine/img/environment/profile/planet07.png" },
-    { id: "planet09", label: "Planet 09", src: "./engine/img/environment/profile/planet09.png" }
+    { id: "planet00", label: "Pelagos", src: "./engine/img/environment/profile/planet00.png" },
+    { id: "planet02", label: "Cinder", src: "./engine/img/environment/profile/planet02.png" },
+    { id: "planet03", label: "Viridia", src: "./engine/img/environment/profile/planet03.png" },
+    { id: "planet04", label: "Umbra", src: "./engine/img/environment/profile/planet04.png" },
+    { id: "planet06", label: "Roseth", src: "./engine/img/environment/profile/planet06.png" },
+    { id: "planet07", label: "Nivalis", src: "./engine/img/environment/profile/planet07.png" },
+    { id: "planet09", label: "Vesper", src: "./engine/img/environment/profile/planet09.png" }
 ]);
 
 export const DEFAULT_PROFILE = Object.freeze({ displayName: "Visitor", avatar: "planet00" });

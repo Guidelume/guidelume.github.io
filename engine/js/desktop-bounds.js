@@ -67,12 +67,13 @@ export function findAvailableIconPosition(rect, bounds, occupied, { gap = 0 } = 
     return closest;
 }
 
-export function clampWindowPosition(rect, bounds, titlebarHeight) {
-    // Allow horizontal overflow while retaining a usable part of the drag handle.
-    // The window body may extend below the desktop; its titlebar must stay reachable.
-    const visibleWidth = Math.min(72, rect.width, bounds.right - bounds.left);
+export function clampWindowPosition(rect, bounds, titlebarHeight = 32) {
+    // Let the sides overhang a little and the body extend below the taskbar.
+    // Keep the titlebar reachable even when the pointer leaves this monitor.
+    const sideOverflow = Math.min(160, rect.width / 4);
+    const visibleTitlebar = Math.min(titlebarHeight, rect.height, bounds.bottom - bounds.top);
     return {
-        left: clamp(rect.left, bounds.left + visibleWidth - rect.width, bounds.right - visibleWidth),
-        top: clamp(rect.top, bounds.top, bounds.bottom - titlebarHeight)
+        left: clamp(rect.left, bounds.left - sideOverflow, bounds.right - rect.width + sideOverflow),
+        top: clamp(rect.top, bounds.top, bounds.bottom - visibleTitlebar)
     };
 }

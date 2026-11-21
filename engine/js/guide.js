@@ -756,7 +756,7 @@ function applyGuideResourceState(state) {
 	if (currentPanelIndex < 0) currentPanelIndex = 0;
 	updateActivePanel(currentPanelIndex);
 	afterPanelTransitions(changedPanels, () => {
-		const savedContentsSections = new Set((state.openContentsSectionIds || []).filter(id => typeof id === 'string').map(resolveGuideId));
+		const savedContentsSections = new Set((Array.isArray(state.openContentsSectionIds) ? state.openContentsSectionIds : []).filter(id => typeof id === 'string').map(resolveGuideId));
 		$$('.contents-section', contentsList || document).forEach(section => {
 			const id = section.querySelector('.contents-link')?.getAttribute('href')?.slice(1);
 			setContentsSectionState(section, savedContentsSections.has(id));

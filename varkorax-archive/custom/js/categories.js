@@ -116,7 +116,7 @@ function renderRows(list, page) {
 			return `
 				<article class="story-row" aria-labelledby="title-${safeText(s.slug)}">
 					<img class="story-thumb" src="${thumb}" alt="${alt}" loading="lazy" decoding="async"
-						onerror="this.onerror=null;this.src='${FALLBACK_THUMB}';" />
+						data-fallback-src="${FALLBACK_THUMB}" />
 					<h3 id="title-${safeText(s.slug)}" class="story-title">${safeText(s.title)}</h3>
 					<p class="story-blurb">${safeText(s.blurb)}</p>
 					<a class="read-btn" href="${href}" aria-label="Read ${safeText(s.title)}">Read</a>

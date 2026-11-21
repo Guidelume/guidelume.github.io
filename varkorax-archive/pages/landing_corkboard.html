@@ -2,6 +2,8 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <script src="../../engine/js/image-fallbacks.js"></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="robots" content="noai, noimageai, noindex, nofollow" />
 		
@@ -656,43 +658,14 @@
 		</div>
 		
 		<!-- Beam Me Up Scotty -->
-		<script>
-		const topButton = document.getElementById("backToTop");
-
-		function onScroll() {
-			const scrolled = window.scrollY > 10;
-			document.body.classList.toggle("scrolled-ui", scrolled);
-
-			topButton.classList.toggle("visible", window.scrollY > 200);
-		}
-
-		window.addEventListener("scroll", onScroll);
-		onScroll();
-
-		topButton.addEventListener("click", () => {
-			window.scrollTo({
-				top: 0,
-				behavior: "smooth"
-			});
-		});
-		</script>
+		<script src="../../engine/js/pages/varkorax-archive-pages-landing_corkboard-1.js"></script>
 		
 		<!-- Ghost Scroll -->
-		<script>
-			const topbar = document.getElementById("topbar");
-			
-			function onScroll() {
-				const active = window.scrollY > 10;
-				document.body.classList.toggle("scrolled-ui", active);
-			}
-
-			window.addEventListener("scroll", onScroll);
-			onScroll();
-		</script>
+		<script src="../../engine/js/pages/varkorax-archive-pages-landing_corkboard-2.js"></script>
 		
 		<!-- Markdown parser and sanitizer are version-pinned and integrity-checked. -->
-		<script src="https://cdn.jsdelivr.net/npm/marked@18.0.5/lib/marked.umd.js" integrity="sha512-eYhVvgK6+HzGzZYdrMauPoXufKz0jNWSvBEj2yWkM5My9btV3cwRWylUnLDrhGM9HWpRKMaQvV251rUPt9Yo9g==" crossorigin="anonymous"></script>
-		<script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.10/dist/purify.min.js" integrity="sha512-zV0+P1qGCdp57soPEGVEr6xoBBPouKeHMhr5IB979T6DExjQdHZBJcjItIyn+BkeFU5xl/8cCW5ZwBUHM0ThOQ==" crossorigin="anonymous"></script>
+		<script src="../../engine/external/marked/18.0.5/marked.umd.js" integrity="sha512-eYhVvgK6+HzGzZYdrMauPoXufKz0jNWSvBEj2yWkM5My9btV3cwRWylUnLDrhGM9HWpRKMaQvV251rUPt9Yo9g==" crossorigin="anonymous"></script>
+		<script src="../../engine/external/dompurify/3.4.18/purify.min.js" integrity="sha512-rdR9GuV0xLpA0LBDRiu2Ei3wOgPbvzJIc7elYsvuRj9T/vdhXfJr9mcC8xoyuXoDHyZuisD9CJ6QhdBm48HENg==" crossorigin="anonymous"></script>
 		<script src="../custom/js/global.js" defer></script>
 		<script src="../custom/js/corkboard.js" defer></script>
 		

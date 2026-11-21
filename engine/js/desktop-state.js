@@ -48,6 +48,7 @@ export function restoreDesktopDefaults(memory, defaultMemory, options = {}) {
     const documents = normalizeDocumentOverrides(memory.documents);
     const easterEggsUnlocked = memory.settings.easterEggsUnlocked === true;
     const developerVaultDiscovered = memory.settings.developerVaultDiscovered === true;
+    const lookingGlassDiscovered = memory.settings.lookingGlassDiscovered === true;
     const lookingGlass = normalizeLookingGlassState(memory.lookingGlass);
     const shortcuts = normalizeDesktopShortcuts(memory.shortcuts);
     const widgets = options.preserveWidgets === true
@@ -85,7 +86,8 @@ export function restoreDesktopDefaults(memory, defaultMemory, options = {}) {
                 rotation: { ...defaultEnvironment.rotation }
             },
             easterEggsUnlocked,
-            developerVaultDiscovered
+            developerVaultDiscovered,
+            lookingGlassDiscovered
         }
     });
 }
@@ -93,7 +95,8 @@ export function restoreDesktopDefaults(memory, defaultMemory, options = {}) {
 export function resetDiscoveryFlags(memory) {
     memory.settings.easterEggsUnlocked = false;
     memory.settings.developerVaultDiscovered = false;
-    const hiddenWindows = new Set(["developer-vault", "easter-eggs", "easter-eggs-password"]);
+    memory.settings.lookingGlassDiscovered = false;
+    const hiddenWindows = new Set(["developer-vault", "easter-eggs", "easter-eggs-password", "looking-glass"]);
     for (const id of hiddenWindows) if (memory.windows?.[id]) Object.assign(memory.windows[id], {
         open: false, minimized: false, maximized: false, hideTaskbar: false
     });
@@ -135,6 +138,8 @@ export function createDesktopState() {
             independentSizes: false,
             easterEggsUnlocked: false,
             developerVaultDiscovered: false,
+            lookingGlassDiscovered: false,
+            vaultLockOnClose: false,
             reducedMotion: false,
             accessibleFonts: false,
             desktopContextMenus: "guidelume",
@@ -189,8 +194,7 @@ export function createDesktopState() {
         delete migrated.settings.onboardingComplete;
         delete migrated.settings.weather;
         delete migrated.settings.effectsIntensity;
-        // These apps now live in System / Unfinished and no longer need discovery.
-        delete migrated.settings.lookingGlassDiscovered;
+        // The Warden Field Guide is available from Unfinished without a code.
         delete migrated.settings.twfgDiscovered;
         const memory = {
             ...defaultMemory,
@@ -224,6 +228,8 @@ export function createDesktopState() {
                 accessibleFonts,
                 desktopContextMenus: normalizeDesktopContextMenus(migrated.settings.desktopContextMenus),
                 showHiddenFiles: migrated.settings.showHiddenFiles === true,
+                lookingGlassDiscovered: migrated.settings.lookingGlassDiscovered === true,
+                vaultLockOnClose: migrated.settings.vaultLockOnClose === true,
                 blackwall: normalizeBlackwallPreferences(migrated.settings.blackwall),
                 environment
             }
@@ -241,6 +247,10 @@ export function createDesktopState() {
             memory.pinnedTaskbar = memory.pinnedTaskbar.filter(id => id !== "easter-eggs");
             memory.taskbarOrder = memory.taskbarOrder.filter(id => id !== "easter-eggs");
             memory.windowOrder = memory.windowOrder.filter(id => id !== "easter-eggs");
+        }
+        if (!memory.settings.lookingGlassDiscovered) {
+            if (memory.windows["looking-glass"]) Object.assign(memory.windows["looking-glass"], { open: false, minimized: false, maximized: false });
+            for (const key of ["pinnedTaskbar", "taskbarOrder", "windowOrder"]) memory[key] = memory[key].filter(id => id !== "looking-glass");
         }
         return memory;
     }

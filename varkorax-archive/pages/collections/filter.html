@@ -2,6 +2,8 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <script src="../../../engine/js/image-fallbacks.js"></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="robots" content="noai, noimageai, noindex, nofollow" />
 		
@@ -804,85 +806,13 @@
 		</div>
 		
 		<!-- Beam Me Up Scotty -->
-		<script>
-		const topButton = document.getElementById("backToTop");
-
-		function onScroll() {
-			const scrolled = window.scrollY > 10;
-			document.body.classList.toggle("scrolled-ui", scrolled);
-
-			topButton.classList.toggle("visible", window.scrollY > 200);
-		}
-
-		window.addEventListener("scroll", onScroll);
-		onScroll();
-
-		topButton.addEventListener("click", () => {
-			window.scrollTo({
-				top: 0,
-				behavior: "smooth"
-			});
-		});
-		</script>
+		<script src="../../../engine/js/pages/varkorax-archive-pages-collections-filter-1.js"></script>
 		
 		<!-- Ghost Scroll -->
-		<script>
-			const topbar = document.getElementById("topbar");
-			
-			function onScroll() {
-				const active = window.scrollY > 10;
-				document.body.classList.toggle("scrolled-ui", active);
-			}
-
-			window.addEventListener("scroll", onScroll);
-			onScroll();
-		</script>
+		<script src="../../../engine/js/pages/varkorax-archive-pages-collections-filter-2.js"></script>
 		
 		<!-- Page script: glue the floating back button under the current topbar button -->
-		<script>
-			(function () {
-				const backBtn = document.getElementById('back-to-categories');
-
-				function positionBackButton() {
-					if (!backBtn) return;
-					// find the current topbar button (the one with aria-current="page")
-					const current = document.querySelector('#topbar .topbar-btn[aria-current="page"]');
-					// If that's not found, fallback to first topbar-btn
-					const anchor = current || document.querySelector('#topbar .topbar-btn');
-					if (!anchor) return;
-
-					// ensure backBtn has fixed positioning
-					backBtn.style.position = 'fixed';
-					backBtn.style.zIndex = 1202;
-
-					// measure
-					const aRect = anchor.getBoundingClientRect();
-					const bRect = backBtn.getBoundingClientRect();
-
-					// center under anchor, with slightly larger vertical gap so hover translate doesn't clip into topbar
-					const left = Math.round(aRect.left + (aRect.width / 2) - (bRect.width / 2));
-					const top = Math.round(aRect.bottom + 16); // was 8 -> now 16 (tiny bit lower)
-
-					backBtn.style.left = left + 'px';
-					backBtn.style.top = top + 'px';
-				}
-
-				// run on DOM ready and on resize; also run again shortly after load to catch late layout shifts
-				window.addEventListener('DOMContentLoaded', () => {
-					positionBackButton();
-					// slight retry after fonts/images settle
-					setTimeout(positionBackButton, 120);
-				});
-				window.addEventListener('load', () => setTimeout(positionBackButton, 120));
-				window.addEventListener('resize', positionBackButton);
-				// optional: observe layout changes to the topbar (e.g., if icons change)
-				const topbar = document.getElementById('topbar');
-				if (topbar && window.MutationObserver) {
-					const mo = new MutationObserver(() => positionBackButton());
-					mo.observe(topbar, { attributes: true, childList: true, subtree: true });
-				}
-			})();
-		</script>
+		<script src="../../../engine/js/pages/varkorax-archive-pages-collections-filter-3.js"></script>
 		
 		<!-- Global JS -->
 		<script src="../../custom/js/global.js" defer></script>

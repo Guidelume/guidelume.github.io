@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" data-onboarding-complete="false" data-restoration-state="loading" data-styles-state="loading" data-font-managed>
 <!--
- Index.html V13
+ Index.html V15
 -->
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-X/ohqP2acRvqXPorRyZDufeOosTyNCFg+4avK2oD++A='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>| Guidelume</title>
 	
@@ -53,7 +54,21 @@
                     const retry = document.createElement("button");
                     retry.type = "button";
                     retry.textContent = "Reload Guidelume";
-                    retry.addEventListener("click", () => window.location.reload());
+                    retry.addEventListener("click", async () => {
+                        retry.disabled = true;
+                        retry.textContent = "Refreshing startup files…";
+                        try {
+                            const source = new URL("./engine/js/startup-refresh.js", document.baseURI);
+                            source.searchParams.set("recovery", Date.now());
+                            const { refreshStartupFiles } = await import(source.href);
+                            await refreshStartupFiles({ base: window.location.href });
+                            if (!completed) window.location.reload();
+                        } catch {
+                            retry.disabled = false;
+                            retry.textContent = "Reload Guidelume";
+                            status.replaceChildren("Guidelume could not refresh its startup files. Check your connection and try again. Your saved workspace has not been removed. ", retry);
+                        }
+                    });
                     status.replaceChildren(message, retry);
                 }
                 show();
@@ -81,7 +96,7 @@
                 timer = setTimeout(() => fail("Guidelume is taking too long to start. Check your connection and reload. "), 30000);
             }
             window.guidelumeStartup = {
-                progress, waiting,
+                progress, waiting, recover: fail,
                 isRecovering: () => recoveryVisible,
                 hasFailed: () => fatalFailure,
                 complete() {
@@ -95,6 +110,9 @@
             document.addEventListener("error", event => {
                 if (event.target?.matches?.("script[data-startup-module]")) fail("Guidelume could not download its startup files. Check your connection and reload. ", true);
             }, true);
+            window.addEventListener("error", () => {
+                if (!completed) fail("Guidelume could not finish starting. Reload to refresh its startup files. Your saved workspace will be kept. ", true);
+            });
             window.addEventListener("unhandledrejection", () => {
                 if (!completed) fail("Guidelume could not finish starting. Please reload to try again. ", true);
             });
@@ -105,21 +123,7 @@
 	
     <script src="./engine/js/font-accessibility.js" defer></script>
     <!-- Nexus guide links use ?from=nexus&guide=mwbc or ?from=nexus&guide=twfg. -->
-	<script>
-        try {
-            // This is a first-paint hint. global.js awaits IndexedDB and replaces
-            // it with the authoritative value before restoring any windows.
-            const bootstrap = JSON.parse(localStorage.getItem("guidelume_desktop_bootstrap_v1"));
-            const savedMemory = JSON.parse(localStorage.getItem("guidelume_desktop_memory"));
-            const savedExperience = localStorage.getItem("guidelume_experience");
-            const completed = typeof bootstrap?.completed === "boolean" ? bootstrap.completed : savedMemory?.onboarding?.completed === true
-                || savedMemory?.settings?.onboardingComplete === true
-                || (!savedMemory && ["interactive", "reader", "basic"].includes(savedExperience));
-            document.documentElement.dataset.onboardingComplete = String(completed);
-        } catch {
-            document.documentElement.dataset.onboardingComplete = "false";
-        }
-    </script>
+	<script src="./engine/js/pages/index-2.js"></script>
     <script src="./engine/js/global.js" type="module" data-startup-module></script>
 </head>
 <body>
@@ -158,14 +162,11 @@
                 <img src="./engine/img/environment/doc_text.svg" data-seasonal-icon="text" alt=""><span>Readme</span>
             </div>
             <div class="desktop-icon" role="button" tabindex="0" data-icon="mwbc" data-open-window="mwbc" data-x="0.85" data-y="0.18">
-                <img src="./milky-way-bar-crawl/custom/favicon.svg" alt=""><span>Milky Way Bar Crawl</span>
+                <img src="./milky-way-bar-crawl/custom/img/logo-bare.png" alt=""><span>Milky Way Bar Crawl</span>
             </div>
             <div class="desktop-icon" role="button" tabindex="0" data-folder-icon="true" data-icon="mods-folder" data-open-window="folder-mods" data-x="0.85" data-y="0.38">
                 <img src="./engine/img/environment/doc_folder.svg" data-seasonal-icon="folder" alt=""><span>Mods</span>
             </div>
-			<!--
-			WIP WIP WIP WIP WIP
-			-->
             <div class="desktop-icon" role="button" tabindex="0" data-icon="varkorax-archive" data-open-window="varkorax-archive" data-x="0.85" data-y="0.58">
                 <img src="./varkorax-archive/custom/favicon.svg" alt=""><span>Varkorax Archive</span>
             </div>
@@ -298,7 +299,7 @@
                         <label class="profile-name-label" for="setupProfileName">Display name</label>
                         <input class="profile-name-input" id="setupProfileName" data-setup-profile-name type="text" maxlength="24" autocomplete="nickname" placeholder="Visitor">
                         <h2>Choose an avatar</h2>
-                        <div class="profile-avatar-grid" data-setup-profile-avatars role="group" aria-label="Choose a profile avatar"></div>
+                        <div class="profile-avatar-carousel" data-setup-profile-avatars role="group" aria-label="Choose a profile avatar"></div>
                         <p class="profile-status" data-setup-profile-status role="status" aria-live="polite"></p>
                         <p class="setup-appearance-requirement" id="setupAppearanceRequirement" data-setup-appearance-requirement role="status" aria-live="polite">Take a look through Appearance, then click Done to finish Setup.</p>
                         <div class="setup-actions">
@@ -317,7 +318,7 @@
                 </div>
             </section>
 
-            <section class="setup-window" data-window="user-profile" data-window-width="620px" data-window-height="560px" hidden aria-labelledby="user-profile-title">
+            <section class="setup-window" data-window="user-profile" data-window-width="600px" data-window-height="500px" hidden aria-labelledby="user-profile-title">
                 <div class="setup-titlebar window-drag-handle">
                     <div class="titlebar-left"><img class="title-icon" data-profile-title-avatar src="./engine/img/environment/profile/planet00.png" alt=""><span id="user-profile-title">User Profile</span></div>
                     <div class="window-controls">
@@ -327,15 +328,19 @@
                     <button type="button" class="window-close" data-close-window="user-profile" aria-label="Close window">X</button>
                 </div>
                 <div class="setup-content user-profile-content">
-                    <h1>Your profile</h1>
-                    <p>This name and avatar are saved only in this browser.</p>
-                    <img class="profile-avatar-preview" data-user-profile-preview src="./engine/img/environment/profile/planet00.png" alt="Current profile avatar">
-                    <label class="profile-name-label" for="userProfileName">Display name</label>
-                    <input class="profile-name-input" id="userProfileName" data-user-profile-name type="text" maxlength="24" autocomplete="nickname">
-                    <h2>Avatar</h2>
-                    <div class="profile-avatar-grid" data-user-profile-avatars role="group" aria-label="Choose a profile avatar"></div>
-                    <p class="profile-status" data-user-profile-status role="status" aria-live="polite"></p>
-                    <div class="setup-actions"><button type="button" class="setup-button" data-save-user-profile>Save</button></div>
+                    <header class="profile-heading"><h1>Your profile</h1><p>A familiar face for this browser.</p></header>
+                    <div class="profile-identity">
+                        <div><label class="profile-name-label" for="userProfileName">Display name</label>
+                        <input class="profile-name-input" id="userProfileName" data-user-profile-name type="text" maxlength="24" autocomplete="nickname"></div>
+                    </div>
+                    <section class="profile-avatar-section" aria-labelledby="profile-avatar-title"><h2 id="profile-avatar-title">Choose an avatar</h2>
+                        <div class="profile-avatar-carousel" data-user-profile-avatars role="group" aria-label="Choose a profile avatar"></div>
+                    </section>
+                    <p class="profile-unsaved" data-profile-unsaved role="status">Changes stay here until you save.</p>
+                    <footer class="profile-footer"><p class="profile-status" data-user-profile-status role="status" aria-live="polite"></p>
+                        <button type="button" class="secondary-button" data-revert-user-profile>Revert</button>
+                        <button type="button" class="setup-button" data-save-user-profile>Save profile</button>
+                    </footer>
                 </div>
             </section>
 
@@ -465,7 +470,7 @@
                     <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="terminal"><img src="./engine/img/environment/doc_term.svg" data-seasonal-icon="terminal" alt=""><span>Terminal</span></button>
                     <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="widgets"><img src="./engine/img/environment/doc_widget.svg" alt=""><span>Widgets</span></button>
                     <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="folder-unfinished"><img src="./engine/img/environment/doc_folder.svg" data-seasonal-icon="folder" alt=""><span>Unfinished</span></button>
-                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="looking-glass"><img src="./engine/img/environment/doc_glass.svg" alt=""><span>Looking Glass</span></button>
+                    <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="looking-glass" data-looking-glass-icon hidden><img src="./engine/img/environment/doc_glass.svg" alt=""><span>Looking Glass</span></button>
                     <button type="button" class="virtual-folder-entry" draggable="false" data-open-window="blackwall" data-hidden-file hidden><img src="./engine/img/environment/blackwall.svg" alt=""><span>Blackwall</span><small>Session &amp; Security</small></button>
                     <button type="button" class="virtual-folder-entry" draggable="false" data-hidden-file hidden data-blackwall-protected-file aria-label="blackwall.sys — restricted system file" title="Protected system configuration. Access restricted."><img src="./engine/img/environment/doc_text.svg" data-seasonal-icon="text" alt=""><span>blackwall.sys</span><small>Restricted</small></button>
                 </div>
@@ -677,6 +682,8 @@
                     <button type="button" class="window-close" data-close-window="developer-vault" aria-label="Close window">X</button>
                 </div>
                 <div class="setup-content developer-vault-content">
+                    <label class="vault-close-preference"><input type="checkbox" data-vault-lock-on-close>Lock when closing this window</label>
+                    <p class="vault-preference-status" data-vault-preference-status role="status" hidden></p>
                     <div data-vault-locked-view>
                         <div class="vault-intro">
                             <span class="vault-lock-mark" aria-hidden="true">◆</span>
@@ -741,7 +748,7 @@
             >
                 <div class="setup-titlebar">
                     <div class="titlebar-left">
-                        <img class="title-icon" src="./milky-way-bar-crawl/custom/favicon.svg" alt="" aria-hidden="true">
+                        <img class="title-icon" src="./milky-way-bar-crawl/custom/img/logo-bare.png" alt="" aria-hidden="true">
                         <span id="mwbc-title">Milky Way Bar Crawl</span>
                     </div>
                     <div class="window-controls">
@@ -977,7 +984,7 @@
 
                         <section class="settings-maintenance settings-reset-discoveries" aria-labelledby="settings-discoveries-title">
                             <h2 id="settings-discoveries-title">Reset discoveries</h2>
-                            <p>Hides the Developer Vault and Easter Eggs until they are discovered again. Their positions and your other settings stay.</p>
+                            <p>Hides Looking Glass, the Developer Vault and Easter Eggs until they are discovered again. Bookmarks, positions and your other settings stay.</p>
                             <button type="button" class="settings-maintenance-button" data-action="reset-discoveries" data-settings-reset-action>Reset discoveries</button>
                         </section>
                         <hr class="settings-section-divider" aria-hidden="true">
@@ -1004,7 +1011,7 @@
                     <ul class="recycle-bin-items" data-recycle-items aria-label="Deleted shortcuts"></ul>
                 </div>
             </section>
-            <section class="setup-window" data-window="widgets" data-window-width="820px" data-window-height="760px" hidden aria-labelledby="widgets-title">
+            <section class="setup-window" data-window="widgets" data-window-width="760px" data-window-height="680px" hidden aria-labelledby="widgets-title">
                 <div class="setup-titlebar window-drag-handle">
                     <div class="titlebar-left"><img class="title-icon" src="./engine/img/environment/doc_widget.svg" alt="" aria-hidden="true"><span id="widgets-title">Widgets</span></div>
                     <div class="window-controls">
@@ -1017,7 +1024,7 @@
                     <div class="window-tablist" role="tablist" aria-label="Widget categories">
                         <button type="button" class="window-tab" id="widgets-gallery-tab" role="tab" aria-selected="true" aria-controls="widgets-gallery-panel" tabindex="0" data-tab-id="widgets-gallery">Gallery</button>
                         <button type="button" class="window-tab" id="widgets-manage-tab" role="tab" aria-selected="false" aria-controls="widgets-manage-panel" tabindex="-1" data-tab-id="widgets-manage">Manage</button>
-                        <button type="button" class="window-tab" id="widgets-appearance-tab" role="tab" aria-selected="false" aria-controls="widgets-appearance-panel" tabindex="-1" data-tab-id="widgets-appearance">Appearance</button>
+                        <button type="button" class="window-tab" id="widgets-appearance-tab" role="tab" aria-selected="false" aria-controls="widgets-appearance-panel" tabindex="-1" data-tab-id="widgets-appearance" disabled>Appearance</button>
                     </div>
                     <section class="window-tab-panel widgets-tab-panel" id="widgets-gallery-panel" role="tabpanel" aria-labelledby="widgets-gallery-tab" tabindex="0" data-tab-panel="widgets-gallery">
                         <header class="widgets-heading">
@@ -1044,15 +1051,16 @@
                     </section>
 
                     <section class="window-tab-panel widgets-tab-panel" id="widgets-manage-panel" role="tabpanel" aria-labelledby="widgets-manage-tab" tabindex="0" data-tab-panel="widgets-manage" hidden>
-                        <div class="widgets-section-title"><h2>On this desktop</h2><span>Change size and appearance, or restore layout</span></div>
+                        <div class="widgets-section-title"><h2>On this desktop</h2><span>Settings and layout</span></div>
                         <div class="widget-instance-list" data-widget-instances></div>
                         <button type="button" class="widget-reset-layout" data-widget-reset-layout data-widget-management>Restore widget positions</button>
                     </section>
 
                     <section class="window-tab-panel widgets-tab-panel" id="widgets-appearance-panel" role="tabpanel" aria-labelledby="widgets-appearance-tab" tabindex="0" data-tab-panel="widgets-appearance" hidden>
                         <h1>Widget appearance</h1>
-                        <p>Choose the palette used for new Sticky Notes. Existing notes keep their individual paper colors.</p>
+                        <p>Set each widget’s size and surface, and choose the paper colors for your notes.</p>
                         <div data-widget-palette-container></div>
+                        <div class="widget-instance-list widget-appearance-list" data-widget-appearances></div>
                     </section>
                     <p class="widget-manager-status" data-widget-status role="status" aria-live="polite"></p>
                 </div>
@@ -1076,16 +1084,9 @@
                     </section>
                     <section class="backup-card" aria-labelledby="backup-import-title">
                         <h2 id="backup-import-title">Restore a backup</h2>
-                        <p>Choose a saved JSON file. You can review it before replacing your current setup.</p>
+                        <p>Choose your JSON backup to restore a saved setup.</p>
                         <label class="backup-file-label" for="configurationFile">Choose a JSON file</label>
                         <input id="configurationFile" data-import-file type="file" accept="application/json,.json">
-                        <div class="backup-import-preview" data-import-preview hidden>
-                            <p data-import-summary></p>
-                            <div class="backup-actions">
-                                <button type="button" class="backup-primary-button" data-apply-import>Restore backup</button>
-                                <button type="button" class="backup-secondary-button" data-cancel-import>Cancel</button>
-                            </div>
-                        </div>
                     </section>
                     <p class="backup-status" data-backup-status role="status" aria-live="polite"></p>
                 </div>

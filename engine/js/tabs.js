@@ -14,6 +14,7 @@ export function initTabs(root = document, state = {}) {
 
         const windowId = group.closest("[data-window]")?.dataset.window;
         function selectTab(tab, { focus = false, external = false } = {}) {
+            if (!tab || tab.disabled) return;
             const panel = panelsById.get(tab.getAttribute("aria-controls"));
             if (!panel) return;
 
@@ -36,30 +37,29 @@ export function initTabs(root = document, state = {}) {
             }));
         }
 
-        const initiallySelected = tabs.find(tab =>
-            tab.getAttribute("aria-selected") === "true"
-        ) || tabs[0];
+        const initiallySelected = tabs.find(tab => !tab.disabled && tab.getAttribute("aria-selected") === "true") || tabs.find(tab => !tab.disabled);
         selectTab(initiallySelected, { external: true });
 
         tablist.addEventListener("click", event => {
             const tab = event.target instanceof Element ? event.target.closest('[role="tab"]') : null;
-            if (tabs.includes(tab)) selectTab(tab);
+            if (tabs.includes(tab) && !tab.disabled) selectTab(tab);
         }, { signal: listeners.signal });
 
         tablist.addEventListener("keydown", event => {
             const current = event.target instanceof Element ? event.target.closest('[role="tab"]') : null;
-            const currentIndex = tabs.indexOf(current);
+            const available = tabs.filter(tab => !tab.disabled);
+            const currentIndex = available.indexOf(current);
             if (currentIndex < 0) return;
 
             let nextIndex;
-            if (event.key === "ArrowRight") nextIndex = (currentIndex + 1) % tabs.length;
-            else if (event.key === "ArrowLeft") nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+            if (event.key === "ArrowRight") nextIndex = (currentIndex + 1) % available.length;
+            else if (event.key === "ArrowLeft") nextIndex = (currentIndex - 1 + available.length) % available.length;
             else if (event.key === "Home") nextIndex = 0;
-            else if (event.key === "End") nextIndex = tabs.length - 1;
+            else if (event.key === "End") nextIndex = available.length - 1;
             else return;
 
             event.preventDefault();
-            selectTab(tabs[nextIndex], { focus: true });
+            selectTab(available[nextIndex], { focus: true });
         }, { signal: listeners.signal });
 
         controllers.push({ group, windowId, tabs, selectTab, initiallySelected });
@@ -68,7 +68,7 @@ export function initTabs(root = document, state = {}) {
     function activateTab(tabId, options) {
         for (const controller of controllers) {
             const tab = controller.tabs.find(candidate => candidate.dataset.tabId === tabId);
-            if (tab) {
+            if (tab && !tab.disabled) {
                 controller.selectTab(tab, options);
                 return true;
             }
@@ -80,7 +80,8 @@ export function initTabs(root = document, state = {}) {
         for (const controller of controllers) {
             if (ids && !ids.includes(controller.windowId)) continue;
             const selected = state.memory?.windows?.[controller.windowId]?.activeTab;
-            const tab = controller.tabs.find(tab => tab.dataset.tabId === selected) || controller.initiallySelected;
+            const tab = controller.tabs.find(tab => tab.dataset.tabId === selected && !tab.disabled)
+                || (controller.initiallySelected.disabled ? controller.tabs.find(tab => !tab.disabled) : controller.initiallySelected);
             controller.selectTab(tab, { external: true });
         }
     }

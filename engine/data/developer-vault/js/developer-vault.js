@@ -197,9 +197,12 @@ function matchLabel(match) {
     return { name: match.name, detail };
 }
 
-export function initDeveloperVault({ windowElement }) {
+export function initDeveloperVault({ windowElement, memory = { settings: {} }, saveMemory = async () => true }) {
     if (!windowElement) return { lock() {}, clearCache() {} };
     const lockedView = windowElement.querySelector("[data-vault-locked-view]");
+    const lockOnClose = windowElement.querySelector("[data-vault-lock-on-close]");
+    const preferenceStatus = windowElement.querySelector("[data-vault-preference-status]");
+    let windowClosed = windowElement.hidden;
     const unlockedView = windowElement.querySelector("[data-vault-unlocked-view]");
     const form = windowElement.querySelector("[data-vault-unlock-form]");
     const passwordInput = windowElement.querySelector("[data-vault-password]");
@@ -516,6 +519,21 @@ export function initDeveloperVault({ windowElement }) {
         resetSession("Vault locked.");
     }
 
+    function refreshPreferences() {
+        if (lockOnClose) lockOnClose.checked = memory.settings.vaultLockOnClose === true;
+        if (memory.settings.vaultLockOnClose === true && windowClosed) resetSession();
+    }
+    refreshPreferences();
+    lockOnClose?.addEventListener("change", async () => {
+        memory.settings.vaultLockOnClose = lockOnClose.checked;
+        let saved = false;
+        try { saved = await saveMemory(); } catch { /* Retain the requested preference in this tab. */ }
+        if (preferenceStatus) {
+            preferenceStatus.textContent = saved === false ? "This preference could not be saved. It remains active in this tab." : "";
+            preferenceStatus.hidden = saved !== false;
+        }
+    });
+
     upButton.addEventListener("click", () => {
         if (!currentPath.length) return;
         currentPath.pop();
@@ -525,6 +543,7 @@ export function initDeveloperVault({ windowElement }) {
     additionalUnlockButton.addEventListener("click", openAdditionalUnlock);
     additionalUnlockCancel.addEventListener("click", closeAdditionalUnlock);
     windowElement.addEventListener("windowfocus", () => {
+        windowClosed = false;
         if (unlockedView.hidden) {
             passwordInput.focus({ preventScroll: true });
         } else if (currentItem && (currentItem.kind === "image" || currentItem.kind === "audio") && !activeObjectUrl) {
@@ -532,6 +551,8 @@ export function initDeveloperVault({ windowElement }) {
         }
     });
     windowElement.addEventListener("windowclosing", () => {
+        windowClosed = true;
+        if (memory.settings.vaultLockOnClose === true) { resetSession(); return; }
         const stoppedUnlocking = unlocking;
         if (unlocking) {
             attemptId += 1;
@@ -649,5 +670,5 @@ export function initDeveloperVault({ windowElement }) {
 
     lockButton?.addEventListener("click", lock);
     resetSession("Enter your passphrase to search encrypted content.");
-    return { lock, clearCache: unlocker.clearCache };
+    return { lock, clearCache: unlocker.clearCache, refreshPreferences };
 }

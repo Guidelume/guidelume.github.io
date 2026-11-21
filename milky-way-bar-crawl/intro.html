@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 	<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 	
 	<title>MWBC | Introduction</title>
-	<link rel="shortcut icon" href="./custom/favicon.svg" />
+	<link rel="shortcut icon" href="./custom/img/logo-bare.png" />
 	
 	<!-- Open Graph support -->
 	<meta property="og:title" content="Milky Way Bar Crawl">
@@ -503,14 +504,7 @@
 	<script src="../engine/js/guide.js" defer></script>
     <script src="../engine/js/font-accessibility.js" defer></script>
 	<script src="../engine/external/glightbox/dist/js/glightbox.min.js"></script>
-	<script>
-		const lightbox = GLightbox({
-			touchNavigation: true,
-			loop: false,
-			zoomable: true,
-			autoplayVideos: false,
-		});
-	</script>
+	<script src="../engine/js/pages/milky-way-bar-crawl-intro-1.js"></script>
 	
 	
 </body>

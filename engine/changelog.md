@@ -1,15 +1,31 @@
 # Changelog
 
+## 2026-11-21 · 1.4 | Serrice Ice Brandy
+
+- Fixed bug where I forgot that windows could also be dragged outside the workspace and into vast nothingness
+- Simplified backup restoration confirmation
+- Put Looking Glass behind an unlock code. Progress-Report-01 is terrible at keeping secrets
+- Tidied up Widgets with clearer formats and grouped appearance controls
+- Reorganized User Profile and added an unsaved-changes notice
+- Gave the profile planets names and a carousel, thus trimming the desktop's initial downloads by half
+- Added an optional lock-on-close checkbox to the Developer Vault
+
+- Tightened page security and backup checks
+- The Markdown libraries are now hosted locally (under their respective licenses)
+- Smoothed out synchronization and kept the Vault from losing its taskbar button
+- Kept Setup's buttons clear of the taskbar on shorter screens
+- Added a proper refresh-and-reload escape hatch for startup files left behind after an update
+
 ## 2026-11-20 · 1.3 | Relay Brandy
 
 - Simplified Backup & Restore to a basic export/import JSON system
-- Fixed bug where on multiple monitors you could drag icons outside the workspace and into the v o i d
+- Fixed bug where you could drag icons outside the workspace and into the v o i d
 
 - Rewrote the Readme and Progress-Report-01
 - Removed the Sound Mixer placeholder. It might come back one day, but not anytime soon
 - Moved Looking Glass into System
 
-- Added a 'hidden files' toggle. 'Hidden' files are differentiated visually
+- Added a 'hidden files' toggle to the custom context menus. 'Hidden' files are differentiated visually
 
 ## 2026-11-19 · 1.2 | Denorian Beer
 

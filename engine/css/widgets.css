@@ -254,8 +254,14 @@
 .widget-add-button:hover:not(:disabled), .widget-remove-button:hover:not(:disabled), .widget-reset-layout:hover:not(:disabled) { border-color: var(--accent-strong); background: color-mix(in srgb, var(--accent-strong), transparent 77%); }
 .widget-add-button:disabled, .widget-remove-button:disabled, .widget-reset-layout:disabled, .widgets-content select:disabled, .widgets-content input:disabled { opacity: .46; cursor: not-allowed; }
 .widget-instance-list { display: grid; gap: 10px; }
+.widget-appearance-list { margin-top: 14px; }
+.widget-appearance-list h3 { margin: 0 0 12px; font-size: .9em; }
+.widget-appearance-link { justify-self: start; grid-column: 1 / -1; padding: 4px 0; border: 0; background: none; color: var(--accent-light); font: inherit; font-size: .72em; text-decoration: underline; cursor: pointer; }
+.widget-setting-help { grid-column: 1 / -1; margin: 0; color: var(--text-secondary); font-size: .75em; }
 .widget-palette-preference { padding: 13px; border: 1px solid rgba(255,255,255,.12); border-radius: 10px; background: rgba(255,255,255,.04); }
 .widget-palette-preference h3 { margin: 0 0 9px; font-size: .82em; }
+.widget-palette-preference h2 { margin: 0 0 12px; font-size: .9em; }
+.widget-palette-preference .widget-palette-help { margin: 8px 0 0; font-size: .72em; }
 .widget-palette-help { margin: 8px 0 0; color: var(--text-muted); font-size: .65em; line-height: 1.45; }
 .widget-empty-state { padding: 17px; border: 1px dashed rgba(255,255,255,.2); border-radius: 9px; color: var(--text-secondary); font-size: .8em; text-align: center; }
 .widget-instance-card { padding: 13px; border: 1px solid rgba(255,255,255,.11); border-radius: 10px; background: rgba(255,255,255,.035); scroll-margin: 24px; }

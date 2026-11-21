@@ -1,8 +1,12 @@
 // Discovery codes are accepted by Terminal's reusable unlock window.
 export const discoveryRegistry = Object.freeze([
     Object.freeze({
-        id: "developer-vault", flag: "developerVaultDiscovered",
+        id: "developer-vault", flag: "developerVaultDiscovered", label: "Developer Vault",
         code: "GUIDELUME-VAULT-1:WHEN-THE-LANTERN-WAKES"
+    }),
+    Object.freeze({
+        id: "looking-glass", flag: "lookingGlassDiscovered", label: "Looking Glass",
+        code: "SELF-INDULGENT-FEATURE-01"
     })
 ]);
 

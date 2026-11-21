@@ -407,17 +407,17 @@ function renderCard(entry) {
 
         <img
             src="${entry.hasThumbnail === false ? '../../custom/img/thumb-fallback.png' : `./basement/${encodeURIComponent(entry.id)}/thumbnail.webp` }"
-            alt="${entry.title}"
+            alt="${escapeHTML(entry.title)}"
             loading="lazy"
-            onerror="this.onerror=null;this.src='../../custom/img/thumb-fallback.png';">
+            data-fallback-src="../../custom/img/thumb-fallback.png">
 
         <div class="archive-overlay">
 
             <h3>${escapeHTML(entry.title)}</h3>
 
-            <p>${entry.platform} • ${formatDate(entry.releaseDate, "year")}</p>
+            <p>${escapeHTML(entry.platform)} • ${formatDate(entry.releaseDate, "year")}</p>
 
-            <span>${entry.developer}</span>
+            <span>${escapeHTML(entry.developer)}</span>
 
         </div>
 

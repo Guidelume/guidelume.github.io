@@ -36,10 +36,15 @@ export function initDesktopProperties({ windowManager }) {
     document.body.append(dialog);
     let opener, tabs, vaultObserver;
     dialog.addEventListener("close", () => {
+        const active = document.activeElement;
+        const restoreFocus = !active || active === document.body || active === opener || dialog.contains(active);
         vaultObserver?.disconnect(); vaultObserver = null;
         tabs?.destroy(); tabs = null; dialog.replaceChildren();
         const target = opener?.isConnected && opener.getClientRects().length ? opener : windowManager.getFocusTarget();
-        target?.focus({ preventScroll: true }); opener = null;
+        // The native close event is queued: a newer menu or edit may already
+        // have focus by the time it arrives. Preserve that newer interaction.
+        if (restoreFocus) target?.focus({ preventScroll: true });
+        opener = null;
     });
     const fieldList = fields => {
         const list = document.createElement("dl"); list.className = "desktop-properties-fields";

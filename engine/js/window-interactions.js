@@ -86,6 +86,7 @@ export function initWindowInteractions({ windows, queueSave, closeStartMenu, win
                     offsetY
                 };
                 titlebar.setPointerCapture?.(event.pointerId);
+                constrainWindowPosition(windowEl);
                 document.body.style.userSelect = "none";
                 event.preventDefault();
             }
@@ -96,12 +97,15 @@ export function initWindowInteractions({ windows, queueSave, closeStartMenu, win
         if (!activeDrag || event.pointerId !== activeDrag.pointerId) return;
         activeDrag.windowEl.style.left = `${event.clientX - activeDrag.offsetX}px`;
         activeDrag.windowEl.style.top = `${event.clientY - activeDrag.offsetY}px`;
+        constrainWindowPosition(activeDrag.windowEl);
     });
 
     const finishDragging = event => {
-        if (!activeDrag || event.pointerId !== activeDrag.pointerId) return;
-        const { windowEl } = activeDrag;
+        if (!activeDrag || (event.type !== "blur" && event.pointerId !== activeDrag.pointerId)) return;
+        const { windowEl, pointerId } = activeDrag;
         activeDrag = null;
+        const handle = windowEl.querySelector(".window-drag-handle");
+        if (handle?.hasPointerCapture?.(pointerId)) handle.releasePointerCapture(pointerId);
         delete windowEl.dataset.windowDragging;
         document.body.style.userSelect = "";
 
@@ -115,6 +119,7 @@ export function initWindowInteractions({ windows, queueSave, closeStartMenu, win
     };
     window.addEventListener("pointerup", finishDragging);
     window.addEventListener("pointercancel", finishDragging);
+    window.addEventListener("blur", finishDragging);
     windows.forEach(windowEl => {
         windowEl.querySelector(".window-drag-handle")?.addEventListener("lostpointercapture", finishDragging);
     });

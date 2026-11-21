@@ -1,6 +1,6 @@
 import { findDiscovery } from "../data/developer-vault/js/discovery-registry.js";
 
-export function initEasterEggs({ memory, saveMemory, openWindow, closeWindow, icon, developerVaultIcon }) {
+export function initEasterEggs({ memory, saveMemory, openWindow, closeWindow, icon, developerVaultIcon, lookingGlassIcon }) {
     const passwordWindow = document.querySelector('[data-window="easter-eggs-password"]');
     const form = passwordWindow?.querySelector("[data-easter-password-form]");
     const input = passwordWindow?.querySelector("[data-easter-password-input]");
@@ -40,13 +40,13 @@ export function initEasterEggs({ memory, saveMemory, openWindow, closeWindow, ic
         pendingResponse = null;
         if (accepted) {
             memory.settings[discovery?.flag || "easterEggsUnlocked"] = true;
-            const unlockedIcon = discovery ? developerVaultIcon : icon;
+            const unlockedIcon = discovery ? { "developer-vault": developerVaultIcon, "looking-glass": lookingGlassIcon }[discovery.id] : icon;
             if (unlockedIcon) unlockedIcon.hidden = false;
         }
         if (input) input.value = "";
         closeWindow("easter-eggs-password");
         if (!accepted) { respond?.("Wrong password."); return; }
-        const message = discovery ? "Accepted. Developer Vault discovered." : "Accepted. Easter Eggs unlocked.";
+        const message = discovery ? `Accepted. ${discovery.label} discovered.` : "Accepted. Easter Eggs unlocked.";
         let saved = false;
         try { saved = await saveMemory(); } catch { /* The staged discovery remains available for retry. */ }
         respond?.(saved === false ? `${message} Saving is pending; try again if you reload.` : message);

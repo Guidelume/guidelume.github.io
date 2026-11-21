@@ -1,8 +1,10 @@
-import { changedRecords, flattenDesktop, isPresentationRecord, sameRecordValue } from "./desktop-records.js";
+import { flattenDesktop, isPresentationRecord, sameRecordValue } from "./desktop-records.js";
 import { collectionConflicts } from "./desktop-constraints.js";
 
 export const DESKTOP_DATABASE = "guidelume-desktop";
-export const DESKTOP_SCHEMA_VERSION = 3;
+// Version 4 retires clients that require persisted tombstones after an epoch
+// replacement. Their connections close before compaction can occur.
+export const DESKTOP_SCHEMA_VERSION = 4;
 
 // Every mutation includes meta and records in the SAME read/write transaction.
 // Request callbacks keep transactions active; success is reported on complete,
@@ -51,7 +53,7 @@ export function createDesktopDatabase({ factory, name = DESKTOP_DATABASE,
         return opening;
     }
 
-    async function transaction(mode, operation) {
+    async function transaction(mode, operation, { since } = {}) {
         const db = await open();
         return new Promise((resolve, reject) => {
             const tx = db.transaction(["meta", "records"], mode);
@@ -62,6 +64,19 @@ export function createDesktopDatabase({ factory, name = DESKTOP_DATABASE,
             const metaStore = tx.objectStore("meta");
             const store = tx.objectStore("records");
             const metaRequest = metaStore.get("desktop");
+            if (since) {
+                // Metadata and the conditional snapshot share one transaction.
+                // An unchanged focus check does not copy every saved record.
+                metaRequest.onsuccess = () => {
+                    if (metaRequest.result?.epoch === since.epoch && metaRequest.result?.revision === since.revision) { result = null; return; }
+                    const request = store.getAll();
+                    request.onsuccess = () => {
+                        try { result = operation({ meta: metaRequest.result, records: new Map(request.result.map(record => [record.key, record])), metaStore, store }); }
+                        catch (error) { tx.abort(); reject(error); }
+                    };
+                };
+                return;
+            }
             const recordsRequest = store.getAll();
             let received = 0;
             const run = () => {
@@ -147,6 +162,7 @@ export function createDesktopDatabase({ factory, name = DESKTOP_DATABASE,
             });
         },
         read() { return transaction("readonly", ({ meta, records }) => snapshot(meta, records)); },
+        readIfNewer(since) { return transaction("readonly", ({ meta, records }) => snapshot(meta, records), { since }); },
         commit({ epoch, patches }) {
             return transaction("readwrite", ({ meta, records, metaStore, store }) => {
                 if (!meta || meta.epoch !== epoch) return { ...snapshot(meta, records), stale: true, conflicts: patches, written: [] };
@@ -186,17 +202,19 @@ export function createDesktopDatabase({ factory, name = DESKTOP_DATABASE,
             return transaction("readwrite", ({ meta, records, metaStore, store }) => {
                 if (!meta || meta.epoch !== epoch) return { ...snapshot(meta, records), stale: true };
                 const next = flattenDesktop(transform(records));
-                const patches = changedRecords(records, next, meta.revision);
                 meta = { ...meta, epoch: crypto.randomUUID(), revision: meta.revision + 1 };
                 if (fullReset) meta.resetGeneration = crypto.randomUUID();
-                for (const patch of patches) {
-                    const record = { key: patch.key, path: patch.path, kind: patch.kind, revision: meta.revision,
-                        ...(patch.deleted ? { deleted: true } : patch.kind === "value" ? { value: patch.value } : {}) };
+                // Advancing the epoch rejects all pre-replacement writes. This
+                // is the safe boundary for dropping accumulated tombstones.
+                store.clear();
+                const compacted = new Map();
+                for (const [key, value] of next) {
+                    const record = { ...value, revision: sameRecordValue(records.get(key), value) ? records.get(key).revision : meta.revision };
                     store.put(record);
-                    records.set(record.key, record);
+                    compacted.set(key, record);
                 }
                 metaStore.put(meta, "desktop");
-                return { ...snapshot(meta, records), stale: false };
+                return { ...snapshot(meta, compacted), stale: false };
             });
         },
         disconnect() { connection?.close(); connection = null; },

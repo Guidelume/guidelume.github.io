@@ -6,6 +6,7 @@ import {
     normalizeWidgetState,
     isSupportedLocale,
     isSupportedTimeZone,
+    formatWidgetDate,
     widgetTypes,
     validateWidgetState
 } from "./widgets-data.js";
@@ -28,7 +29,17 @@ const seasonalNotePalettes = new Set(notePalettes.slice(1).map(([palette]) => pa
 const sizes = [["small", "Small"], ["medium", "Medium"], ["large", "Large"]];
 const appearances = [["glass", "Glass"], ["solid", "Solid"]];
 const clockFormats = [["system", "System default"], ["12", "12 hour"], ["24", "24 hour"]];
-const weekStarts = [["locale", "Use locale"], ["sunday", "Sunday"], ["monday", "Monday"]];
+const weekStarts = [["locale", "Device default"], ["sunday", "Sunday"], ["monday", "Monday"]];
+const dateFormats = [["system", "Device default"], ["day-first", "DD/MM/YYYY · 31/12/2026"], ["month-first", "MM/DD/YYYY · 12/31/2026"], ["year-first", "YYYY/MM/DD · 2026/12/31"]];
+const timeZones = [["UTC", "UTC"], ["America/Los_Angeles", "Los Angeles"], ["America/New_York", "New York"], ["America/Sao_Paulo", "São Paulo"],
+    ["Europe/London", "London"], ["Europe/Berlin", "Berlin / Paris"], ["Asia/Kolkata", "India"], ["Asia/Shanghai", "Beijing / Shanghai"], ["Asia/Tokyo", "Tokyo"], ["Australia/Sydney", "Sydney"]];
+
+function timeZoneChoices(saved) {
+    const local = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+    const options = [[local, `Local time (${local.split("/").at(-1).replaceAll("_", " ")})`], ...timeZones.filter(([zone]) => zone !== local)];
+    if (!options.some(([zone]) => zone === saved)) options.push([saved, `${saved.replaceAll("_", " ")} (saved)`]);
+    return options;
+}
 
 function makeId() {
     if (globalThis.crypto?.randomUUID) return `widget-${crypto.randomUUID()}`;
@@ -52,13 +63,15 @@ function element(tag, className, text) {
     return node;
 }
 
-export function initWidgets({ memory, queueSave, saveMemory, openWindow, activateTab }) {
+export function initWidgets({ memory, queueSave, saveMemory, openWindow, activateTab,
+    confirmAction = async ({ message }) => window.confirm(message), getGeneration = () => "" }) {
     const layer = document.querySelector("[data-desktop-widgets]");
     const pinnedLayer = document.querySelector("[data-pinned-widgets]") || layer;
     const manager = document.querySelector('[data-window="widgets"]');
     if (!layer || !manager) return null;
 
     const instanceList = manager.querySelector("[data-widget-instances]");
+    const appearanceList = manager.querySelector("[data-widget-appearances]");
     const paletteContainer = manager.querySelector("[data-widget-palette-container]");
     const managerStatus = manager.querySelector("[data-widget-status]");
     const noteSaveTimers = new Map();
@@ -91,6 +104,10 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
     }
 
     function refreshAvailability() {
+        const appearanceTab = manager.querySelector('[data-tab-id="widgets-appearance"]');
+        appearanceTab.disabled = !instances().length;
+        appearanceTab.title = appearanceTab.disabled ? "Add a widget to customize its appearance." : "";
+        if (appearanceTab.disabled && appearanceTab.getAttribute("aria-selected") === "true") activateTab?.("widgets-manage", { external: true });
         manager.querySelectorAll("[data-widget-add]").forEach(button => {
             const type = button.dataset.widgetAdd;
             const currentCount = instances().filter(widget => widget.type === type).length;
@@ -280,8 +297,6 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
         const formatters = getCalendarFormatters(widget, locale);
         if (widget.size === "small") {
             const weekday = formatters.weekdayLong.format(now);
-            const month = formatters.monthLong.format(now);
-            const year = formatters.yearNumeric.format(now);
             const spokenDate = formatters.fullDate.format(now);
             const card = element("div", "calendar-compact-card");
             card.setAttribute("role", "group");
@@ -291,7 +306,7 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
             if (holiday) card.title = holiday;
             card.append(element("span", "calendar-compact-weekday", weekday));
             card.append(element("span", "calendar-compact-day", String(now.getDate())));
-            card.append(element("span", "calendar-compact-month-year", `${month} ${year}`));
+            card.append(element("span", "calendar-compact-month-year", formatWidgetDate(now, widget.settings.dateFormat, locale)));
             root.replaceChildren(card);
             if (focusAction) root.querySelector(`[data-calendar-action="${focusAction}"]`)?.focus();
             return;
@@ -348,7 +363,7 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
             if (isToday) cell.setAttribute("aria-current", "date");
             grid.lastElementChild.append(cell);
         }
-        const todayButton = element("button", "calendar-today", "Today");
+        const todayButton = element("button", "calendar-today", `Today · ${formatWidgetDate(now, widget.settings.dateFormat, locale)}`);
         todayButton.type = "button";
         todayButton.dataset.calendarAction = "today";
         todayButton.disabled = widget.settings.monthOffset === 0;
@@ -593,8 +608,12 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
                 renderManager();
                 save();
             }, { checked: widget.settings.showSeconds });
-            makeMenuButton(menu, "Time zone and locale…", () => openWidgetSettings(widget.id, "timezone"));
-            makeMenuButton(menu, "12/24-hour readout…", () => openWidgetSettings(widget.id, "hour-format"));
+            const uses24Hours = widget.settings.hourFormat === "24" || (widget.settings.hourFormat === "system"
+                && !getClockFormatters(widget, localeFor(widget)).readout.resolvedOptions().hour12);
+            makeMenuButton(menu, `${uses24Hours ? "✓" : "　"} 24-hour readout`, () => {
+                widget.settings.hourFormat = uses24Hours ? "12" : "24";
+                renderDesktop(); renderManager(); save();
+            }, { checked: uses24Hours });
         } else if (widget.type === "calendar") {
             makeMenuButton(menu, "Return to current month", () => {
                 widget.settings.monthOffset = 0;
@@ -604,7 +623,6 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
             }, { disabled: widget.settings.monthOffset === 0 });
             addMenuSeparator(menu);
             makeMenuButton(menu, `Week starts: ${widget.settings.weekStart}`, () => openWidgetSettings(widget.id, "week-start"));
-            makeMenuButton(menu, "Calendar preferences…", () => openWidgetSettings(widget.id, "calendar-locale"));
         } else {
             const colorMenu = element("div", "widget-menu-colors");
             colorMenu.setAttribute("role", "group");
@@ -643,7 +661,7 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
         contextMenu = null;
     }
 
-    function openWidgetSettings(id, target = "size") {
+    function openWidgetSettings(id, target = "settings") {
         closeContextMenu();
         renderManager();
         activateTab?.("widgets-manage");
@@ -655,7 +673,7 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
                 timezone: "[data-widget-timezone]",
                 "hour-format": "[data-widget-hour-format]",
                 "week-start": "[data-widget-week-start]",
-                "calendar-locale": "[data-widget-calendar-locale]",
+                settings: "[data-widget-timezone], [data-widget-week-start], [data-widget-appearance-link]",
                 size: "[data-widget-size]"
             };
             card?.querySelector(selectors[target] || selectors.size)?.focus({ preventScroll: true });
@@ -678,10 +696,13 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
         setStatus("Sticky Note duplicated.");
     }
 
-    function clearNote(widget) {
+    async function clearNote(widget) {
         if (!widget.settings.text) return;
-        if (!window.confirm("Clear all text from this Sticky Note?")) return;
-        widget.settings.text = "";
+        const text = widget.settings.text, generation = getGeneration();
+        if (!await confirmAction({ title: "Clear this Sticky Note?", message: "This removes all text from the note. This cannot be undone.", confirmLabel: "Clear note" })) return;
+        const current = findWidget(widget.id);
+        if (!current || current.settings.text !== text || generation !== getGeneration()) { setStatus("The note changed in another session. Review it and try again."); return; }
+        current.settings.text = "";
         renderDesktop();
         renderManager();
         save();
@@ -718,11 +739,13 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
         setStatus(`${widgetTypes[type].label} added to the desktop.`);
     }
 
-    function removeWidget(widget) {
-        if (widget.type === "note" && widget.settings.text.trim()
-            && !window.confirm("Remove this Sticky Note and permanently delete its text?")) return;
-        if (widget.type !== "note"
-            && !window.confirm(`Remove the ${widgetTypes[widget.type].label} from the desktop?`)) return;
+    async function removeWidget(widget) {
+        const text = widget.settings.text, generation = getGeneration();
+        if (!await confirmAction({ title: `Remove ${widgetTypes[widget.type].label}?`,
+            message: widget.type === "note" ? "This removes the Sticky Note and deletes its text. This cannot be undone." : `Remove the ${widgetTypes[widget.type].label} from the desktop? You can add it again from Gallery.`,
+            confirmLabel: "Remove widget" })) return;
+        const current = findWidget(widget.id);
+        if (!current || current.settings.text !== text || generation !== getGeneration()) { setStatus("The widget changed in another session. Review it and try again."); return; }
         memory.widgets.instances = instances().filter(item => item.id !== widget.id);
         renderDesktop();
         renderManager();
@@ -744,25 +767,14 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
         return select;
     }
 
-    function textControl(className, value, ariaLabel, placeholder = "") {
-        const input = element("input", "widget-setting-input");
-        input.type = "text";
-        if (className) input.classList.add(className);
-        input.value = value;
-        input.maxLength = 64;
-        input.autocomplete = "off";
-        input.spellcheck = false;
-        input.setAttribute("aria-label", ariaLabel);
-        input.placeholder = placeholder;
-        return input;
-    }
-
     function renderManager() {
         if (!instanceList) return;
         instanceList.replaceChildren();
+        appearanceList?.replaceChildren();
         if (paletteContainer) {
             paletteContainer.replaceChildren();
             const paletteControl = element("section", "widget-palette-preference");
+            paletteControl.hidden = !instances().some(widget => widget.type === "note");
             paletteControl.append(element("h2", "", "Sticky Note palette"));
             const paletteSelect = selectControl("widget-note-palette", notePalettes, memory.widgets.preferredNotePalette, "Sticky Note palette");
             paletteSelect.dataset.widgetNotePalette = "true";
@@ -788,26 +800,19 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
             const icon = element("span", `widget-gallery-mark mark-${widget.type}`, widget.type === "clock" ? "◷" : widget.type === "calendar" ? "▦" : "✎");
             const title = element("div", "widget-instance-title");
             title.append(element("h3", "", widget.type === "note" ? `Sticky Note ${instances().filter(item => item.type === "note").indexOf(widget) + 1}` : widgetTypes[widget.type].label));
-            title.append(element("span", "widget-instance-id", `ID · ${widget.id.slice(0, 14)}`));
             const remove = element("button", "widget-remove-button", "Remove");
             remove.type = "button";
             remove.dataset.widgetRemove = widget.id;
             remove.addEventListener("click", () => removeWidget(widget));
             heading.append(icon, title, remove);
             const controls = element("div", "widget-instance-controls");
-            controls.append(labelControl("Size", selectControl("", sizes, widget.size, "Widget size")));
-            controls.lastElementChild.querySelector("select").dataset.widgetSize = widget.id;
-            controls.append(labelControl("Appearance", selectControl("", appearances, widget.appearance, "Widget appearance")));
-            controls.lastElementChild.querySelector("select").dataset.widgetAppearance = widget.id;
 
             if (widget.type === "clock") {
                 const clockSettings = element("div", "widget-detail-controls");
-                const locale = textControl("", widget.settings.locale, "Clock locale", "en-US");
-                locale.dataset.widgetLocale = widget.id;
-                const timezone = textControl("", widget.settings.timeZone, "IANA time zone", "Europe/Berlin");
+                const timezone = selectControl("", timeZoneChoices(widget.settings.timeZone), widget.settings.timeZone, "Clock time zone");
                 timezone.dataset.widgetTimezone = widget.id;
-                clockSettings.append(labelControl("Locale", locale), labelControl("Time zone", timezone));
-                clockSettings.append(labelControl("Readout", selectControl("widget-hour-format", clockFormats, widget.settings.hourFormat, "Clock readout format")));
+                clockSettings.append(labelControl("Time zone", timezone));
+                clockSettings.append(labelControl("Time format", selectControl("widget-hour-format", clockFormats, widget.settings.hourFormat, "Clock readout format")));
                 clockSettings.lastElementChild.querySelector("select").dataset.widgetHourFormat = widget.id;
                 const secondsLabel = element("label", "widget-checkbox-row");
                 const seconds = element("input");
@@ -819,19 +824,41 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
                 controls.append(clockSettings);
             } else if (widget.type === "calendar") {
                 const calendarSettings = element("div", "widget-detail-controls");
-                const locale = textControl("", widget.settings.locale, "Calendar locale", "en-US");
-                locale.dataset.widgetCalendarLocale = widget.id;
-                calendarSettings.append(labelControl("Locale", locale));
                 calendarSettings.append(labelControl("Week starts", selectControl("widget-week-start", weekStarts, widget.settings.weekStart, "Calendar week start")));
                 calendarSettings.lastElementChild.querySelector("select").dataset.widgetWeekStart = widget.id;
+                const dateFormat = selectControl("", dateFormats, widget.settings.dateFormat || "system", "Calendar date format");
+                dateFormat.dataset.widgetDateFormat = widget.id;
+                calendarSettings.append(labelControl("Date format", dateFormat));
                 controls.append(calendarSettings);
             } else {
-                const colorSelect = selectControl("widget-note-color", colors, widget.settings.color, "Sticky Note color");
-                colorSelect.dataset.widgetNoteColor = widget.id;
-                controls.append(labelControl("Paper color", colorSelect));
+                controls.append(element("p", "widget-setting-help", "Edit your note on the desktop. Use the pin to keep it above windows."));
             }
+            const appearanceLink = element("button", "widget-appearance-link", "Change appearance");
+            appearanceLink.type = "button";
+            appearanceLink.dataset.widgetAppearanceLink = widget.id;
+            appearanceLink.addEventListener("click", () => {
+                activateTab?.("widgets-appearance");
+                appearanceList?.querySelector(`[data-widget-id="${widget.id}"]`)?.scrollIntoView({ block: "nearest" });
+            });
+            controls.append(appearanceLink);
             card.append(heading, controls);
             instanceList.append(card);
+            const appearanceCard = element("article", "widget-instance-card");
+            appearanceCard.dataset.widgetId = widget.id;
+            appearanceCard.append(element("h3", "", title.firstElementChild.textContent));
+            const visualControls = element("div", "widget-instance-controls");
+            const size = selectControl("", sizes, widget.size, "Widget size");
+            size.dataset.widgetSize = widget.id;
+            const finish = selectControl("", appearances, widget.appearance, "Widget appearance");
+            finish.dataset.widgetAppearance = widget.id;
+            visualControls.append(labelControl("Size", size), labelControl("Surface", finish));
+            if (widget.type === "note") {
+                const color = selectControl("widget-note-color", colors, widget.settings.color, "Sticky Note color");
+                color.dataset.widgetNoteColor = widget.id;
+                visualControls.append(labelControl("Paper color", color));
+            }
+            appearanceCard.append(visualControls);
+            appearanceList?.append(appearanceCard);
         });
         refreshAvailability();
     }
@@ -878,8 +905,8 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
             return;
         }
         const id = control.dataset.widgetSize || control.dataset.widgetAppearance || control.dataset.widgetHourFormat
-            || control.dataset.widgetSeconds || control.dataset.widgetTimezone || control.dataset.widgetLocale
-            || control.dataset.widgetCalendarLocale || control.dataset.widgetWeekStart || control.dataset.widgetNoteColor;
+            || control.dataset.widgetSeconds || control.dataset.widgetTimezone
+            || control.dataset.widgetWeekStart || control.dataset.widgetNoteColor || control.dataset.widgetDateFormat;
         if (!id) return;
         const widget = findWidget(id);
         if (!widget) return;
@@ -889,24 +916,16 @@ export function initWidgets({ memory, queueSave, saveMemory, openWindow, activat
         else if (control.hasAttribute("data-widget-seconds")) widget.settings.showSeconds = control.checked;
         else if (control.hasAttribute("data-widget-timezone")) {
             if (!isSupportedTimeZone(control.value.trim())) {
-                control.setCustomValidity("Enter a supported IANA time zone, such as Europe/Berlin.");
+                control.setCustomValidity("Choose an available time zone.");
                 control.reportValidity();
                 control.value = widget.settings.timeZone;
                 control.setCustomValidity("");
                 return;
             }
             widget.settings.timeZone = control.value.trim();
-        } else if (control.hasAttribute("data-widget-locale") || control.hasAttribute("data-widget-calendar-locale")) {
-            if (!isSupportedLocale(control.value.trim())) {
-                control.setCustomValidity("Enter a valid locale tag, such as en-US or de-DE.");
-                control.reportValidity();
-                control.value = widget.settings.locale;
-                control.setCustomValidity("");
-                return;
-            }
-            widget.settings.locale = Intl.getCanonicalLocales(control.value.trim())[0];
         } else if (control.hasAttribute("data-widget-week-start")) widget.settings.weekStart = control.value;
         else if (control.hasAttribute("data-widget-note-color")) widget.settings.color = control.value;
+        else if (control.hasAttribute("data-widget-date-format")) widget.settings.dateFormat = control.value;
         renderDesktop();
         renderManager();
         save();

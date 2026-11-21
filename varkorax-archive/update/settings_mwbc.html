@@ -2,6 +2,8 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+    <script src="../../engine/js/image-fallbacks.js"></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="robots" content="noai, noimageai, noindex, nofollow" />
 		
@@ -65,119 +67,15 @@
 			(You need to reload the page for it to take effect)</p>
 			
 			<div class="settings-actions">
-				<button type="button" class="control-btn settings-btn" onclick="try { localStorage.clear(); } catch (e) {}">
+				<button type="button" class="control-btn settings-btn" data-clear-local-preferences>
 					<span class="settings-icon" aria-hidden="true">X</span>
 					<span class="settings-text">Delete</span>
 				</button>
 			</div>
 		</div>
 		
-		<script>
-			// Mirror the parent’s logic for text color (just for this iframe’s content).
-			function applyIframeTextColor() {
-			  let mode = null;
-			  try { mode = localStorage.getItem('userMode'); } catch (e) {}
-			  const hour = new Date().getHours();
-			  const isNightByClock = (hour >= 22 || hour < 6);
-			  const night = mode === 'night' || (mode !== 'day' && isNightByClock);
-			  const color = night ? '#f0f0f0' : '#000000';
-			  document.querySelectorAll('.content').forEach(el => { el.style.color = color; });
-			}
-			
-			function setMode(mode) {
-			  try {
-				if (mode) localStorage.setItem('userMode', mode);
-				else localStorage.removeItem('userMode');
-			  } catch (e) {}
-			
-			  // Update this iframe immediately…
-			  applyIframeTextColor();
-			
-			  // …and the parent will update itself automatically via the `storage` listener.
-			  // (Optionally also call it directly for belt & braces)
-			  if (window.parent && typeof window.parent.setBackgroundAndText === 'function') {
-				window.parent.setBackgroundAndText();
-			  }
-			}
-			
-			function remMode() {
-				try { localStorage.removeItem('userMode'); } catch (e) {}
-			}
-			
-			// If the parent changes mode (e.g., from another iframe), reflect it here.
-			window.addEventListener('storage', (e) => {
-			  if (e.key === 'userMode') applyIframeTextColor();
-			});
-			
-			// Initial paint
-			applyIframeTextColor();
-		</script>
-		<script>
-		  // existing scripts above remain — append this
-			  // Sync the accessible fonts toggle with Guidelume's shared preference.
-		  (function () {
-			const btn = document.getElementById('settings-font-toggle');
-
-			function readState() {
-			  try {
-				  return localStorage.getItem('accessibleFonts') === 'true';
-			  } catch (e) { return false; }
-			}
-
-			function applyStateToUI(enabled) {
-			  document.documentElement.dataset.accessibleFonts = String(enabled);
-			  document.body.classList.toggle('accessible-fonts', enabled);
-			  if (!btn) return;
-			  btn.setAttribute('aria-pressed', enabled ? 'true' : 'false');
-			  btn.querySelector('.settings-text').textContent = 'Accessible fonts: ' + (enabled ? 'On' : 'Off');
-			}
-
-			function applyStateToParent(enabled) {
-			  try {
-				// parent will update via storage listener, but we can also immediately set class
-				if (window.parent && window.parent.document && window.parent.document.body) {
-				  window.parent.document.documentElement.dataset.accessibleFonts = String(enabled);
-				  window.parent.document.body.classList.toggle('accessible-fonts', enabled);
-				}
-				// announce & toast in parent if available
-				try { window.parent.announce(enabled ? 'Accessible fonts enabled' : 'Accessible fonts disabled'); } catch (e) {}
-				try { window.parent.showToast(enabled ? 'Accessible fonts enabled' : 'Accessible fonts disabled', 1600); } catch (e) {}
-			  } catch (err) { /* ignore cross-context errors */ }
-			}
-
-			function setStorageEnabled(enabled) {
-			  try {
-				  localStorage.setItem('accessibleFonts', enabled ? 'true' : 'false');
-			  } catch (e) { /* ignore storage errors */ }
-			}
-
-			// click toggles
-			if (btn) {
-			  btn.addEventListener('click', (e) => {
-				e.preventDefault();
-				const current = readState();
-				const next = !current;
-				setStorageEnabled(next);
-				applyStateToUI(next);
-				applyStateToParent(next);
-			  });
-			}
-
-			// react to storage changes (e.g. another tab)
-			window.addEventListener('storage', (e) => {
-			  if (e.key === 'accessibleFonts') {
-				const enabled = readState();
-				applyStateToUI(enabled);
-			  }
-			  if (e.key === 'userMode') {
-				// keep your existing behavior for userMode
-				applyIframeTextColor();
-			  }
-			});
-
-			// initial paint
-			applyStateToUI(readState());
-		  })();
-		</script>
+		<script src="../../engine/js/pages/varkorax-archive-update-settings_mwbc-1.js"></script>
+		<script src="../../engine/js/pages/varkorax-archive-update-settings_mwbc-2.js"></script>
+	<script src="../../engine/js/archive-settings-actions.js"></script>
 	</body>
 </html>

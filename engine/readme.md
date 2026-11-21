@@ -8,7 +8,7 @@ If you're here to mod Mass Effect, open **Milky Way Bar Crawl**. **Varkorax Arch
 
 Drag icons and windows wherever they suit you. The taskbar keeps track of open windows, and a right-click lets you pin your favourites. Your arrangement is saved in this browser.
 
-**Documents** holds the Changelog, progress reports, and Credits. **System** is the utility drawer: Widgets, Environmental Controls, Looking Glass, and the Terminal live there. The Warden's Field Guide is still finding its feet in **System → Unfinished**.
+**Documents** holds the Changelog, progress reports, and Credits. **System** is the utility drawer: Widgets, Environmental Controls, and the Terminal live there. Looking Glass joins them once you find its code. The Warden's Field Guide is still finding its feet in **System → Unfinished**.
 
 Right-click the desktop or the space inside a folder for more options. **Show hidden files** may turn up a thing or two you've missed. Blackwall would prefer you didn't make a habit of that.
 
